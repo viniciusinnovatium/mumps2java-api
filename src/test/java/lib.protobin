@@ -1,0 +1,7 @@
+package br.com.disclic.cachemanager;
+
+message SuperNode {
+  required string subscript = 0;
+  required string path = 1;
+  required string value = 2;   
+}

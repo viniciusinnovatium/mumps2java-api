@@ -1,0 +1,136 @@
+Métodos
+De	Alexandre van den MosselaarAdd contactBloquear contato	Data	Ter. 22:35
+<- <<- ->   []
+Segue abaixo relação de métodos em utilização:
+ 
+mClass
+ 
+cmd$Do
+cmd$Goto
+cmd$Hang
+cmd$Lock
+cmd$Unlock
+cmd$Merge
+cmd$Read
+cmd$Write
+cmd$WriteHtml
+cmd$WriteJS
+cmd$SQL
+cmd$Xecute
+fnc$
+ 
+mControl
+ 
+var
+indirect
+lastvar
+ref
+piece
+new
+newvar
+oldvar
+ 
+mOp
+ 
+Negative
+Positive
+Not
+Add
+Subtract
+Multiply
+Divide
+IntegerDivide
+Modulus
+Pow
+Concat
+Equal
+NotEqual
+Greater
+GreaterOrEqual
+NotGreater
+Less
+LessOrEqual
+NotLess
+Follows
+SortsAfter
+NotFollows
+Contains
+NotContains
+Match
+NotMatch
+And
+NotAnd
+Or
+NotOr
+Logical
+Select
+ 
+mFnc
+ 
+$ascii
+$c
+$case
+> $char
+$d
+$data
+> $e
+> $extract
+> $find
+$fnumber
+$g
+$get
+$h
+$horolog
+$i
+$increment
+$io
+$isobject
+$job
+$justify
+$l
+$lb
+$length
+$listbuild
+$listbuild%1
+$listfind
+$listget
+$listlength
+> $order
+> $piece
+$qlength
+$qsubscript
+$query
+> $replace
+$reverse
+> $select
+$test
+$tlevel
+> $translate
+$zconvert
+$zcrc
+$zcvt
+$zdate
+$zdateh
+$zdatetime
+$zdt
+$zeof
+$zhorolog
+$zorder
+$zstrip
+$zts
+$zu
+$zutil
+ 
+Resolvi chamar o mEnvironment (m$) de mControl ! Alguma outra sugestão ?!
+ 
+O conversor já está ajustado, novos códigos gerados disponíveis no innov-vs !!
+ 
+Abraços,
+ 
+cid:image002.jpg@01CE1C30.D556B340	
+Alexandre van den Mosselaar
+alexandre@innovatium.com.br  |  +55 11 98469-2498
+Innovatium Systems
+www.innovatium.com.br  |  +55 11  3044-0209  /  3044-3541
+ 
+ 
