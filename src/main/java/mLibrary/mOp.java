@@ -31,4 +31,108 @@ public final class mOp {
 	public static boolean NotEqual(Object x, Object y){
 		return !Equal(x, y);
 	}
+
+	public static Object Concat(Object $$$ErrorPrefix, ListObject $listbuild) {
+		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		//return null;
+		
+	}
+
+	public static Object Concat(String $$$ErrorPrefix, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	//The method Concat(String, Object) is ambiguous for the type mOp
+	/*public static Object Concat(Object concat, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}*/
+
+	public static Object SortsAfter(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean Greater(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static String Concat(Object $$$AlertFollowing,
+			Object $$$AlertAndFocus) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Subtract(Object $length, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Subtract(Object $get, Object $get2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Divide(Object object, Object fnc$) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Add(Object divide, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object IntegerDivide(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object GreaterOrEqual(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object LessOrEqual(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Modulus(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Multiply(String $piece, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Add(Object multiply, String $piece) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Contains(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Multiply(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Add(Object divide, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object Less(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }

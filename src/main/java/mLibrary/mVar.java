@@ -31,4 +31,19 @@ public class mVar {
 	public int data(int direction) {
 		return mData.data(subs);
 	}
+
+	public mVar var(mVar childKey) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar var() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar var(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }
