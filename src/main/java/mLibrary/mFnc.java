@@ -608,6 +608,56 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public static boolean $d(mVar var) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $listlength(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $listget(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $query(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $g(mVar pstrClass) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object concat) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object object, Object object2, Object object3,
+			Object object4, Object object5, Object object6, Object object7,
+			Object object8, ListObject $lb) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object concat, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $case(Object $$$DateMonth, int i, int j, int k,
+			Object $select, int l, int m, int n, int o, int p, int q, int r,
+			int s, int t, int u, int v, int w, int x, int y, int z, int a,
+			int b, int c, int d, int e) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
  
 
 }

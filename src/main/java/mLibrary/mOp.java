@@ -135,4 +135,14 @@ public final class mOp {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public static Object Modulus(Object object, Object $$$MonthsInYear) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object IntegerDivide(Object object, Object $$$MonthsInYear) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }

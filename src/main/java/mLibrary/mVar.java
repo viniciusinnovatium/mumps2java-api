@@ -46,4 +46,9 @@ public class mVar {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public mVar var(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }

@@ -59,6 +59,11 @@ public class mContext {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public mVar indirect(Object string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 	
 	
 }

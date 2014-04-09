@@ -99,4 +99,10 @@ public abstract class mInclude {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+	
+	public static mVar m$piece(mVar p$3, Object object, Object 
+			 object2) {
+			// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 }
