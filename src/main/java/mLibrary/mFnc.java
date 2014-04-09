@@ -698,6 +698,33 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public static Object $justify(Object object, int i, String $piece) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $listfind(ListObject $listbuild, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $replace(Object object, String oldSubstring,
+			String newSubstring) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static ListObject $zu(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static String $case(Object less, Object $$$yes, Object fnc$,
+			Object $$$no, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
  
 
 }

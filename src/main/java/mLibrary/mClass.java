@@ -148,4 +148,14 @@ public class mClass {
 			// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}	
+	
+	public void cmd$WriteHtml(String string, String string2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
+	public void cmd$WriteHtml(String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 }

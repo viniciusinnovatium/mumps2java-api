@@ -64,6 +64,11 @@ public class mContext {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public mVar lastvar(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 	
 	
 }

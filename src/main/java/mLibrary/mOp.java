@@ -31,13 +31,15 @@ public final class mOp {
 	public static boolean NotEqual(Object x, Object y){
 		return !Equal(x, y);
 	}
-
+//The method Concat(Object, ListObject) is ambiguous for the type mOp
+	/*
 	public static Object Concat(Object $$$ErrorPrefix, ListObject $listbuild) {
 		throw new UnsupportedOperationException();
 		// TODO Auto-generated method stub
 		//return null;
 		
 	}
+	*/
 
 	public static Object Concat(String $$$ErrorPrefix, Object object) {
 		// TODO Auto-generated method stub
@@ -162,6 +164,20 @@ public final class mOp {
 	}
 
 	public static boolean NotLess(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean NotLess(String $piece, String $extract) {
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean NotGreater(String $piece, String $extract) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean Or(boolean equal, boolean b) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
