@@ -51,4 +51,14 @@ public class mVar {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public Object var(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object var(Object object, String string, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }

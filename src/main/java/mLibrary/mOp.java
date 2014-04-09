@@ -145,4 +145,24 @@ public final class mOp {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public static boolean Less(String $piece, Object $horolog) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean Less(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean Match(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean NotLess(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }
