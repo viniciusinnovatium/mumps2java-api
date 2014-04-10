@@ -3,20 +3,20 @@ package mLibrary;
 public final class mOp {
 	private mOp() {
 	}
-	
+	/*
 	public static Object Select(Object x, Object y) {
 		throw new UnsupportedOperationException();
 	}
-	
+	*/
 	public static boolean Not(Object obj) {
 		throw new UnsupportedOperationException();
 	}
 	
-	public static boolean Positive(Object obj) {
+	public static Object Positive(Object obj) {
 		throw new UnsupportedOperationException();
 	}
 	
-	public static boolean Negative(Object obj) {
+	public static Object Negative(Object obj) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -93,12 +93,12 @@ public final class mOp {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object GreaterOrEqual(Object object, Object object2) {
+	public static boolean GreaterOrEqual(Object object, Object object2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object LessOrEqual(Object object, Object object2) {
+	public static boolean LessOrEqual(Object object, Object object2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -118,7 +118,7 @@ public final class mOp {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object Contains(Object object, String string) {
+	public static boolean Contains(Object object, String string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -133,22 +133,12 @@ public final class mOp {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object Less(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public static Object Modulus(Object object, Object $$$MonthsInYear) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
 	public static Object IntegerDivide(Object object, Object $$$MonthsInYear) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static boolean Less(String $piece, Object $horolog) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
