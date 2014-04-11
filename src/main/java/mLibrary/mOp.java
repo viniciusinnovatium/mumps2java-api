@@ -153,7 +153,7 @@ public final class mOp {
 		throw new UnsupportedOperationException();
 	}
 
-	public static boolean NotLess(Object object, int i) {
+	public static boolean NotLess(Object object, Object object2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -170,5 +170,9 @@ public final class mOp {
 	public static boolean Or(boolean equal, boolean b) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
+	}
+	public static boolean NotContains(Object $get, String string) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

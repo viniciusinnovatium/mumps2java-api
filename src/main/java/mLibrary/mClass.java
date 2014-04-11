@@ -158,4 +158,29 @@ public class mClass {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}	
+	
+	public void cmd$Goto(String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
+	public void cmd$Read(mVar x) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
+	public void cmd$Lock(String string, String string2, String string3) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
+	public void cmd$Unlock(String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	
+	public void cmd$Hang(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 }

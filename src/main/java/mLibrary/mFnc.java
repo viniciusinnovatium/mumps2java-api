@@ -485,11 +485,6 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $increment(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public static Object $length(Object object, String string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -684,7 +679,12 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $increment(mVar var, boolean negative) {
+	public static Object $increment(mVar var, Object increment) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $increment(mVar var) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -704,7 +704,7 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $listfind(ListObject $listbuild, Object object) {
+	public static Object $listfind(Object $listbuild, Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -722,6 +722,26 @@ public final class mFnc {
 
 	public static String $case(Object less, Object $$$yes, Object fnc$,
 			Object $$$no, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zhorolog() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zeof() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $test() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdt(Object $h, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
