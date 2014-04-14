@@ -6,52 +6,71 @@ public final class mFnc {
 
 	private mFnc() {
 	}
-	
-	public static int $data(mVar mVar){
+
+	public static int $data(mVar mVar) {
 		return mVar.data();
 	}
-	
-	public static Object $select(Object x, Object y) {
+
+	public static Object $select(Object... args) {
+		Boolean hasTrue = false;
+		Object returnObj = null;
+		if(args!=null){
+			if(args.length %2==1){
+				throw new UnsupportedOperationException();
+			}
+			for (int i = 0; i < args.length; i++) {
+				if(i%2==0){
+					boolean bool = booleanConverter(args[i]);	
+					if(bool){
+						hasTrue = bool;
+						returnObj = args[i+1];
+						break;
+					}
+				}
+			}
+			if(!hasTrue){
+				throw new UnsupportedOperationException();
+			}
+		}
+		return returnObj;
+	}
+
+	public static Object $get(Object content, Object defaultValue) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public static Object $select(Object x, Object y, Object Z, Object padrao) {
+
+	public static Object $get(Object content) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public static Object $get(Object content, Object defaultValue){
+
+	public static Object $job() {
 		throw new UnsupportedOperationException();
 	}
-	
-	public static Object $get(Object content){
-		throw new UnsupportedOperationException();
-	}
-	
-	public static Object $job(){
-		throw new UnsupportedOperationException();
-	}
-	
-	public static String $zts(){
+
+	public static String $zts() {
 		return $ztimestamp();
-	}  
-	
-	public static String $ztimestamp(){
+	}
+
+	public static String $ztimestamp() {
 		throw new UnsupportedOperationException();
-	}  
-	
+	}
+
 	public Object $order(mData mData) {
 		return $order(mData, 1);
 	}
-	
+
 	public Object $order(mData mData, int direction) {
 		return mData.order(direction);
 	}
 
-	public static Object $setpiece(Object string, Object delimiter, Object position, Object value) {
-		return setPieceImpl(castString(string), castString(delimiter), castInt(position), castString(value));
+	public static Object $setpiece(Object string, Object delimiter,
+			Object position, Object value) {
+		return setPieceImpl(castString(string), castString(delimiter),
+				castInt(position), castString(value));
 	}
 
-	public static String setPieceImpl(String string, String delimiter, Integer position, String value) {
+	public static String setPieceImpl(String string, String delimiter,
+			Integer position, String value) {
 		if (string == null || position < 0) {
 			return string;
 		}
@@ -65,12 +84,14 @@ public final class mFnc {
 		return generateString(array, delimiter);
 	}
 
-
-	public static Object $piece(Object string, Object delimiter, Object from, Object to) {
-		return pieceImpl(castString(string), castString(delimiter), castInt(from), castInt(to));
+	public static Object $piece(Object string, Object delimiter, Object from,
+			Object to) {
+		return pieceImpl(castString(string), castString(delimiter),
+				castInt(from), castInt(to));
 	}
-	
-	public static String pieceImpl(String string, String delimiter, int from, int to) {
+
+	public static String pieceImpl(String string, String delimiter, int from,
+			int to) {
 		if (string == null) {
 			return null;
 		}
@@ -86,12 +107,12 @@ public final class mFnc {
 	}
 
 	public static String $piece(Object string, Object delimiter, Object index) {
-		return pieceImpl(castString(string), castString(delimiter), castInt(index));
+		return pieceImpl(castString(string), castString(delimiter),
+				castInt(index));
 	}
-	
 
 	public static String pieceImpl(String string, String delimiter, int index) {
-		
+
 		if (string == null) {
 			return null;
 		}
@@ -102,7 +123,7 @@ public final class mFnc {
 	public static Object $piece(Object string, Object delimiter) {
 		return pieceImpl(castString(string), castString(delimiter), 1);
 	}
-	
+
 	public static String pieceImpl(String string, String delimiter) {
 		return $piece(string, delimiter, 1);
 	}
@@ -110,11 +131,11 @@ public final class mFnc {
 	public static String $extract(Object string, Object from, Object to) {
 		return extractImpl(castString(string), castInt(from), castInt(to));
 	}
-	
+
 	public static String $e(Object string, Object from, Object to) {
 		return $extract(castString(string), castInt(from), castInt(to));
 	}
-	
+
 	public static String extractImpl(String string, int from, int to) {
 		if (string == null) {
 			return null;
@@ -130,7 +151,7 @@ public final class mFnc {
 	public static String $extract(Object value, Object index) {
 		return $extract(value, index, index);
 	}
-	
+
 	public static String $e(Object value, Object index) {
 		return $extract(value, index);
 	}
@@ -138,15 +159,16 @@ public final class mFnc {
 	public static String $extract(String string) {
 		return $extract(string, 1);
 	}
-	
+
 	public static String $e(String string) {
 		return $extract(string);
 	}
-	
+
 	public static int $find(Object string, Object substring, Object start) {
-		return findImpl(castString(string), castString(substring), castInt(start));
+		return findImpl(castString(string), castString(substring),
+				castInt(start));
 	}
-	
+
 	public static int findImpl(String string, String substring, int start) {
 		if (string == null || string.trim().length() == 0 || substring == null
 				|| substring.length() == 0) {
@@ -185,7 +207,7 @@ public final class mFnc {
 	public Object length(Object string, Object delimiter) {
 		return lengthImpl(castString(string), castString(delimiter));
 	}
-	
+
 	public Object lengthImpl(String string, String delimiter) {
 		if (delimiter == null && string == null) {
 			return 0;
@@ -201,7 +223,7 @@ public final class mFnc {
 	public Object length(Object string) {
 		return length(castString(string));
 	}
-	
+
 	public int lengthImpl(String string) {
 		if (string == null) {
 			return 0;
@@ -213,7 +235,7 @@ public final class mFnc {
 	public static ListObject $listbuild(Object... elements) {
 		return ListObject.add(elements);
 	}
-	
+
 	public static ListObject $lb(Object... elements) {
 		return $listbuild(elements);
 	}
@@ -221,7 +243,7 @@ public final class mFnc {
 	public static ListObject $list(ListObject list, int init, int end) {
 		return list.sublist(init - 1, end);
 	}
-	
+
 	public static ListObject $l(ListObject list, int init, int end) {
 		return $list(list, init, end);
 	}
@@ -268,10 +290,12 @@ public final class mFnc {
 		return string.replace(oldSubstring, newSubstring);
 	}
 
-	public static Object $translate(Object string, Object oldCharsequence, Object newCharsequence) {
-		return translateImpl(castString(string), castString(oldCharsequence), castString(newCharsequence));
+	public static Object $translate(Object string, Object oldCharsequence,
+			Object newCharsequence) {
+		return translateImpl(castString(string), castString(oldCharsequence),
+				castString(newCharsequence));
 	}
-	
+
 	public static String translateImpl(String string, String oldCharsequence,
 			String newCharsequence) {
 
@@ -320,7 +344,7 @@ public final class mFnc {
 	public static Object zconvert(Object string, Object mode) {
 		return zconvertImpl(castString(string), castString(mode));
 	}
-	
+
 	public static String zconvertImpl(String string, String mode) {
 		if (mode == null || mode.trim().length() == 0) {
 			return string;
@@ -334,7 +358,7 @@ public final class mFnc {
 		return string;
 	}
 
-	public static Object $char(Object ... codes) {
+	public static Object $char(Object... codes) {
 		if (codes == null || codes.length == 0) {
 			return null;
 		}
@@ -345,7 +369,7 @@ public final class mFnc {
 		if (codes == null) {
 			return null;
 		}
-		
+
 		if (codes.length == 1 && codes[0] == null) {
 			return null;
 		}
@@ -383,15 +407,15 @@ public final class mFnc {
 			return 0;
 		}
 	}
-	
-	public static Integer[] castIntArray(Object...obj) {
+
+	public static Integer[] castIntArray(Object... obj) {
 		if (obj == null) {
 			return null;
 		} else if (obj.length == 0) {
-			return new Integer[]{};
+			return new Integer[] {};
 		}
-		
-		final Integer [] array = new Integer[obj.length];
+
+		final Integer[] array = new Integer[obj.length];
 		for (int i = 0; i < obj.length; i++) {
 			array[i] = castInt(obj[i]);
 		}
@@ -745,6 +769,92 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
- 
+
+	public static Boolean booleanConverter(Object obj) {
+		Boolean bool = false;
+		if (obj instanceof Boolean) {
+			bool = Boolean.parseBoolean(String.valueOf(obj));
+		} else {
+			Double dbl = numberConverter(obj);
+			if (dbl != 0) {
+				bool = true;
+			}
+		}
+		return bool;
+	}
+
+	public static Double numberConverter(Object obj) {
+		Double dbl = null;
+		try {
+			dbl = Double.valueOf(String.valueOf(obj));
+		} catch (NumberFormatException nfe) {
+			String result = "";
+			char[] charArray = obj.toString().toCharArray();
+			boolean startNumber = false;
+			boolean hasPoint = false;
+			for (int i = 0; i < charArray.length; i++) {
+				char c = charArray[i];
+				if (!startNumber && (c == '+' || c == '-')) {
+					if (result.isEmpty()) {
+						result = String.valueOf(c);
+					} else {
+						if (result.equals(String.valueOf(c))) {
+							result = "+";
+						} else {
+							result = "-";
+						}
+					}
+					continue;
+				}
+				if (Character.isDigit(c)) {
+					startNumber = true;
+					result = result.concat(String.valueOf(c));
+					continue;
+				}
+				if (c == '.') {
+					startNumber = true;
+					if (!hasPoint) {
+						hasPoint = true;
+						result = result.concat(String.valueOf(c));
+						continue;
+					}
+				}
+				if (result.isEmpty() || !startNumber) {
+					result = "0";
+				}
+				break;
+			}
+			dbl = Double.valueOf(result);
+		}
+		return dbl;
+	}
+
+	public static boolean $isNumber2(Object numStr) {
+		boolean isNumber = true;
+		try {
+			if (String.valueOf(numStr).startsWith("0")
+					|| String.valueOf(numStr).contains(" ")) {
+				isNumber = false;
+			} else {
+				Double.valueOf(String.valueOf(numStr));
+			}
+		} catch (NumberFormatException nfe) {
+			isNumber = false;
+		}
+		return isNumber;
+	}
+
+	public static boolean $isNumber(Object numStr) {
+		boolean isNumber = true;
+		try {
+			Double dbl = numberConverter(numStr);
+			if (dbl == 0d && !String.valueOf(dbl).equals("0")) {
+				isNumber = false;
+			}
+		} catch (NumberFormatException nfe) {
+			isNumber = false;
+		}
+		return isNumber;
+	}
 
 }

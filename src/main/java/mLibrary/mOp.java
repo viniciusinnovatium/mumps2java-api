@@ -56,8 +56,8 @@ public final class mOp {
 		// TODO Auto-generated method stub
 		String var1 = "123";
 		String var2 = "122";
-		boolean isNumVar1 = isNumber(var1);
-		boolean isNumVar2 = isNumber(var2);
+		boolean isNumVar1 = mFnc.$isNumber(var1);
+		boolean isNumVar2 = mFnc.$isNumber(var2);
 
 		boolean isAfter = false;
 
@@ -74,7 +74,7 @@ public final class mOp {
 	}
 
 	public static boolean Greater(Object object, Object object2) {
-		if (isNumber(object)) {
+		if (mFnc.$isNumber(object)) {
 			return Double.valueOf(String.valueOf(object)) > Double
 					.valueOf(String.valueOf(object));
 		} else {
@@ -93,7 +93,7 @@ public final class mOp {
 	}
 
 	public static boolean GreaterOrEqual(Object object, Object object2) {
-		if (isNumber(object)) {
+		if (mFnc.$isNumber(object)) {
 			return Double.valueOf(String.valueOf(object)) >= Double
 					.valueOf(String.valueOf(object));
 		} else {
@@ -102,7 +102,7 @@ public final class mOp {
 	}
 
 	public static boolean LessOrEqual(Object object, Object object2) {
-		if (isNumber(object)) {
+		if (mFnc.$isNumber(object)) {
 			return Double.valueOf(String.valueOf(object)) <= Double
 					.valueOf(String.valueOf(object));
 		} else {
@@ -139,7 +139,7 @@ public final class mOp {
 	}
 
 	public static boolean Less(Object object, Object object2) {
-		if (isNumber(object)) {
+		if (mFnc.$isNumber(object)) {
 			return Double.valueOf(String.valueOf(object)) < Double
 					.valueOf(String.valueOf(object));
 		} else {
@@ -167,18 +167,4 @@ public final class mOp {
 		return !Contains(str1, str2);
 	}
 
-	public static boolean isNumber(Object numStr) {
-		boolean isNumber = true;
-		try {
-			if (String.valueOf(numStr).startsWith("0")
-					|| String.valueOf(numStr).contains(" ")) {
-				isNumber = false;
-			} else {
-				Double.valueOf(String.valueOf(numStr));
-			}
-		} catch (NumberFormatException nfe) {
-			isNumber = false;
-		}
-		return isNumber;
-	}
 }
