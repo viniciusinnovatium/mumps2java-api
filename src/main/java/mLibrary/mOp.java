@@ -3,176 +3,182 @@ package mLibrary;
 public final class mOp {
 	private mOp() {
 	}
+
 	/*
-	public static Object Select(Object x, Object y) {
-		throw new UnsupportedOperationException();
-	}
-	*/
+	 * public static Object Select(Object x, Object y) { throw new
+	 * UnsupportedOperationException(); }
+	 */
 	public static boolean Not(Object obj) {
-		throw new UnsupportedOperationException();
+		return !Logical(obj);
 	}
-	
-	public static Object Positive(Object obj) {
-		throw new UnsupportedOperationException();
+
+	public static Object Positive(Object num) {
+		double d1 = Double.valueOf(String.valueOf(num));
+		if (d1 <= 0) {
+			d1 = d1 * -1;
+		}
+		return d1;
 	}
-	
-	public static Object Negative(Object obj) {
-		throw new UnsupportedOperationException();
+
+	public static Object Negative(Object num) {
+		double d1 = Double.valueOf(String.valueOf(num));
+		if (d1 >= 0) {
+			d1 = d1 * -1;
+		}
+		return d1;
 	}
-	
+
 	public static boolean Logical(Object object) {
-		throw new UnsupportedOperationException();
+		if (String.valueOf(object).equals("0")) {
+			return false;
+		} else {
+			return true;
+		}
 	}
-	
-	public static boolean Equal(Object x, Object y){
-		throw new UnsupportedOperationException();
+
+	public static boolean Equal(Object x, Object y) {
+		if (String.valueOf(x).equals(String.valueOf(y))) {
+			return true;
+		} else {
+			return false;
+		}
 	}
-	
-	public static boolean NotEqual(Object x, Object y){
+
+	public static boolean NotEqual(Object x, Object y) {
 		return !Equal(x, y);
 	}
-//The method Concat(Object, ListObject) is ambiguous for the type mOp
-	/*
-	public static Object Concat(Object $$$ErrorPrefix, ListObject $listbuild) {
-		throw new UnsupportedOperationException();
-		// TODO Auto-generated method stub
-		//return null;
-		
-	}
-	*/
 
-	public static Object Concat(String $$$ErrorPrefix, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object Concat(Object string1, Object string2) {
+		return String.valueOf(string1).concat(String.valueOf(string2));
 	}
 
-	//The method Concat(String, Object) is ambiguous for the type mOp
-	/*public static Object Concat(Object concat, String string) {
+	public static boolean SortsAfter(Object object, Object object2) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}*/
+		String var1 = "123";
+		String var2 = "122";
+		boolean isNumVar1 = isNumber(var1);
+		boolean isNumVar2 = isNumber(var2);
 
-	public static Object SortsAfter(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		boolean isAfter = false;
+
+		if (isNumVar1 && isNumVar2) {
+			isAfter = Double.parseDouble(var1) > Double.parseDouble(var2);
+		} else if (isNumVar1 && !isNumVar2) {
+			isAfter = false;
+		} else if (!isNumVar1 && isNumVar2) {
+			isAfter = true;
+		} else {
+			isAfter = var1.compareTo(var2) > 0;
+		}
+		return isAfter;
 	}
 
 	public static boolean Greater(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if (isNumber(object)) {
+			return Double.valueOf(String.valueOf(object)) > Double
+					.valueOf(String.valueOf(object));
+		} else {
+			return true;
+		}
 	}
 
-	public static String Concat(Object $$$AlertFollowing,
-			Object $$$AlertAndFocus) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object Subtract(Object num1, Object num2) {
+		double d1 = Double.valueOf(String.valueOf(num1));
+		double d2 = Double.valueOf(String.valueOf(num2));
+		return (d1 - d2);
 	}
 
-	public static Object Subtract(Object $length, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object Subtract(Object $get, Object $get2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object Divide(Object object, Object fnc$) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object Add(Object divide, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object IntegerDivide(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object Divide(Object num1, Object num2) {
+		return IntegerDivide(num1, num2);
 	}
 
 	public static boolean GreaterOrEqual(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if (isNumber(object)) {
+			return Double.valueOf(String.valueOf(object)) >= Double
+					.valueOf(String.valueOf(object));
+		} else {
+			return true;
+		}
 	}
 
 	public static boolean LessOrEqual(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if (isNumber(object)) {
+			return Double.valueOf(String.valueOf(object)) <= Double
+					.valueOf(String.valueOf(object));
+		} else {
+			return true;
+		}
 	}
 
-	public static Object Modulus(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static boolean Contains(Object str1, Object str2) {
+		return String.valueOf(str1).contains(String.valueOf(str2));
 	}
 
-	public static Object Multiply(String $piece, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object Multiply(Object num1, Object num2) {
+		double d1 = Double.valueOf(String.valueOf(num1));
+		double d2 = Double.valueOf(String.valueOf(num2));
+		return (d1 * d2);
 	}
 
-	public static Object Add(Object multiply, String $piece) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object Add(Object num1, Object num2) {
+		double d1 = Double.valueOf(String.valueOf(num1));
+		double d2 = Double.valueOf(String.valueOf(num2));
+		return (d1 + d2);
 	}
 
-	public static boolean Contains(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object Modulus(Object num1, Object num2) {
+		double d1 = Double.valueOf(String.valueOf(num1));
+		double d2 = Double.valueOf(String.valueOf(num2));
+		return (d1 % d2);
 	}
 
-	public static Object Multiply(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object Add(Object divide, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object Modulus(Object object, Object $$$MonthsInYear) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object IntegerDivide(Object object, Object $$$MonthsInYear) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object IntegerDivide(Object num1, Object num2) {
+		double d1 = Double.valueOf(String.valueOf(num1));
+		double d2 = Double.valueOf(String.valueOf(num2));
+		return (d1 / d2);
 	}
 
 	public static boolean Less(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if (isNumber(object)) {
+			return Double.valueOf(String.valueOf(object)) < Double
+					.valueOf(String.valueOf(object));
+		} else {
+			return true;
+		}
 	}
 
-	public static boolean Match(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static boolean Match(Object string, String regex) {
+		return String.valueOf(string).matches(regex);
 	}
 
 	public static boolean NotLess(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return !Less(object, object2);
 	}
 
-	public static boolean NotLess(String $piece, String $extract) {
-		throw new UnsupportedOperationException();
+	public static boolean NotGreater(Object object, Object object2) {
+		return !Less(object, object2);
 	}
 
-	public static boolean NotGreater(String $piece, String $extract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static boolean Or(boolean bool1, boolean bool2) {
+		return bool1 || bool2;
 	}
 
-	public static boolean Or(boolean equal, boolean b) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static boolean NotContains(Object str1, String str2) {
+		return !Contains(str1, str2);
 	}
-	public static boolean NotContains(Object $get, String string) {
-		// TODO Auto-generated method stub
-		return false;
+
+	public static boolean isNumber(Object numStr) {
+		boolean isNumber = true;
+		try {
+			if (String.valueOf(numStr).startsWith("0")
+					|| String.valueOf(numStr).contains(" ")) {
+				isNumber = false;
+			} else {
+				Double.valueOf(String.valueOf(numStr));
+			}
+		} catch (NumberFormatException nfe) {
+			isNumber = false;
+		}
+		return isNumber;
 	}
 }
