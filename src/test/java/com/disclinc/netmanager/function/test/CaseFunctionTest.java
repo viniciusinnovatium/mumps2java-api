@@ -7,21 +7,23 @@ import mLibrary.mFnc;
 
 import org.junit.Test;
 
-public class Select2FunctionTest {
+public class CaseFunctionTest {
 
 	@Test
 	public void testSelectSomeValidConditional() {
-		Object bool1 = false;
+		Object target = "4";
+		
+		Object bool1 = "1";
 		Object var1 = "amarelo";
-		Object bool2 = false;
+		Object bool2 = "2";
 		Object var2 = "vermelho";
-		Object bool3 = true;
+		Object bool3 = "3";
 		Object var3 = "azul";		
 		
 		String expected = "azul";
-		Object actual = mFnc.$select(bool1, var1, bool2, var2, bool3, var3);
+		Object actual = mFnc.$case(target, bool1, var1, bool2, var2, bool3, var3);
 		
-		assertEquals("Fail on select a valid condition", expected, actual);
+		assertEquals("Fail on case a valid condition", expected, actual);
 	}
 
 }
