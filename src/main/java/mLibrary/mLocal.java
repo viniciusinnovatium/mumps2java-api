@@ -35,4 +35,9 @@ public class mLocal extends mData {
 		tree.unstacking();
 	}
 
+	@Override
+	public String dump() {
+		return tree.dump();
+	}
+
 }
