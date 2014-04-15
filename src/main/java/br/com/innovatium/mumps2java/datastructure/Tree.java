@@ -1,20 +1,44 @@
 package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.List;
 
-public class Tree {
-
-	private Map<Object, Node> mapa = new HashMap<Object, Node>();
-	private Node currentNode = null;
+public final class Tree extends Node {
 	private static final String DELIMETER = "~";
+	private int currentStackLevel = 0;
+	private Node currentNode = null;
+	private StackNode stack;
 
 	public Tree() {
+		super("", "", null, true);
 	}
 
+	public Node stacking(Object... subs) {
+		if (stack == null) {
+			stack = new StackNode();
+		}
+		currentStackLevel++;
+		Node node = generateNode(subs[0]);
+		node.setStackLevel(currentStackLevel);
+		stack.push(node);
+		kill(subs);
+		return generateNode(subs);
+	}
+
+	public void unstacking() {
+		if (stack == null) {
+			stack = new StackNode();
+		}
+		final List<Node> stackedNodes = stack.pull(currentStackLevel);
+		if (stackedNodes != null && !stackedNodes.isEmpty()) {
+			for (Node stacked : stackedNodes) {
+				Node node = searchSubnode((String)stacked.getSubscript());
+				node.kill();
+				addSubnode(stacked);
+			}
+			currentStackLevel--;
+		}
+	}
 
 	public static final Path path(Object... subs) {
 		return new Path(subs);
@@ -51,7 +75,7 @@ public class Tree {
 		}
 
 	}
-	
+
 	public Object order(int direction, Object... subs) {
 		return order(path(subs), direction);
 	}
@@ -60,9 +84,9 @@ public class Tree {
 	public Object get(Path path) {
 		return get(path.toArray());
 	}
-	
-	public Object get(Object...subs) {
-		Node n = mapa.get(generateKey(subs));
+
+	public Object get(Object... subs) {
+		Node n = generateNode(subs);
 		return n == null ? null : n.getValue();
 	}
 
@@ -70,19 +94,20 @@ public class Tree {
 	public void kill(Path path) {
 		kill(path.toArray());
 	}
-	
+
+	/*
+	 * This method should not return because we have to avoid some reference to
+	 * node removed from the tree.
+	 */
 	public void kill(Object... subs) {
-		Node node = generateNode(subs);
-		node.kill();
-		mapa.remove(node);
-	}
-	
-	public void kill() {
-		mapa.clear();
+		Node node = searchSubnode(generateKey(subs));
+		if (node != null) {
+			node.kill();
+		}
 	}
 
-	public void changeToNode(Object... subcripts) {
-		currentNode = mapa.get(generatePath(subcripts));
+	public void changeToNode(Object... subs) {
+		currentNode = searchSubnode(generateKey(subs));
 	}
 
 	@Deprecated
@@ -95,7 +120,7 @@ public class Tree {
 		Node node = generateNode(path.toArray());
 		node.setValue(value);
 	}
-	
+
 	public void set(Object[] subs, Object value) {
 
 		if (subs == null || subs.length == 0) {
@@ -106,41 +131,16 @@ public class Tree {
 		node.setValue(value);
 	}
 	
-	public void add(Node node) {
-		if (node == null || node.getPath() == null) {
-			return;
-		}
-		set(toPath(node.getPath()), node.getValue());
-	}
-
-	public String toString() {
-		StringBuilder b = new StringBuilder();
-		Set<Entry<Object, Node>> entry = mapa.entrySet();
-		for (Entry<Object, Node> e : entry) {
-			b.append(e.getValue().getPath()).append(" = ")
-					.append(e.getValue().getValueAsString()).append("\n");
-		}
-
-		return b.toString();
-	}
-
-	public Map<Object, Object> getAll() {
-		Map<Object, Object> m = new HashMap<Object, Object>(50);
-
-		Set<Entry<Object, Node>> entry = mapa.entrySet();
-		for (Entry<Object, Node> e : entry) {
-			m.put(e.getValue().getPath(), e.getValue().getValueAsString());
-		}
-
-		return m;
+	public void set(String path, Object value) {
+		set(path.split(DELIMETER), value);
 	}
 
 	@Deprecated
 	public int data(Path path) {
 		return data(path.toArray());
 	}
-	
-	public int data(Object...subs) {
+
+	public int data(Object... subs) {
 		int cod = -1;
 
 		Node node = generateNode(subs);
@@ -158,38 +158,33 @@ public class Tree {
 		return cod;
 	}
 
-	public void clear() {
-		this.mapa.clear();
-	}
-	
 	public static String generateKey(Object... subs) {
-		return generatePath(subs);
+		return generatePath(subs.length, subs);
 	}
-	
+
+	public static String generateKey(int length, Object... subs) {
+		return generatePath(length, subs);
+	}
+
 	public static String generateString(Path path) {
 		return generatePath(path.toArray());
 	}
 
-	private Object[] filterSubscritps(Object[] subs, int init, int end) {
-		Object[] x = new Object[end - init + 1];
-		for (int j = 0, i = init; i <= end; j++, i++) {
-			x[j] = subs[i];
-		}
-
-		return x;
-	}
-
-	private String generatePath(Object[] path, int end) {
-		return generatePath(Arrays.copyOf(path, end));
-	}
-	
 	private static String generatePath(Object... subs) {
+		return generatePath(subs.length, subs);
+	}
+
+	private static String generatePath(int length, Object... subs) {
 
 		if (subs == null || subs.length == 0) {
 			return null;
 		}
+		if (length > subs.length) {
+			length = subs.length;
+		}
+
 		final StringBuilder builder = new StringBuilder();
-		int index = subs.length - 1;
+		int index = length - 1;
 		for (Object obj : subs) {
 			builder.append(obj);
 			if (index-- > 0) {
@@ -200,92 +195,27 @@ public class Tree {
 		return builder.toString();
 	}
 
-	private Node mapping(Node node) {
-		mapa.put(node.getPath(), node);
+	protected final Node generateNode(Object... subs) {
+		return generateNode(this, subs, 0);
+	}
+
+	private Node generateNode(final Node parent, final Object[] subs, int index) {
+		String key = generateKey(Arrays.copyOf(subs, index + 1));
+		Node node = parent.searchSubnode(key);
+		boolean exist = node != null;
+		if (!exist) {
+			node = null;
+			node = new Node(subs[index], generateKey(key));
+		}
+		// Indicating root node
+		if (!exist) {
+			parent.addSubnode(node);
+		}
+
+		index++;
+		if (index < subs.length) {
+			node = generateNode(node, subs, index);
+		}
 		return node;
 	}
-
-	protected final Node generateNode(Object... subs) {
-		return generateNode(subs, 0, subs.length - 1, null);
-	}
-	
-	protected final Node generateNode(Path path, Object value) {
-		return new Node(path.getSubscript(), generatePath(path.toArray()), value);
-	}
-	
-	public static final Node newNode(Object value, Object... subs) {
-		return new Node(subs[subs.length - 1], generatePath(subs), value);
-	}
-
-	protected final Node generateNode(Path path) {
-		return generateNode(path.toArray(), 0, path.toArray().length - 1, null);
-	}
-
-	private Node generateNode(final Object[] subs, int startLevel,
-			int endLevel, Node pai) {
-		String path = generatePath(subs, startLevel + 1);
-
-		Node node = mapa.get(path);
-		Node nodex = null;
-		boolean finish = startLevel == endLevel;
-
-		if (node == null) {
-			node = new Node(subs[startLevel], path);
-			mapping(node);
-
-			if (pai != null) {
-				pai.add(node);
-			}
-
-			if (!finish) {
-
-				Object[] s = filterSubscritps(subs, startLevel + 1,
-						subs.length - 1);
-
-				Node filho = null;
-				StringBuilder pathBuild = new StringBuilder(path);
-
-				int index = subs.length - 1;
-				for (Object subscript : s) {
-
-					if (index-- > 0) {
-						pathBuild.append(DELIMETER);
-					}
-
-					pathBuild.append(subscript);
-					filho = new Node(subscript, pathBuild.toString());
-					node.add(filho);
-
-					node = filho;
-					mapping(filho);
-				}
-				nodex = filho;
-
-			} else {
-				nodex = node;
-			}
-
-		} else if (node != null && !finish) {
-			nodex = generateNode(subs, startLevel + 1, endLevel, node);
-		} else if (node != null && finish) {
-			nodex = node;
-		}
-		return nodex;
-	}
-	
-	private Object[] toArray(String path) {
-		if (path == null) {
-			return null;
-		}
-		return path.split(DELIMETER);
-	}
-	
-	private Path toPath(Object path) {
-		if (path == null) {
-			return null;
-		}
-		return new Path(toArray(path.toString()));
-	}
-	
-	
 }

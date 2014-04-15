@@ -17,6 +17,12 @@ public abstract class mData {
 
 	abstract void onKill(Object... subs);
 
+	abstract void stacking(Object... subs);
+
+	abstract void unstacking();
+	
+	abstract String dump();
+
 	public void kill(Object... subs) {
 		tempSubs = null;
 		onKill(subs);
@@ -31,7 +37,7 @@ public abstract class mData {
 
 	public Object order(int direction) {
 		if (subsChanged) {
-			onOrder();	
+			onOrder();
 		}
 		return tree.order(direction, tempSubs);
 	}

@@ -25,4 +25,19 @@ public class mLocal extends mData {
 		tree.kill(subs);
 	}
 
+	@Override
+	void stacking(Object... subs) {
+		tree.stacking(subs);
+	}
+
+	@Override
+	void unstacking() {
+		tree.unstacking();
+	}
+
+	@Override
+	public String dump() {
+		return tree.dump();
+	}
+
 }

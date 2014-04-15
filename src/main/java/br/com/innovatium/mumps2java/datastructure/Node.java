@@ -1,41 +1,62 @@
 package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import br.com.innovatium.mumps2java.todo.TODO;
 
 /**
  * 
  * @author vinicius
  */
 public class Node {
+	private Integer stackLevel;
+	private final boolean isTree;
 
 	private Object subscript;
 	private Object path;
 	private Object value;
 	private List<Node> subnodes;
 	private Node parent;
-	private int nivel;
-	private static Map<Integer, List<Node>> niveis = new HashMap<Integer, List<Node>>();
 
+	/*
+	 * Variable dedicated to node search algorithm.
+	 */
+	private Node found = null; 
+	
 	public Node(Object subscript) {
 		this(subscript, null);
 	}
-	
+
 	public Node(Object subscript, Object path) {
 		this(subscript, path, null);
 	}
 
 	public Node(Object subscript, Object path, Object value) {
+		this(subscript, path, value, false);
+	}
+
+	public Node(Object subscript, Object path, Object value, boolean isTree) {
 		this.subscript = subscript;
 		this.path = path;
 		this.value = value;
+		this.isTree = isTree;
+	}
+
+	public Integer getStackLevel() {
+		return stackLevel;
+	}
+
+	public void setStackLevel(Integer stackLevel) {
+		this.stackLevel = stackLevel;
 	}
 
 	public boolean isRoot() {
+		return parent != null && parent.isTree;
+	}
+
+	public boolean isTree() {
 		return parent == null;
 	}
 
@@ -86,31 +107,31 @@ public class Node {
 	public Node next(int direction) {
 		return direction >= 1 ? right() : left();
 	}
-	
+
 	public Node first() {
-		if (parent == null || !parent.hasChildren()) {
+		if (parent == null || !parent.hasSubnodes()) {
 			return null;
 		}
 		List<Node> brothers = parent.subnodes;
 		return brothers.get(0);
 	}
-	
+
 	public Node firstChild() {
-		if (!hasChildren()) {
+		if (!hasSubnodes()) {
 			return null;
 		}
 		return subnodes.get(0);
 	}
-	
+
 	public Node lastChild() {
-		if (!hasChildren()) {
+		if (!hasSubnodes()) {
 			return null;
 		}
 		return subnodes.get(subnodes.size() - 1);
 	}
-	
+
 	public Node last() {
-		if (parent == null || !parent.hasChildren()) {
+		if (parent == null || !parent.hasSubnodes()) {
 			return null;
 		}
 		List<Node> brothers = parent.subnodes;
@@ -121,44 +142,26 @@ public class Node {
 		this.value = value;
 	}
 
-	public Node add(String key, Object value) {
-		return add(new Node(key, null, value));
+	public void clear() {
+		subnodes.clear();
 	}
 
 	public void kill() {
-		parent.subnodes.remove(this);
+		if (parent != null) {
+			parent.subnodes.remove(this);
+		}
 	}
 
-	public Node add(Node... nodes) {
+	void addSubnode(Node node) {
 		if (subnodes == null) {
 			subnodes = new ArrayList<Node>(20);
 		}
-		final int nivelNode = this.nivel + 1;
-		for (Node node : nodes) {
-			node.parent = this;
-			node.nivel = nivelNode;
-			subnodes.add(node);
-		}
-		if (!niveis.containsKey(nivelNode)) {
-			niveis.put(nivelNode, new ArrayList<Node>());
-		}
-		niveis.get(nivelNode).addAll(Arrays.asList(nodes));
-		return this;
-	}
-
-	public Node addChain(Node subnode) {
-		add(subnode);
-		return subnode;
-	}
-
-	public Node addChain(Object key, Object value) {
-		Node subnode = new Node(subscript, null, value);
-		add(subnode);
-		return subnode;
+		node.parent = this;
+		subnodes.add(node);
 	}
 
 	public Node left() {
-		if (!parent.hasChildren()) {
+		if (!parent.hasSubnodes()) {
 			return null;
 		}
 		List<Node> brothers = parent.subnodes;
@@ -171,7 +174,7 @@ public class Node {
 	}
 
 	public Node right() {
-		if (parent == null || !parent.hasChildren()) {
+		if (parent == null || !parent.hasSubnodes()) {
 			return null;
 		}
 		List<Node> brothers = parent.subnodes;
@@ -191,16 +194,8 @@ public class Node {
 		return subnodes;
 	}
 
-	public List<Node> down(int nivel) {
-		return niveis.get(nivel);
-	}
-
-	public Node down(int nivel, int posicao) {
-		return niveis.get(nivel).get(posicao);
-	}
-
 	public Node subnode(int index) {
-		if (!hasChildren()) {
+		if (!hasSubnodes()) {
 			return null;
 		}
 		try {
@@ -213,10 +208,8 @@ public class Node {
 	@Override
 	public String toString() {
 		StringBuilder string = new StringBuilder();
-		string.append("(")
-				.append(subscript != null ? subscript.toString() : "")
-				.append(", ").append(value != null ? value.toString() : "")
-				.append(")");
+		string.append("(").append(path != null ? path : "").append(", ")
+				.append(value != null ? value.toString() : "").append(")");
 
 		return string.toString();
 	}
@@ -225,107 +218,84 @@ public class Node {
 		return path;
 	}
 
-	/*
-	private String generatePath(Node node, StringBuilder tree) {
-		if (node.parent == null) {
-			tree.append(node.subscript);
-		} else {
-			tree.append(node.subscript).append(",");
-			generatePath(node.parent, tree);
-		}
-
-		String[] array = tree.toString().split(",");
-		reverse(array);
-		return Arrays.deepToString(array).replace("[", "").replace("]", "");
-	}
-	
-	private void reverse(String[] arr) {
-
-		if (arr == null || arr.length == 1) {
-			return;
-		}
-
-		String x = null;
-		int total = arr.length;
-		int indice = arr.length - 1;
-		int parada = arr.length / 2 - 1;
-		for (int i = 0; i < total; i++) {
-			x = arr[indice - i];
-			arr[indice - i] = arr[i];
-			arr[i] = x;
-			if (i == parada) {
-				break;
-			}
-		}
-	}
-	
-	*/
-
-	public Node get(String... subscripts) {
-		return get(this, subscripts);
+	public String dump() {
+		StringBuilder dump = new StringBuilder();
+		dump(this, dump);
+		return dump.toString();
 	}
 
-	
-
-	private Node get(Node node, String... subscripts) {
-		if (subscripts == null) {
+	public Node searchSubnode(String subs) {
+		if (subs == null) {
 			return null;
-		} else if (subscripts.length == 1
-				&& node.subscript.equals(subscripts[0])) {
-			return node;
-		} else {
-			Node back = null;
-			for (int i = 0; i < subscripts.length; i++) {
-				if (!node.subscript.equals(subscripts[0])) {
-					return null;
-				}
-				if (!node.hasChildren()) {
-					return null;
-				}
-				for (Node subnode : node.subnodes) {
-					if (subnode.subscript.equals(subscripts[1])) {
-						back = get(subnode, Arrays.copyOfRange(subscripts, 1,
-								subscripts.length));
-					}
-				}
-			}
-			return back;
 		}
+		found = null;
+		searchSubnode(this, subs);
+		return found;
 	}
 
-	public boolean hasChildren() {
+	public boolean hasSubnodes() {
 		return subnodes != null && subnodes.size() > 0;
 	}
-	
+
 	public boolean isLeaf() {
-		return !isRoot() && !hasChildren();
+		return !isRoot() && !hasSubnodes();
 	}
-	
+
 	public boolean hasSubnodePopulated() {
 		return hasSubnodePopulated(this);
 	}
-	
+
 	private boolean hasSubnodePopulated(Node node) {
-		
+
 		if (node.isLeaf() && node.getValue() != null) {
 			return true;
 		}
 
 		boolean isPreenchido = false;
-		if (node.hasChildren()) {
+		if (node.hasSubnodes()) {
 			for (Node subnode : node.subnodes) {
 				if (subnode.getValue() != null) {
 					isPreenchido = true;
 					break;
 				}
-				
+
 				isPreenchido = hasSubnodePopulated(subnode);
 				if (isPreenchido) {
 					return true;
 				}
-			}	
+			}
 		}
-		
+
 		return isPreenchido;
+	}
+
+	private void dump(Node node, StringBuilder dump) {
+		dump.append(node.toString()).append("\n");
+		if (node.hasSubnodes()) {
+			for (Node subnode : node.subnodes) {
+				dump(subnode, dump);
+			}
+		}
+	}
+
+	/*
+	 * This method should be enhanced soon. We can replace search nodes by path
+	 * to search by subscripts array, so that manner if we do not find the node
+	 * parent we can postulate the hierarchy does not exist, and then, return
+	 * null indicating inexistent node.
+	 */
+	@TODO
+	private void searchSubnode(Node parent, String pathTarget) {
+		
+		if (parent != null && parent.hasSubnodes()) {
+			for (Node subnode : parent.getSubnodes()) {
+				if (pathTarget.equals(subnode.getPath())) {
+					found = subnode;
+					break;
+				} else {
+					searchSubnode(subnode, pathTarget);
+				}
+			}
+		}
 	}
 }
