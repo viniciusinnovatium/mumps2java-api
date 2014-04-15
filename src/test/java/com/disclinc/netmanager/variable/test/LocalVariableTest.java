@@ -10,6 +10,7 @@ public class LocalVariableTest {
 	private mLocal mLocal = new mLocal();
 	
 	public LocalVariableTest () {
+		mLocal.subs("moto").set(88);
 		mLocal.subs("carro").set(12);
 		mLocal.subs("carro", "esportivo").set(6);
 		mLocal.subs("carro", "passeio").set(8);
@@ -21,6 +22,7 @@ public class LocalVariableTest {
 	 
 	@Test
 	public void testSearchingVariableValue() {
+		assertEquals("Fail on searching local variable value", 88, mLocal.get("moto"));
 		assertEquals("Fail on searching local variable value", 12, mLocal.get("carro"));
 		assertEquals("Fail on searching local variable value", 6, mLocal.get("carro", "esportivo"));
 		assertEquals("Fail on searching local variable value", 2, mLocal.get("carro", "esportivo", "amarelo"));
@@ -37,5 +39,4 @@ public class LocalVariableTest {
 		assertEquals("Fail on first navegation through the first level", "preto", mLocal.subs("carro", "esportivo", "branco").order(1));
 		assertEquals("Fail on first navegation through the first level", null, mLocal.subs("carro", "esportivo", "preto").order(1));
 	}
-
 }

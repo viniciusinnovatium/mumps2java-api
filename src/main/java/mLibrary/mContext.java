@@ -3,6 +3,13 @@ package mLibrary;
 public class mContext {
 	private mData mData;
 
+	public mContext() {
+	}
+
+	public mContext(mLibrary.mData mData) {
+		this.mData = mData;
+	}
+
 	public mVar var(Object... subs) {
 		return new mVar(subs, this.mData);
 	}
@@ -15,9 +22,10 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar newvar(String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public mVar newvar(String subs) {
+		mVar var = this.var(subs);
+		var.stacking();
+		return var;
 	}
 
 	public mVar piece(String $extract, String string, int i) {
@@ -75,10 +83,10 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar oldvar(String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public mVar oldvar(String subs) {
+		mVar var = this.var(subs);
+		var.unstacking();
+		return var;
 	}
-	
-	
+
 }

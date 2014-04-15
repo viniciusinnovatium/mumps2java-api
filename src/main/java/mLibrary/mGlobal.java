@@ -56,4 +56,14 @@ public class mGlobal extends mData {
 			tree.add(node);
 		}
 	}
+
+	@Override
+	void stacking(Object... subs) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	void unstacking() {
+		throw new UnsupportedOperationException();
+	}
 }
