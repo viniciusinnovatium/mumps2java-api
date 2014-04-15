@@ -11,13 +11,21 @@ public class mVar {
 		this.subs = subs;
 		this.mData = mData;
 	}
+	
+	public void stacking() {
+		mData.stacking(subs);
+	}
+	
+	public void unstacking() {
+		mData.unstacking();
+	}
 
 	public void set(Object value) {
 		mData.subs(subs).set(value);
 	}
 
 	public Object get() {
-		throw new UnsupportedOperationException();
+		return mData.get(subs);
 	}
 
 	public void kill() {
