@@ -1,5 +1,9 @@
 package mLibrary;
 
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class mClass {
 	protected mContext m$ = new mContext();
 
@@ -15,18 +19,30 @@ public class mClass {
 		throw new UnsupportedOperationException();
 	}
 
-	public void cmd$Write(String string) {
-		throw new UnsupportedOperationException();
+	public void cmd$Write(Object... string) {
+		try {
+			for (Object str : string) {
+				System.out.print(String.valueOf(str));
+			}
+		} catch (NullPointerException e) {
+			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
+		}
 	}
-	//The method m$piece(mVar, Object, Object) is ambiguous for the type COMUtilDate
-	/*
-	public mVar m$piece(mVar pYFELD, Object object, String $piece) {
+
+	public void cmd$WriteJS(Object... string) {
+		cmd$Write(string);
+	}
+
+	public void cmd$WriteHtml(Object... string) {
+		cmd$Write(string);
+	}
+
+	public mVar m$piece(mVar var, Object delimiter, Object from, Object to) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	*/
 
-	public mVar m$piece(mVar pYFELD, Object object, Object _i) {
+	public mVar m$piece(mVar var, Object delimiter, Object from) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -35,152 +51,60 @@ public class mClass {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
-	public void cmd$Write(String string, Object object) {
+
+	public void cmd$Merge(mVar target, mVar source) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
-	public void cmd$Write(Object object, Object concat) {
+
+	public void cmd$Goto(String label) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
-	public void cmd$Write(Object object1, Object concat2, Object object3, Object concat4) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+
+	/*
+	 * Exibe mensagem no console solicitando entrada de dados. 
+	 */
+	public void cmd$Read(Object... parameters) {
+		Scanner s = null;
+		try {
+			String variable = "";
+			if (parameters != null && parameters.length > 0) {
+				variable = String.valueOf(parameters[0]);
+			}
+			s = new Scanner(System.in);
+			System.out.println(variable);
+			String input = s.next();
+			System.out.println("Input: " + input);
+		} catch (Exception e) {
+			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
 	}
-	
-	public void cmd$Write(Object object1, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-	
-	public mVar m$piece(Object object, Object object2, Object 
-			 object3) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public mVar m$piece(mVar var, String string, Object subtract, 
-			 Object object) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Writex(Object object1, Object object2, Object object3,
-			Object object4, Object object5) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Writex(String string, String string2, Object 
-			 _FieldNo,
-			String string3, String string4, String $extract, String string5,
-			Object object, String string6) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(String string, String string2, String string3) 
-	 {
-	// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(String string, String string2, Object 
-			 _FieldNo,
-			String string3, String string4, String $extract, String string5,
-			Object object, String string6) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(Object object, String string, String string2,
-			Object object2, String string3) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(Object object, Object object2, String 
-			 string2,
-			Object object22, Object object3) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-		
-	public void cmd$WriteJS(String string, String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$WriteJS(String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}		
-	
-	public void cmd$Write(Object object, String string, String string2) 
-	 {
-	// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(Object object, String string, Object 
-			 object2) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-	
-	public void cmd$Merge(mVar var, mVar var2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Write(Object object, String string, Object 
-			 object2,
-			String concat, Object object3, String concat2, Object object4,
-			String concat3) {
-			// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$WriteHtml(String string, String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$WriteHtml(String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Goto(String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
-	public void cmd$Read(mVar x) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
-	
+
 	public void cmd$Lock(String string, String string2, String string3) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
-	
+	}
+
 	public void cmd$Unlock(String string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
-	public void cmd$Hang(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}	
+	/*
+	 * Pausa o processamento por um determinado número de milisegundos
+	 */
+	public void cmd$Hang(Object obj) {
+		try {
+			Thread.sleep(Long.valueOf(String.valueOf(obj)));
+		} catch (NumberFormatException e) {
+			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
+		} catch (InterruptedException e) {
+			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
+		}
+
+	}
 }

@@ -1,126 +1,613 @@
 package mLibrary;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public final class mFnc {
 
-	private mFnc() {
-	}
+
+	/**
+	 * Converts a character to a numeric code.
+	 * @param expression
+	 * @param position
+	 * <br/> expression -> The character to be converted.
+	 * <br/> position	-> Optional — The position of a character within a character string, counting from 1. The default is 1.
+	 * @return numeric code
+	 */
+	public static Object $ascii(Object expression, Object position) {	
+		Double convertedPosition = numberConverter(position);
+		return Character.codePointAt(String.valueOf(expression).toCharArray(),convertedPosition.intValue()-1);
+	}	
 	
-	public static int $data(mVar mVar){
-		return mVar.data();
+	public static Object $ascii(Object expression) {
+		return $ascii(expression, 1);
 	}
 	
 	/**
-	 * Implwmentando a porcaria do teste
-	 * @param x ao interessa
-	 * @param y ruido
-	 * @return lixo
+	 * Converts the integer value of an expression to the corresponding ASCII or Unicode character.
+	 * @param i
+	 * @return
 	 */
-	public static Object $select(Object x, Object y) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public static Object $select(Object x, Object y, Object Z, Object padrao) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public static Object $get(Object content, Object defaultValue){
-		throw new UnsupportedOperationException();
-	}
-	
-	public static Object $get(Object content){
-		throw new UnsupportedOperationException();
-	}
-	
-	public static Object $job(){
-		throw new UnsupportedOperationException();
-	}
-	
-	public static String $zts(){
-		return $ztimestamp();
-	}  
-	
-	public static String $ztimestamp(){
-		throw new UnsupportedOperationException();
-	}  
-	
-	public Object $order(mData mData) {
-		return $order(mData, 1);
-	}
-	
-	public Object $order(mData mData, int direction) {
-		return mData.order(direction);
+	public static Object $c(Object...intArgs) {
+		return $char(intArgs);
 	}
 
-	public static Object $setpiece(Object string, Object delimiter, Object position, Object value) {
-		return setPieceImpl(castString(string), castString(delimiter), castInt(position), castString(value));
-	}
-
-	public static String setPieceImpl(String string, String delimiter, Integer position, String value) {
-		if (string == null || position < 0) {
-			return string;
+	/**
+	 * Compares expressions and returns the value of the first matching case.
+	 * @param args
+	 * </br> target - A literal or expression the value of which is to be matched against cases.
+	 * </br> case -	A literal or expression the value of which is to be matched with the results of the evaluation of target.
+	 * </br> value - The value to be returned upon a successful match of the corresponding case.
+	 * </br> default - Optional — The value to be returned if no case matches target.
+	 * @return Object 
+	 */
+	public static Object $case(Object... args) {
+		Boolean hasTrue = false;
+		Object returnObj = null;
+		if (args != null) {
+			if (args.length < 3) {
+				throw new IllegalArgumentException(
+						"This method requires at least one pair of condition and value that returns as true.");
+			}
+			String target = String.valueOf(args[0]);
+			for (int i = 1; i < args.length; i++) {
+				if (i % 2 != 0) {
+					if (target.equals(args[i])) {
+						hasTrue = true;
+						returnObj = args[i + 1];
+						break;
+					}
+				}
+			}
+			if (!hasTrue) {
+				if (args.length % 2 != 0) {
+					throw new IllegalArgumentException(
+							"This method requires at least one pair of condition and value.");					
+				}else{
+					returnObj = args[args.length - 1];
+				}
+			}
 		}
-
-		final String[] array = string.split(delimiter);
-		if (value == null) {
-			value = "";
-		}
-		array[position - 1] = value;
-
-		return generateString(array, delimiter);
+		return returnObj;
 	}
 
-
-	public static Object $piece(Object string, Object delimiter, Object from, Object to) {
-		return pieceImpl(castString(string), castString(delimiter), castInt(from), castInt(to));
-	}
-	
-	public static String pieceImpl(String string, String delimiter, int from, int to) {
-		if (string == null) {
+	public static Object $char(Object... codes) {
+		if (codes == null || codes.length == 0) {
 			return null;
 		}
-
-		if (from > to) {
-			return null;
-		}
-
-		final String[] array = Arrays.copyOfRange(string.split(delimiter),
-				from - 1, to);
-
-		return generateString(array, delimiter);
+		return characterImpl(castIntArray(codes));
 	}
 
-	public static String $piece(Object string, Object delimiter, Object index) {
-		return pieceImpl(castString(string), castString(delimiter), castInt(index));
-	}
-	
-
-	public static String pieceImpl(String string, String delimiter, int index) {
-		
-		if (string == null) {
-			return null;
-		}
-
-		return string.split(delimiter)[index - 1];
+	public static ListObject $concat(ListObject... lists) {
+		return ListObject.concat(lists);
 	}
 
-	public static Object $piece(Object string, Object delimiter) {
-		return pieceImpl(castString(string), castString(delimiter), 1);
+	public static boolean $d(mVar var) {
+		return booleanConverter($data(var));
 	}
-	
-	public static String pieceImpl(String string, String delimiter) {
-		return $piece(string, delimiter, 1);
+
+	public static int $data(mVar mVar) {
+		return mVar.data();
+	}
+
+	public static String $e(Object value, Object index) {
+		return $extract(value, index);
+	}
+
+	public static String $e(Object string, Object from, Object to) {
+		return $extract(castString(string), castInt(from), castInt(to));
+	}
+
+	public static String $e(Object string) {
+		return $extract(string);
+	}
+
+	public static String $extract(Object value, Object index) {
+		return $extract(value, index, index);
 	}
 
 	public static String $extract(Object string, Object from, Object to) {
 		return extractImpl(castString(string), castInt(from), castInt(to));
 	}
-	
-	public static String $e(Object string, Object from, Object to) {
-		return $extract(castString(string), castInt(from), castInt(to));
+
+	public static String $extract(Object string) {
+		return $extract(string, 1);
 	}
-	
+
+	public static int $find(Object string, Object substring) {
+		return $find(string, substring, 1);
+	}
+
+	public static int $find(Object string, Object substring, Object start) {
+		return findImpl(castString(string), castString(substring),
+				castInt(start));
+	}
+	/**
+	 * Formats a numeric value with a specified format; optionally rounds to a specified precision.
+	 * @param inumber
+	 * @param format
+	 * @param decimal
+	 * @return returns the number specified by inumber in the specified format
+	 */
+
+	public static Object $fnumber(Object inumber, String format,
+			Object decimal) {
+		//Locale.getDefault().
+		//Locale locale = new Locale(Locale.)
+			//String.format("10 / 3 = %.2f", 10.0);
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $g(mVar pstrClass) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $get(Object content) {
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $get(Object content, Object defaultValue) {
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $h() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $horolog() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $i(mVar var) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $increment(mVar var) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $increment(mVar var, Object increment) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $io() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean $isNumber(Object numStr) {
+		boolean isNumber = true;
+		try {
+			Double dbl = numberConverter(numStr);
+			if (dbl == 0d && !String.valueOf(dbl).equals("0")) {
+				isNumber = false;
+			}
+		} catch (NumberFormatException nfe) {
+			isNumber = false;
+		}
+		return isNumber;
+	}
+
+	public static boolean $isNumber2(Object numStr) {
+		boolean isNumber = true;
+		try {
+			if (String.valueOf(numStr).startsWith("0")
+					|| String.valueOf(numStr).contains(" ")) {
+				isNumber = false;
+			} else {
+				Double.valueOf(String.valueOf(numStr));
+			}
+		} catch (NumberFormatException nfe) {
+			isNumber = false;
+		}
+		return isNumber;
+	}
+
+	public static Object $isobject(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $job() {
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $justify(Object object, int i, String $piece) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $justify(String string, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $justify(String string, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static ListObject $l(ListObject list, int init, int end) {
+		return $list(list, init, end);
+	}
+
+	public static Object $l(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static ListObject $lb(Object... elements) {
+		return $listbuild(elements);
+	}
+
+	public static Object $length(Object $$$inaufInvoiceNumber) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $length(Object object, Object $$$ParentSeparator) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $length(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static ListObject $list(ListObject list, int init, int end) {
+		return list.sublist(init - 1, end);
+	}
+
+	public static ListObject $listbuild(Object... elements) {
+		return ListObject.add(elements);
+	}
+
+	public static Object $listfind(Object $listbuild, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $listget(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static int $listlength(ListObject list) {
+		return list.length();
+	}
+
+	public static Object $listlength(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $order(mVar var) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $order(mVar var, boolean negative) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $order(mVar var, Object $get) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $piece(Object string, Object delimiter) {
+		return pieceImpl(castString(string), castString(delimiter), 1);
+	}
+
+	public static String $piece(Object string, Object delimiter, Object index) {
+		return pieceImpl(castString(string), castString(delimiter),
+				castInt(index));
+	}
+
+	public static Object $piece(Object string, Object delimiter, Object from,
+			Object to) {
+		return pieceImpl(castString(string), castString(delimiter),
+				castInt(from), castInt(to));
+	}
+
+	public static Object $qlength(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static ListObject $qsubscript(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $query(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $replace(Object object, String oldSubstring,
+			String newSubstring) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static String $replace(String string, String oldSubstring,
+			String newSubstring) {
+		if (string == null) {
+			return null;
+		}
+
+		if (oldSubstring == null) {
+			return string;
+		}
+
+		return string.replace(oldSubstring, newSubstring);
+	}
+
+	public static String $reverse(Object $$$inaufInvoiceNumber) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $select(BooleanObject... conditions) {
+		if (conditions == null || conditions.length == 0) {
+			return null;
+		}
+
+		Object value = null;
+		for (BooleanObject conditional : conditions) {
+			if (conditional.isTrue()) {
+				value = conditional.getValue();
+				break;
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Returns the value associated with the first true expression.
+	 * @param args
+	 * <br/>expression - The select test for the associated value parameter.
+	 * <br/>value - The value to be returned if the associated expression evaluates to true.
+	 * @return Object associated
+	 */
+		public static Object $select(Object... args) {
+			Boolean hasTrue = false;
+			Object returnObj = null;
+			if (args != null) {
+				if (args.length % 2 != 0) {
+					throw new IllegalArgumentException(
+							"This method requires at least one pair of  condition and value that returns as true.");
+				}
+				for (int i = 0; i < args.length; i++) {
+					if (i % 2 == 0) {
+						boolean bool = booleanConverter(args[i]);
+						if (bool) {
+							hasTrue = bool;
+							returnObj = args[i + 1];
+							break;
+						}
+					}
+				}
+				if (!hasTrue) {
+					throw new IllegalArgumentException(
+							"This method requires at least one pair of  condition and value that returns as true.");
+				}
+			}
+			return returnObj;
+		}
+
+	public static Object $setpiece(Object string, Object delimiter,
+			Object position, Object value) {
+		return setPieceImpl(castString(string), castString(delimiter),
+				castInt(position), castString(value));
+	}
+
+	public static Object $test() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $tlevel() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $translate(Object $get, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $translate(Object string, Object oldCharsequence,
+			Object newCharsequence) {
+		return translateImpl(castString(string), castString(oldCharsequence),
+				castString(newCharsequence));
+	}
+
+	public static Object $zconvert(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zconvert(Object object, String string, String string2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zcrc(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zcvt(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdate(boolean positive, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdate(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object concat) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object concat, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object concat, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdateh(Object object, Object object2, Object object3,
+			Object object4, Object object5, Object object6, Object object7,
+			Object object8, ListObject $lb) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdatetime(Object $horolog) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdt(Object $h, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zeof() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zhorolog() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zorder(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zstrip(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zstrip(Object object, String string, Object object2,
+			String string2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	public static String $ztimestamp() {
+		throw new UnsupportedOperationException();
+	}
+
+	public static String $zts() {
+		return $ztimestamp();
+	}
+
+	public static ListObject $zu(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zutil(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Boolean booleanConverter(Object obj) {
+		Boolean bool = false;
+		if (obj instanceof Boolean) {
+			bool = Boolean.parseBoolean(String.valueOf(obj));
+		} else {
+			Double dbl = numberConverter(obj);
+			if (dbl != 0) {
+				bool = true;
+			}
+		}
+		return bool;
+	}
+
+	public static Double castDouble(Object obj) {
+		try {
+			return (Double) obj;
+		} catch (ClassCastException e) {
+			return 0d;
+		}
+	}
+
+	public static Integer castInt(Object obj) {
+		try {
+			return (Integer) obj;
+		} catch (ClassCastException e) {
+			return 0;
+		}
+	}
+
+	public static Integer[] castIntArray(Object... obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj.length == 0) {
+			return new Integer[] {};
+		}
+
+		final Integer[] array = new Integer[obj.length];
+		for (int i = 0; i < obj.length; i++) {
+			array[i] = castInt(obj[i]);
+		}
+		return array;
+	}
+
+	public static String castString(Object obj) {
+		try {
+			return (String) obj;
+		} catch (ClassCastException e) {
+			return null;
+		}
+	}
+
+	public static String characterImpl(Integer... codes) {
+		if (codes == null) {
+			return null;
+		}
+
+		if (codes.length == 1 && codes[0] == null) {
+			return null;
+		}
+
+		final Character[] chars = new Character[codes.length];
+		for (int i = 0; i < codes.length; i++) {
+			// Apenas os inteiros nao-negativos deve ser convertidos.
+			if (codes[i] != null && codes[i] > 0) {
+				chars[i] = Character.toChars(codes[i])[0];
+			}
+		}
+
+		return generateString(chars, null, true);
+	}
+
 	public static String extractImpl(String string, int from, int to) {
 		if (string == null) {
 			return null;
@@ -133,26 +620,6 @@ public final class mFnc {
 
 	}
 
-	public static String $extract(Object value, Object index) {
-		return $extract(value, index, index);
-	}
-	
-	public static String $e(Object value, Object index) {
-		return $extract(value, index);
-	}
-
-	public static String $extract(String string) {
-		return $extract(string, 1);
-	}
-	
-	public static String $e(String string) {
-		return $extract(string);
-	}
-	
-	public static int $find(Object string, Object substring, Object start) {
-		return findImpl(castString(string), castString(substring), castInt(start));
-	}
-	
 	public static int findImpl(String string, String substring, int start) {
 		if (string == null || string.trim().length() == 0 || substring == null
 				|| substring.length() == 0) {
@@ -184,68 +651,37 @@ public final class mFnc {
 		return 0;
 	}
 
-	public static int $find(Object string, Object substring) {
-		return $find(string, substring, 1);
+	private static String generateString(Object[] array, String delimiter) {
+		return generateString(array, delimiter, false);
 	}
 
-	public Object length(Object string, Object delimiter) {
-		return lengthImpl(castString(string), castString(delimiter));
-	}
-	
-	public Object lengthImpl(String string, String delimiter) {
-		if (delimiter == null && string == null) {
-			return 0;
+	private static String generateString(Object[] array, String delimiter,
+			boolean avoidNull) {
+		final StringBuilder result = new StringBuilder();
+		final int indexToInsert = array.length - 1;
+		for (int i = 0; i < array.length; i++) {
+			if (avoidNull && array[i] == null) {
+				continue;
+			}
+			result.append(array[i]);
+			if (delimiter != null && i < indexToInsert) {
+				result.append(delimiter);
+			}
 		}
-
-		if (delimiter != null && string == null) {
-			return 1;
-		}
-
-		return string.split(delimiter).length;
+		return result.toString();
 	}
 
-	public Object length(Object string) {
-		return length(castString(string));
-	}
-	
-	public int lengthImpl(String string) {
-		if (string == null) {
-			return 0;
-		}
-
-		return string.length();
-	}
-
-	public static ListObject $listbuild(Object... elements) {
-		return ListObject.add(elements);
-	}
-	
-	public static ListObject $lb(Object... elements) {
-		return $listbuild(elements);
-	}
-
-	public static ListObject $list(ListObject list, int init, int end) {
-		return list.sublist(init - 1, end);
-	}
-	
-	public static ListObject $l(ListObject list, int init, int end) {
-		return $list(list, init, end);
-	}
-
-	public static Object list(ListObject list, int position) {
-		return list.element(position);
+	private static boolean hasElementOnListObject(ListObject list, int position) {
+		Object elemet = list(list, position);
+		return elemet != null && !"".equals(elemet.toString().trim());
 	}
 
 	public static Object list(ListObject list) {
 		return list.firstElement();
 	}
 
-	public static int $listlength(ListObject list) {
-		return list.length();
-	}
-
-	public static ListObject $concat(ListObject... lists) {
-		return ListObject.concat(lists);
+	public static Object list(ListObject list, int position) {
+		return list.element(position);
 	}
 
 	public static int listData(ListObject list, int position) {
@@ -261,23 +697,96 @@ public final class mFnc {
 		}
 	}
 
-	public static String $replace(String string, String oldSubstring,
-			String newSubstring) {
+	public static Double numberConverter(Object obj) {
+		Double dbl = null;
+		try {
+			dbl = Double.valueOf(String.valueOf(obj));
+		} catch (NumberFormatException nfe) {
+			String result = "";
+			char[] charArray = obj.toString().toCharArray();
+			boolean startNumber = false;
+			boolean hasPoint = false;
+			for (int i = 0; i < charArray.length; i++) {
+				char c = charArray[i];
+				if (!startNumber && (c == '+' || c == '-')) {
+					if (result.isEmpty()) {
+						result = String.valueOf(c);
+					} else {
+						if (result.equals(String.valueOf(c))) {
+							result = "+";
+						} else {
+							result = "-";
+						}
+					}
+					continue;
+				}
+				if (Character.isDigit(c)) {
+					startNumber = true;
+					result = result.concat(String.valueOf(c));
+					continue;
+				}
+				if (c == '.') {
+					startNumber = true;
+					if (!hasPoint) {
+						hasPoint = true;
+						result = result.concat(String.valueOf(c));
+						continue;
+					}
+				}
+				if (result.isEmpty() || !startNumber) {
+					result = "0";
+				}
+				break;
+			}
+			dbl = Double.valueOf(result);
+		}
+		return dbl;
+	}
+
+	public static String pieceImpl(String string, String delimiter) {
+		return $piece(string, delimiter, 1);
+	}
+
+	public static String pieceImpl(String string, String delimiter, int index) {
+
 		if (string == null) {
 			return null;
 		}
 
-		if (oldSubstring == null) {
+		return string.split(delimiter)[index - 1];
+	}
+
+	public static String pieceImpl(String string, String delimiter, int from,
+			int to) {
+		if (string == null) {
+			return null;
+		}
+
+		if (from > to) {
+			return null;
+		}
+
+		final String[] array = Arrays.copyOfRange(string.split(delimiter),
+				from - 1, to);
+
+		return generateString(array, delimiter);
+	}
+
+	public static String setPieceImpl(String string, String delimiter,
+			Integer position, String value) {
+		if (string == null || position < 0) {
 			return string;
 		}
 
-		return string.replace(oldSubstring, newSubstring);
+		final String[] array = string.split(delimiter);
+		if (value == null) {
+			value = "";
+		}
+		array[position - 1] = value;
+
+		return generateString(array, delimiter);
 	}
 
-	public static Object $translate(Object string, Object oldCharsequence, Object newCharsequence) {
-		return translateImpl(castString(string), castString(oldCharsequence), castString(newCharsequence));
-	}
-	
 	public static String translateImpl(String string, String oldCharsequence,
 			String newCharsequence) {
 
@@ -326,7 +835,7 @@ public final class mFnc {
 	public static Object zconvert(Object string, Object mode) {
 		return zconvertImpl(castString(string), castString(mode));
 	}
-	
+
 	public static String zconvertImpl(String string, String mode) {
 		if (mode == null || mode.trim().length() == 0) {
 			return string;
@@ -340,417 +849,43 @@ public final class mFnc {
 		return string;
 	}
 
-	public static Object $char(Object ... codes) {
-		if (codes == null || codes.length == 0) {
-			return null;
-		}
-		return characterImpl(castIntArray(codes));
+	private mFnc() {
 	}
 
-	public static String characterImpl(Integer... codes) {
-		if (codes == null) {
-			return null;
-		}
-		
-		if (codes.length == 1 && codes[0] == null) {
-			return null;
-		}
-
-		final Character[] chars = new Character[codes.length];
-		for (int i = 0; i < codes.length; i++) {
-			// Apenas os inteiros nao-negativos deve ser convertidos.
-			if (codes[i] != null && codes[i] > 0) {
-				chars[i] = Character.toChars(codes[i])[0];
-			}
-		}
-
-		return generateString(chars, null, true);
+	public Object $order(mData mData) {
+		return $order(mData, 1);
 	}
 
-	public static Object $select(BooleanObject... conditions) {
-		if (conditions == null || conditions.length == 0) {
-			return null;
-		}
-
-		Object value = null;
-		for (BooleanObject conditional : conditions) {
-			if (conditional.isTrue()) {
-				value = conditional.getValue();
-				break;
-			}
-		}
-		return value;
+	public Object $order(mData mData, int direction) {
+		return mData.order(direction);
 	}
 
-	public static Integer castInt(Object obj) {
-		try {
-			return (Integer) obj;
-		} catch (ClassCastException e) {
+	public Object length(Object string) {
+		return length(castString(string));
+	}
+
+	public Object length(Object string, Object delimiter) {
+		return lengthImpl(castString(string), castString(delimiter));
+	}
+
+	public int lengthImpl(String string) {
+		if (string == null) {
 			return 0;
 		}
+
+		return string.length();
 	}
-	
-	public static Integer[] castIntArray(Object...obj) {
-		if (obj == null) {
-			return null;
-		} else if (obj.length == 0) {
-			return new Integer[]{};
+
+	public Object lengthImpl(String string, String delimiter) {
+		if (delimiter == null && string == null) {
+			return 0;
 		}
-		
-		final Integer [] array = new Integer[obj.length];
-		for (int i = 0; i < obj.length; i++) {
-			array[i] = castInt(obj[i]);
+
+		if (delimiter != null && string == null) {
+			return 1;
 		}
-		return array;
-	}
-
-	public static Double castDouble(Object obj) {
-		try {
-			return (Double) obj;
-		} catch (ClassCastException e) {
-			return 0d;
-		}
-	}
-
-	public static String castString(Object obj) {
-		try {
-			return (String) obj;
-		} catch (ClassCastException e) {
-			return null;
-		}
-	}
-
-	private static String generateString(Object[] array, String delimiter) {
-		return generateString(array, delimiter, false);
-	}
-
-	private static String generateString(Object[] array, String delimiter,
-			boolean avoidNull) {
-		final StringBuilder result = new StringBuilder();
-		final int indexToInsert = array.length - 1;
-		for (int i = 0; i < array.length; i++) {
-			if (avoidNull && array[i] == null) {
-				continue;
-			}
-			result.append(array[i]);
-			if (delimiter != null && i < indexToInsert) {
-				result.append(delimiter);
-			}
-		}
-		return result.toString();
-	}
-
-	private static boolean hasElementOnListObject(ListObject list, int position) {
-		Object elemet = list(list, position);
-		return elemet != null && !"".equals(elemet.toString().trim());
-	}
-
-	public static Object $l(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $translate(Object $get, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $select(boolean b, Object $$$no, boolean c,
-			Object $$$no2, int i, Object $$$yes) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $i(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $tlevel() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $io() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static String $reverse(Object $$$inaufInvoiceNumber) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $length(Object $$$inaufInvoiceNumber) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $isobject(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $length(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $h() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $horolog() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdate(boolean positive, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdate(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $fnumber(Object object, String string,
-			Object $$$GetNumDecimalPoints) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $c(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $c(int i, int j) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $justify(String string, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $justify(String string, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zstrip(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zconvert(Object object, String string, String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zcvt(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $ascii(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zstrip(Object object, String string, Object object2,
-			String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $length(Object object, Object $$$ParentSeparator) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $case(Object fnc$, Object object, int i,
-			String string, int j, int k) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $order(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $case(Object $get, Object $$$no, String string,
-			Object fnc$) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zcrc(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdatetime(Object $horolog) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zutil(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static boolean $d(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $listlength(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $listget(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $query(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $g(mVar pstrClass) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object object, Object object2, Object object3,
-			Object object4, Object object5, Object object6, Object object7,
-			Object object8, ListObject $lb) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $case(Object $$$DateMonth, int i, int j, int k,
-			Object $select, int l, int m, int n, int o, int p, int q, int r,
-			int s, int t, int u, int v, int w, int x, int y, int z, int a,
-			int b, int c, int d, int e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $qlength(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static ListObject $qsubscript(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $order(mVar var, boolean negative) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $extract(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zconvert(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $increment(mVar var, Object increment) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $increment(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zorder(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $order(mVar var, Object $get) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $justify(Object object, int i, String $piece) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $listfind(Object $listbuild, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $replace(Object object, String oldSubstring,
-			String newSubstring) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static ListObject $zu(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static String $case(Object less, Object $$$yes, Object fnc$,
-			Object $$$no, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zhorolog() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zeof() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $test() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
 
-	public static Object $zdt(Object $h, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return string.split(delimiter).length;
 	}
- 
 
 }
