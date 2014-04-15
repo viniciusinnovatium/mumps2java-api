@@ -20,6 +20,8 @@ public abstract class mData {
 	abstract void stacking(Object... subs);
 
 	abstract void unstacking();
+	
+	abstract String dump();
 
 	public void kill(Object... subs) {
 		tempSubs = null;

@@ -34,7 +34,7 @@ public final class Tree extends Node {
 			for (Node stacked : stackedNodes) {
 				Node node = searchSubnode((String)stacked.getSubscript());
 				node.kill();
-				add(stacked);
+				addSubnode(stacked);
 			}
 			currentStackLevel--;
 		}
@@ -130,6 +130,10 @@ public final class Tree extends Node {
 		Node node = generateNode(subs);
 		node.setValue(value);
 	}
+	
+	public void set(String path, Object value) {
+		set(path.split(DELIMETER), value);
+	}
 
 	@Deprecated
 	public int data(Path path) {
@@ -205,7 +209,7 @@ public final class Tree extends Node {
 		}
 		// Indicating root node
 		if (!exist) {
-			parent.add(node);
+			parent.addSubnode(node);
 		}
 
 		index++;

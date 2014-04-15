@@ -2,16 +2,15 @@ package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import br.com.innovatium.mumps2java.todo.TODO;
 
 /**
  * 
  * @author vinicius
  */
 public class Node {
-	private int nivel;
 	private Integer stackLevel;
 	private final boolean isTree;
 
@@ -20,8 +19,12 @@ public class Node {
 	private Object value;
 	private List<Node> subnodes;
 	private Node parent;
-	private static Map<Integer, List<Node>> niveis = new HashMap<Integer, List<Node>>();
 
+	/*
+	 * Variable dedicated to node search algorithm.
+	 */
+	private Node found = null; 
+	
 	public Node(Object subscript) {
 		this(subscript, null);
 	}
@@ -139,12 +142,6 @@ public class Node {
 		this.value = value;
 	}
 
-	public Node add(String key, Object value) {
-		Node node = new Node(key, null, value);
-		add(node);
-		return node;
-	}
-
 	public void clear() {
 		subnodes.clear();
 	}
@@ -155,31 +152,12 @@ public class Node {
 		}
 	}
 
-	public void add(Node node) {
+	void addSubnode(Node node) {
 		if (subnodes == null) {
 			subnodes = new ArrayList<Node>(20);
 		}
-		final int nivelNode = this.nivel + 1;
 		node.parent = this;
-		node.nivel = nivelNode;
 		subnodes.add(node);
-
-		if (!niveis.containsKey(nivelNode)) {
-			niveis.put(nivelNode, new ArrayList<Node>());
-		}
-
-		niveis.get(nivelNode).add(node);
-	}
-
-	public Node addChain(Node subnode) {
-		add(subnode);
-		return subnode;
-	}
-
-	public Node addChain(Object key, Object value) {
-		Node subnode = new Node(subscript, null, value);
-		add(subnode);
-		return subnode;
 	}
 
 	public Node left() {
@@ -216,14 +194,6 @@ public class Node {
 		return subnodes;
 	}
 
-	public List<Node> down(int nivel) {
-		return niveis.get(nivel);
-	}
-
-	public Node down(int nivel, int posicao) {
-		return niveis.get(nivel).get(posicao);
-	}
-
 	public Node subnode(int index) {
 		if (!hasSubnodes()) {
 			return null;
@@ -258,7 +228,9 @@ public class Node {
 		if (subs == null) {
 			return null;
 		}
-		return searchSubnode(this, subs);
+		found = null;
+		searchSubnode(this, subs);
+		return found;
 	}
 
 	public boolean hasSubnodes() {
@@ -306,18 +278,24 @@ public class Node {
 		}
 	}
 
-	private Node searchSubnode(Node parent, String pathTarget) {
-		Node node = null;
+	/*
+	 * This method should be enhanced soon. We can replace search nodes by path
+	 * to search by subscripts array, so that manner if we do not find the node
+	 * parent we can postulate the hierarchy does not exist, and then, return
+	 * null indicating inexistent node.
+	 */
+	@TODO
+	private void searchSubnode(Node parent, String pathTarget) {
+		
 		if (parent != null && parent.hasSubnodes()) {
 			for (Node subnode : parent.getSubnodes()) {
 				if (pathTarget.equals(subnode.getPath())) {
-					node = subnode;
+					found = subnode;
 					break;
 				} else {
-					node = searchSubnode(subnode, pathTarget);
+					searchSubnode(subnode, pathTarget);
 				}
 			}
 		}
-		return node;
 	}
 }

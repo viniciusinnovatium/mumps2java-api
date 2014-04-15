@@ -2,6 +2,14 @@ package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.Arrays;
 
+import br.com.innovatium.mumps2java.todo.TODO;
+
+/*
+ * This class should be removed soon. Some analysis has appointed it is can be replaced 
+ * to array objects on calling functions. It does not make sense anymore because we already abstract it 
+ * employing another abstract layers.
+ */
+@TODO
 public class Path {
 	private final Object[] subs;
 

@@ -11,6 +11,12 @@ public final class mFnc {
 		return mVar.data();
 	}
 	
+	/**
+	 * Implwmentando a porcaria do teste
+	 * @param x ao interessa
+	 * @param y ruido
+	 * @return lixo
+	 */
 	public static Object $select(Object x, Object y) {
 		throw new UnsupportedOperationException();
 	}

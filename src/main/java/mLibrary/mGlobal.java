@@ -53,7 +53,7 @@ public class mGlobal extends mData {
 		List<Node> nodes = cacheManager.like(Tree.generateKey(brothers));
 
 		for (Node node : nodes) {
-			tree.add(node);
+			tree.set(node.getPath().toString(), node.getValue());
 		}
 	}
 
@@ -64,6 +64,11 @@ public class mGlobal extends mData {
 
 	@Override
 	void unstacking() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	String dump() {
 		throw new UnsupportedOperationException();
 	}
 }
