@@ -1,15 +1,27 @@
 package mLibrary;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public final class mFnc {
 
-	public static Object $ascii(Object expression) {
-		return Character.codePointAt(String.valueOf(expression).toCharArray(),0);
-	}
-	public static Object $ascii(Object expression, Object position) {		
-		return Character.codePointAt(String.valueOf(expression).toCharArray(),0);
+	/**
+	 * Converts a character to a numeric code.
+	 * @param expression
+	 * @param position
+	 * <br/> expression -> The character to be converted.
+	 * <br/> position	-> Optional — The position of a character within a character string, counting from 1. The default is 1.
+	 * @return numeric code
+	 */
+	public static Object $ascii(Object expression, Object position) {	
+		Double convertedPosition = numberConverter(position);
+		return Character.codePointAt(String.valueOf(expression).toCharArray(),convertedPosition.intValue()-1);
 	}	
+	
+	public static Object $ascii(Object expression) {
+		return $ascii(expression, 1);
+	}
+	
 	/**
 	 * Converts the integer value of an expression to the corresponding ASCII or Unicode character.
 	 * @param i
@@ -70,8 +82,7 @@ public final class mFnc {
 	}
 
 	public static boolean $d(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return booleanConverter($data(var));
 	}
 
 	public static int $data(mVar mVar) {
@@ -86,13 +97,8 @@ public final class mFnc {
 		return $extract(castString(string), castInt(from), castInt(to));
 	}
 
-	public static String $e(String string) {
+	public static String $e(Object string) {
 		return $extract(string);
-	}
-
-	public static Object $extract(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
 	}
 
 	public static String $extract(Object value, Object index) {
@@ -103,7 +109,7 @@ public final class mFnc {
 		return extractImpl(castString(string), castInt(from), castInt(to));
 	}
 
-	public static String $extract(String string) {
+	public static String $extract(Object string) {
 		return $extract(string, 1);
 	}
 
@@ -115,10 +121,19 @@ public final class mFnc {
 		return findImpl(castString(string), castString(substring),
 				castInt(start));
 	}
+	/**
+	 * Formats a numeric value with a specified format; optionally rounds to a specified precision.
+	 * @param inumber
+	 * @param format
+	 * @param decimal
+	 * @return returns the number specified by inumber in the specified format
+	 */
 
-	public static Object $fnumber(Object object, String string,
-			Object $$$GetNumDecimalPoints) {
-		// TODO Auto-generated method stub
+	public static Object $fnumber(Object inumber, String format,
+			Object decimal) {
+		//Locale.getDefault().
+		//Locale locale = new Locale(Locale.)
+			//String.format("10 / 3 = %.2f", 10.0);
 		throw new UnsupportedOperationException();
 	}
 

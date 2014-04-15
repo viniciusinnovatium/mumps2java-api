@@ -29,11 +29,7 @@ public final class mOp {
 	}
 
 	public static boolean Logical(Object object) {
-		if (String.valueOf(object).equals("0")) {
-			return false;
-		} else {
-			return true;
-		}
+		return mFnc.booleanConverter(object);
 	}
 
 	public static boolean Equal(Object x, Object y) {
@@ -53,9 +49,9 @@ public final class mOp {
 	}
 
 	public static boolean SortsAfter(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		String var1 = "123";
-		String var2 = "122";
+
+		String var1 = String.valueOf(object);
+		String var2 = String.valueOf(object2);
 		boolean isNumVar1 = mFnc.$isNumber(var1);
 		boolean isNumVar2 = mFnc.$isNumber(var2);
 
