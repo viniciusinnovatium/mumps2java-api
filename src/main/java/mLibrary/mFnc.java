@@ -1,44 +1,58 @@
 package mLibrary;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 public final class mFnc {
 
 	/**
 	 * Converts a character to a numeric code.
+	 * 
 	 * @param expression
 	 * @param position
-	 * <br/> expression -> The character to be converted.
-	 * <br/> position	-> Optional — The position of a character within a character string, counting from 1. The default is 1.
+	 * <br/>
+	 *            expression -> The character to be converted. <br/>
+	 *            position -> Optional — The position of a character within a
+	 *            character string, counting from 1. The default is 1.
 	 * @return numeric code
 	 */
-	public static Object $ascii(Object expression, Object position) {	
+	public static Object $ascii(Object expression, Object position) {
 		Double convertedPosition = numberConverter(position);
-		return Character.codePointAt(String.valueOf(expression).toCharArray(),convertedPosition.intValue()-1);
-	}	
-	
+		return Character.codePointAt(String.valueOf(expression).toCharArray(),
+				convertedPosition.intValue() - 1);
+	}
+
 	public static Object $ascii(Object expression) {
 		return $ascii(expression, 1);
 	}
-	
+
 	/**
-	 * Converts the integer value of an expression to the corresponding ASCII or Unicode character.
+	 * Converts the integer value of an expression to the corresponding ASCII or
+	 * Unicode character.
+	 * 
 	 * @param i
 	 * @return
 	 */
-	public static Object $c(Object...intArgs) {
+	public static Object $c(Object... intArgs) {
 		return $char(intArgs);
 	}
 
 	/**
 	 * Compares expressions and returns the value of the first matching case.
+	 * 
 	 * @param args
-	 * </br> target - A literal or expression the value of which is to be matched against cases.
-	 * </br> case -	A literal or expression the value of which is to be matched with the results of the evaluation of target.
-	 * </br> value - The value to be returned upon a successful match of the corresponding case.
-	 * </br> default - Optional — The value to be returned if no case matches target.
-	 * @return Object 
+	 *            </br> target - A literal or expression the value of which is
+	 *            to be matched against cases. </br> case - A literal or
+	 *            expression the value of which is to be matched with the
+	 *            results of the evaluation of target. </br> value - The value
+	 *            to be returned upon a successful match of the corresponding
+	 *            case. </br> default - Optional — The value to be returned if
+	 *            no case matches target.
+	 * @return Object
 	 */
 	public static Object $case(Object... args) {
 		Boolean hasTrue = false;
@@ -61,8 +75,8 @@ public final class mFnc {
 			if (!hasTrue) {
 				if (args.length % 2 != 0) {
 					throw new IllegalArgumentException(
-							"This method requires at least one pair of condition and value.");					
-				}else{
+							"This method requires at least one pair of condition and value.");
+				} else {
 					returnObj = args[args.length - 1];
 				}
 			}
@@ -121,20 +135,55 @@ public final class mFnc {
 		return findImpl(castString(string), castString(substring),
 				castInt(start));
 	}
+
 	/**
-	 * Formats a numeric value with a specified format; optionally rounds to a specified precision.
+	 * Formats a numeric value with a specified format; optionally rounds to a
+	 * specified precision.
+	 * 
 	 * @param inumber
 	 * @param format
 	 * @param decimal
 	 * @return returns the number specified by inumber in the specified format
 	 */
 
-	public static Object $fnumber(Object inumber, String format,
-			Object decimal) {
-		//Locale.getDefault().
-		//Locale locale = new Locale(Locale.)
-			//String.format("10 / 3 = %.2f", 10.0);
-		throw new UnsupportedOperationException();
+	public static Object $fnumber(Object inumber, String format, Object decimal) {
+		
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+		DecimalFormat formatter = new DecimalFormat();
+		Double inumberDbl = Double.valueOf(String.valueOf(inumber));
+		String signal = "";
+		if (format != null) {
+			if (".".contains(format)) {
+				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
+				dfs.setDecimalSeparator(',');
+			} else if (",".contains(format)) {
+				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
+				dfs.setDecimalSeparator('.');
+			}else if (decimal != null) {
+				formatter.setMaximumFractionDigits(Integer.valueOf(String
+						.valueOf(decimal)));
+			}else if(String.valueOf(format).equals("T")){
+				formatter.setNegativeSuffix("-");
+			}else if(String.valueOf(format).equals("T+")){
+				formatter.setPositiveSuffix("+");
+			}else if(String.valueOf(format).equals("P")){
+				formatter.setNegativePrefix("(");
+				formatter.setNegativeSuffix(")");
+			} else if ("+".equals(format)) {
+				signal = !(inumberDbl < 0) ? "+" : "";
+				signal = signal.equals(format) ? "+" : "-";
+			}else if("-".equals(format)){
+				signal = (inumberDbl < 0) ? "+" : "-";
+				signal = signal.equals(format) ? "+" : "-";				
+			}
+
+		}
+		
+		formatter.setDecimalFormatSymbols(dfs);
+
+		String formatedString = signal.concat(formatter.format(inumberDbl));
+
+		return formatedString;
 	}
 
 	public static Object $g(mVar pstrClass) {
@@ -373,36 +422,40 @@ public final class mFnc {
 
 	/**
 	 * Returns the value associated with the first true expression.
+	 * 
 	 * @param args
-	 * <br/>expression - The select test for the associated value parameter.
-	 * <br/>value - The value to be returned if the associated expression evaluates to true.
+	 * <br/>
+	 *            expression - The select test for the associated value
+	 *            parameter. <br/>
+	 *            value - The value to be returned if the associated expression
+	 *            evaluates to true.
 	 * @return Object associated
 	 */
-		public static Object $select(Object... args) {
-			Boolean hasTrue = false;
-			Object returnObj = null;
-			if (args != null) {
-				if (args.length % 2 != 0) {
-					throw new IllegalArgumentException(
-							"This method requires at least one pair of  condition and value that returns as true.");
-				}
-				for (int i = 0; i < args.length; i++) {
-					if (i % 2 == 0) {
-						boolean bool = booleanConverter(args[i]);
-						if (bool) {
-							hasTrue = bool;
-							returnObj = args[i + 1];
-							break;
-						}
+	public static Object $select(Object... args) {
+		Boolean hasTrue = false;
+		Object returnObj = null;
+		if (args != null) {
+			if (args.length % 2 != 0) {
+				throw new IllegalArgumentException(
+						"This method requires at least one pair of  condition and value that returns as true.");
+			}
+			for (int i = 0; i < args.length; i++) {
+				if (i % 2 == 0) {
+					boolean bool = booleanConverter(args[i]);
+					if (bool) {
+						hasTrue = bool;
+						returnObj = args[i + 1];
+						break;
 					}
 				}
-				if (!hasTrue) {
-					throw new IllegalArgumentException(
-							"This method requires at least one pair of  condition and value that returns as true.");
-				}
 			}
-			return returnObj;
+			if (!hasTrue) {
+				throw new IllegalArgumentException(
+						"This method requires at least one pair of  condition and value that returns as true.");
+			}
 		}
+		return returnObj;
+	}
 
 	public static Object $setpiece(Object string, Object delimiter,
 			Object position, Object value) {
@@ -518,6 +571,7 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
 	public static String $ztimestamp() {
 		throw new UnsupportedOperationException();
 	}
