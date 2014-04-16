@@ -22,9 +22,12 @@ public final class Tree extends Node {
 		Node node = null;
 		for (String subscript : subs) {
 			node = searchSubnode(subscript);
-			node.setStackLevel(currentStackLevel);
-			stack.push(node);
-			kill(subscript);
+			// Avoid some variables which does not exist into the tree.
+			if (node != null){
+				node.setStackLevel(currentStackLevel);
+				stack.push(node);
+				kill(subscript);	
+			}
 		}
 	}
 
