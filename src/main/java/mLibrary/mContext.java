@@ -33,26 +33,6 @@ public class mContext {
 		newVarName = null;
 	}
 
-	public mVar piece(String $extract, String string, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(mVar p$1, String string, int i, Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(mVar p$1, String string, Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(Object $zdate, String string, int i, int subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public mVar varRef(String name, Object ref) {
 		throw new UnsupportedOperationException();
 	}
@@ -85,9 +65,4 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	public void oldvar(int totalLevel) {
-		while (totalLevel-- > 0) {
-			mData.unstacking();
-		}
-	}
 }
