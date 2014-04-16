@@ -65,17 +65,17 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar piece(mVar var, Object del, Object ipos) {
+	public mVar pieceVar(mVar var, Object del, Object ipos) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar piece(mVar var, Object del, Object ipos, Object epos) {
+	public mVar pieceVar(mVar var, Object del, Object ipos, Object epos) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar indirect(Object val) {
+	public mVar indirectVar(Object val) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}

@@ -63,7 +63,7 @@ public class mClass {
 	}
 
 	/*
-	 * Exibe mensagem no console solicitando entrada de dados. 
+	 * Exibe mensagem no console solicitando entrada de dados.
 	 */
 	public void cmd$Read(Object... parameters) {
 		Scanner s = null;
@@ -94,6 +94,16 @@ public class mClass {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public void cmd$Unlock(mVar var) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public void cmd$LockInc(mVar var, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 	/*
 	 * Pausa o processamento por um determinado número de milisegundos
 	 */

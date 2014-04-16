@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
+import antlr.StringUtils;
+
 public final class mFnc {
 
 
@@ -156,6 +158,8 @@ public final class mFnc {
 		if (decimal != null) {
 			formatter.setMaximumFractionDigits(Integer.valueOf(String
 					.valueOf(decimal)));
+			formatter.setMinimumFractionDigits(Integer.valueOf(String
+					.valueOf(decimal)));			
 		} 			
 		if (format != null) {
 			if (".".contains(format)) {
@@ -194,6 +198,10 @@ public final class mFnc {
 		return formatedString;
 	}
 
+	public static Object $fnumber(Object inumber, String format) {
+		return $fnumber(inumber, format, null);
+	}
+	
 	public static Object $g(mVar pstrClass) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -275,22 +283,20 @@ public final class mFnc {
 	}
 
 	public static Object $justify(Object expression, int width, String decimal) {
-		String str = "";
-		//if(String.valueOf(expression)){
-			
-		//}
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if(decimal!=null){
+			expression = $fnumber(expression,",",decimal);
+		}
+		String strFormated = new String(new char[width-expression.toString().length()]).replace("\0", " ").concat(String.valueOf(expression));//.format("%"+"-"+width+"s", String.valueOf(expression));  
+		return strFormated;
 	}
 
-	public static Object $justify(String string, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $justify(String expression, int width) {
+		return $justify(expression, width, null);
 	}
 
-	public static Object $justify(String string, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $justify(String expression, Object width) {
+		int widthInt = numberConverter(width).intValue();
+		return $justify(expression, widthInt, null);
 	}
 
 	public static ListObject $l(ListObject list, int init, int end) {
