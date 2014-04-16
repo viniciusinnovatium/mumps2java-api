@@ -14,79 +14,48 @@ public class mContext {
 		return new mVar(subs, this.mData);
 	}
 
-	public mVar newref(Object obj, String name) {
+	public void newVar(mVar... vars) {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar incref(Object obj, String name) {
+	public void newVarExcept(mVar... vars) {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar newvar(String subs) {
-		mVar var = this.var(subs);
-		var.stacking();
-		return var;
+	public mVar varRef(String name, Object ref, Object val) {
+		throw new UnsupportedOperationException();
 	}
 
-	public mVar piece(String $extract, String string, int i) {
+	public mVar varRef(String name, Object ref) {
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar newVarRef(String name, Object ref, Object val) {
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar newVarRef(String name, Object ref) {
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar piece(mVar var, Object del, Object ipos) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar piece(mVar p$1, String string, int i, Object subtract) {
+	public mVar piece(mVar var, Object del, Object ipos, Object epos) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar piece(mVar p$1, String string, Object subtract) {
+	public mVar indirect(Object val) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar piece(Object $zdate, String string, int i, int subtract) {
+	public mVar lastVar(Object... subs) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(Object $get, Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(mVar p$1, Object $$$comma, Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar newref(Object object, String string, String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar newref(Object object, String string, Object $$$no) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar indirect(Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar lastvar(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public void newcontext() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar oldvar(String subs) {
-		mVar var = this.var(subs);
-		var.unstacking();
-		return var;
 	}
 
 }
