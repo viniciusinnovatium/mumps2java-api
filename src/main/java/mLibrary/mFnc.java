@@ -147,11 +147,15 @@ public final class mFnc {
 	 */
 
 	public static Object $fnumber(Object inumber, String format, Object decimal) {
-		
+
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
 		DecimalFormat formatter = new DecimalFormat();
 		Double inumberDbl = Double.valueOf(String.valueOf(inumber));
-		String signal = "";
+
+		if (decimal != null) {
+			formatter.setMaximumFractionDigits(Integer.valueOf(String
+					.valueOf(decimal)));
+		} 			
 		if (format != null) {
 			if (".".contains(format)) {
 				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
@@ -159,29 +163,32 @@ public final class mFnc {
 			} else if (",".contains(format)) {
 				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
 				dfs.setDecimalSeparator('.');
-			}else if (decimal != null) {
-				formatter.setMaximumFractionDigits(Integer.valueOf(String
-						.valueOf(decimal)));
-			}else if(String.valueOf(format).equals("T")){
+			} else if (String.valueOf(format).equals("T")) {
 				formatter.setNegativeSuffix("-");
-			}else if(String.valueOf(format).equals("T+")){
+			} else if (String.valueOf(format).equals("T+")) {
 				formatter.setPositiveSuffix("+");
-			}else if(String.valueOf(format).equals("P")){
+			} else if (String.valueOf(format).equals("P")) {
 				formatter.setNegativePrefix("(");
 				formatter.setNegativeSuffix(")");
 			} else if ("+".equals(format)) {
-				signal = !(inumberDbl < 0) ? "+" : "";
-				signal = signal.equals(format) ? "+" : "-";
-			}else if("-".equals(format)){
-				signal = (inumberDbl < 0) ? "+" : "-";
-				signal = signal.equals(format) ? "+" : "-";				
+				if (!(inumberDbl < 0)) {
+					formatter.setPositivePrefix("+");
+				} else {
+					formatter.setNegativePrefix("");
+				}
+			} else if ("-".equals(format)) {
+				if ((inumberDbl < 0)) {
+					formatter.setPositivePrefix("+");
+				} else {
+					formatter.setNegativePrefix("-");
+				}
 			}
 
 		}
-		
+
 		formatter.setDecimalFormatSymbols(dfs);
 
-		String formatedString = signal.concat(formatter.format(inumberDbl));
+		String formatedString = formatter.format(inumberDbl);
 
 		return formatedString;
 	}
@@ -266,7 +273,11 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $justify(Object object, int i, String $piece) {
+	public static Object $justify(Object expression, int width, String decimal) {
+		String str = "";
+		//if(String.valueOf(expression)){
+			
+		//}
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
