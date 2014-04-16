@@ -13,7 +13,7 @@ public class FNumberFunctionTest {
 	public void testFNumber() {
 
 		Object inumber = "6.25198";
-		String format	 = "P+";	
+		String format	 = "T+";	
 		Object decimal	 = "3";	
 		
 		String expected = "6.252+";
