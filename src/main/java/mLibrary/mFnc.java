@@ -12,7 +12,6 @@ import antlr.StringUtils;
 
 public final class mFnc {
 
-
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -160,8 +159,8 @@ public final class mFnc {
 			formatter.setMaximumFractionDigits(Integer.valueOf(String
 					.valueOf(decimal)));
 			formatter.setMinimumFractionDigits(Integer.valueOf(String
-					.valueOf(decimal)));			
-		} 			
+					.valueOf(decimal)));
+		}
 		if (format != null) {
 			if (".".contains(format)) {
 				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
@@ -202,7 +201,7 @@ public final class mFnc {
 	public static Object $fnumber(Object inumber, String format) {
 		return $fnumber(inumber, format, null);
 	}
-	
+
 	public static Object $g(mVar pstrClass) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -282,12 +281,23 @@ public final class mFnc {
 	public static Object $job() {
 		throw new UnsupportedOperationException();
 	}
-
+	/**
+	 * Returns the value of an expression right-aligned within the specified width.
+	 * @param expression
+	 * @param width
+	 * @param decimal
+	 * @return
+	 * <br/>expression -> The value that is to be right-aligned. It can be a numeric value, a string literal, the name of a variable, or any valid Caché ObjectScript expression.
+	 * <br/>width -> The number of characters within which expression is to be right-aligned. It can be a positive integer value, the name of an integer variable, or any valid Caché ObjectScript expression that evaluates to a positive integer.
+	 * <br/>decimal	-> Optional — The position at which to place the decimal point within the width. It can be a positive integer value, the name of an integer variable, or any valid Caché ObjectScript expression that evaluates to a positive integer.
+	 */
 	public static Object $justify(Object expression, int width, String decimal) {
-		if(decimal!=null){
-			expression = $fnumber(expression,",",decimal);
+		if (decimal != null) {
+			expression = $fnumber(expression, ",", decimal);
 		}
-		String strFormated = new String(new char[width-expression.toString().length()]).replace("\0", " ").concat(String.valueOf(expression));//.format("%"+"-"+width+"s", String.valueOf(expression));  
+		String strFormated = new String(new char[width
+				- expression.toString().length()]).replace("\0", " ").concat(
+				String.valueOf(expression));
 		return strFormated;
 	}
 
@@ -356,11 +366,6 @@ public final class mFnc {
 	}
 
 	public static Object $order(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $order(mVar var, boolean negative) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -475,7 +480,7 @@ public final class mFnc {
 		}
 		return returnObj;
 	}
-	
+
 	@TODO
 	public static Object $test() {
 		// TODO Auto-generated method stub
@@ -486,10 +491,10 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
 	//
-	public static Object $translate(Object $get, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $translate(Object string, Object identifier) {
+		return $translate(string, identifier, null);
 	}
 
 	public static Object $translate(Object string, Object oldCharsequence,
@@ -822,7 +827,7 @@ public final class mFnc {
 			String newCharsequence) {
 
 		if (string == null || oldCharsequence == null
-				|| newCharsequence == null || oldCharsequence.length() == 0) {
+				|| oldCharsequence.length() == 0) {
 			return string;
 		}
 
@@ -832,7 +837,8 @@ public final class mFnc {
 		 */
 		char[] stringChars = string.toCharArray();
 		char[] oldChars = oldCharsequence.toCharArray();
-		char[] newChars = newCharsequence.toCharArray();
+		char[] newChars = (newCharsequence != null ? newCharsequence : "")
+				.toCharArray();
 
 		// Aqui vamos completar o newChars de substiticao pois quando
 		// os tamanhos nao forem identicos isso indicara que os valores
@@ -847,7 +853,11 @@ public final class mFnc {
 			copy = stringChars[i];
 			for (int j = 0; j < oldChars.length; j++) {
 				if (copy == oldChars[j]) {
-					copy = newChars[j];
+					if (newCharsequence != null) {
+						copy = newChars[j];
+					} else {
+						copy = '\0';
+					}
 					break;
 				}
 			}
@@ -881,14 +891,6 @@ public final class mFnc {
 	}
 
 	private mFnc() {
-	}
-
-	public Object $orderx(mData mData) {
-		return $order(mData, 1);
-	}
-
-	public Object $orderx(mData mData, int direction) {
-		return mData.order(direction);
 	}
 
 	public Object length(Object string) {
