@@ -102,4 +102,29 @@ public class mContext {
 		}
 	}
 
+	public mVar newVarRef(String name, Object variable, Object valueDefault) {
+		if (variable instanceof mVar) {
+			return (mVar) variable;
+		} else {
+			mVar var = var(name);
+			if (variable != null) {
+				var.set(variable);
+			} else {
+				var.set(valueDefault);
+			}
+			return var;
+		}
+	}
+	
+	public mVar newVarRef(String name, Object variable) {
+		if (variable instanceof mVar) {
+			return (mVar) variable;
+		} else {
+			mVar var = var(name);
+			if (variable != null) {
+				var.set(variable);
+			} 
+			return var;
+		}
+	}
 }

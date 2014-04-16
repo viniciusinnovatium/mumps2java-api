@@ -6,7 +6,7 @@ import mLibrary.mLocal;
 
 import org.junit.Test;
 
-public class MContextVariableTest {
+public class StackingVariableAndNewOperatorTest {
 
 	private mContext m$ = null;
 
