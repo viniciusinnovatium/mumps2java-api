@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
+import br.com.innovatium.mumps2java.todo.TODO;
 import antlr.StringUtils;
 
 public final class mFnc {
@@ -474,23 +475,18 @@ public final class mFnc {
 		}
 		return returnObj;
 	}
-
-	public static Object $setpiece(Object string, Object delimiter,
-			Object position, Object value) {
-		return setPieceImpl(castString(string), castString(delimiter),
-				castInt(position), castString(value));
-	}
-
+	
+	@TODO
 	public static Object $test() {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return 1;
 	}
 
 	public static Object $tlevel() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	//
 	public static Object $translate(Object $get, Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -517,49 +513,17 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zcvt(Object object, String string) {
+	public static Object $zdate(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdate(boolean positive, int i) {
+	public static Object $zdateh(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdate(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object object, Object object2, Object object3,
-			Object object4, Object object5, Object object6, Object object7,
-			Object object8, ListObject $lb) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdatetime(Object $horolog) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdt(Object $h, int i) {
+	public static Object $zdatetime(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -592,10 +556,6 @@ public final class mFnc {
 
 	public static String $ztimestamp() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static String $zts() {
-		return $ztimestamp();
 	}
 
 	public static ListObject $zu(int i) {
@@ -923,11 +883,11 @@ public final class mFnc {
 	private mFnc() {
 	}
 
-	public Object $order(mData mData) {
+	public Object $orderx(mData mData) {
 		return $order(mData, 1);
 	}
 
-	public Object $order(mData mData, int direction) {
+	public Object $orderx(mData mData, int direction) {
 		return mData.order(direction);
 	}
 
