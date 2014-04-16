@@ -1,6 +1,12 @@
 package mLibrary;
 
+import br.com.innovatium.mumps2java.todo.TODO;
+
 public class mVar {
+	/*
+	 * The subscripts should be converted to String soon.
+	 */
+	@TODO
 	private Object[] subs;
 	private mData mData;
 
@@ -12,14 +18,6 @@ public class mVar {
 		this.mData = mData;
 	}
 	
-	public void stacking() {
-		mData.stacking(subs);
-	}
-	
-	public void unstacking() {
-		mData.unstacking();
-	}
-
 	public void set(Object value) {
 		mData.subs(subs).set(value);
 	}
@@ -68,5 +66,13 @@ public class mVar {
 	public Object var(Object object, String string, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
+	}
+	
+	/*
+	 * This method should remove toString call from subscripts array element.
+	 */
+	@TODO
+	public String getName() {
+		return subs[0].toString();
 	}
 }

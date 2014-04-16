@@ -17,7 +17,9 @@ public abstract class mData {
 
 	abstract void onKill(Object... subs);
 
-	abstract void stacking(Object... subs);
+	abstract void stacking(String... subs);
+	
+	abstract void stackingExcept(String... subs);
 
 	abstract void unstacking();
 	

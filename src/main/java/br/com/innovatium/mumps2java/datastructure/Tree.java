@@ -1,5 +1,6 @@
 package br.com.innovatium.mumps2java.datastructure;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,16 +14,33 @@ public final class Tree extends Node {
 		super("", "", null, true);
 	}
 
-	public Node stacking(Object... subs) {
+	public void stacking(String... subs) {
 		if (stack == null) {
 			stack = new StackNode();
 		}
 		currentStackLevel++;
-		Node node = generateNode(subs[0]);
-		node.setStackLevel(currentStackLevel);
-		stack.push(node);
-		kill(subs);
-		return generateNode(subs);
+		Node node = null;
+		for (String subscript : subs) {
+			node = searchSubnode(subscript);
+			node.setStackLevel(currentStackLevel);
+			stack.push(node);
+			kill(subscript);
+		}
+	}
+
+	public void stackingExcept(String... subs) {
+		if (stack == null) {
+			stack = new StackNode();
+		}
+		currentStackLevel++;
+		List<Node> nodes = searchSubnodeExcepts(subs);
+		if (nodes != null){
+			for (Node node : nodes) {
+				node.setStackLevel(currentStackLevel);
+				stack.push(node);
+				kill(node.getSubscript());		
+			}
+		}
 	}
 
 	public void unstacking() {
@@ -32,7 +50,7 @@ public final class Tree extends Node {
 		final List<Node> stackedNodes = stack.pull(currentStackLevel);
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
 			for (Node stacked : stackedNodes) {
-				Node node = searchSubnode((String)stacked.getSubscript());
+				Node node = searchSubnode((String) stacked.getSubscript());
 				node.kill();
 				addSubnode(stacked);
 			}
@@ -130,7 +148,7 @@ public final class Tree extends Node {
 		Node node = generateNode(subs);
 		node.setValue(value);
 	}
-	
+
 	public void set(String path, Object value) {
 		set(path.split(DELIMETER), value);
 	}
@@ -217,5 +235,28 @@ public final class Tree extends Node {
 			node = generateNode(node, subs, index);
 		}
 		return node;
+	}
+
+	private List<Node> searchSubnodeExcepts(String... subs) {
+		if (subs == null) {
+			return null;
+		}
+
+		List<Node> list = null;
+
+		subnodes:
+		for (Node node : this.getSubnodes()) {
+			for (int i = 0; i < subs.length; i++) {
+				if (subs[i] != null && subs[i].equals(node.getSubscript())) {
+					continue subnodes;
+				}
+			}
+			if (list == null) {
+				list = new ArrayList<Node>(30);
+			}
+			list.add(node);
+
+		}
+		return list;
 	}
 }

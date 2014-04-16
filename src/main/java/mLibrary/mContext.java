@@ -2,6 +2,7 @@ package mLibrary;
 
 public class mContext {
 	private mData mData;
+	private String[] newVarName;
 
 	public mContext() {
 	}
@@ -22,10 +23,22 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar newvar(String subs) {
-		mVar var = this.var(subs);
-		var.stacking();
-		return var;
+	public void newVar(mVar... vars) {
+		newVarName = new String[vars.length];
+		for (int i = 0; i < vars.length; i++) {
+			newVarName[i] = vars[i].getName();
+		}
+		mData.stacking(newVarName);
+		newVarName = null;
+	}
+	
+	public void newVarExcept(mVar... vars) {
+		newVarName = new String[vars.length];
+		for (int i = 0; i < vars.length; i++) {
+			newVarName[i] = vars[i].getName();
+		}
+		mData.stackingExcept(newVarName);
+		newVarName = null;
 	}
 
 	public mVar piece(String $extract, String string, int i) {
@@ -83,10 +96,10 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar oldvar(String subs) {
-		mVar var = this.var(subs);
-		var.unstacking();
-		return var;
+	public void oldvar(int totalLevel) {
+		while (totalLevel-- > 0) {
+			mData.unstacking();
+		}
 	}
 
 }

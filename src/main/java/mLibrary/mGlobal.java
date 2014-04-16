@@ -58,17 +58,22 @@ public class mGlobal extends mData {
 	}
 
 	@Override
-	void stacking(Object... subs) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	void unstacking() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	String dump() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	void stacking(String... subs) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	void stackingExcept(String... subs) {
 		throw new UnsupportedOperationException();
 	}
 }

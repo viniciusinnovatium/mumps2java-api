@@ -26,8 +26,13 @@ public class mLocal extends mData {
 	}
 
 	@Override
-	void stacking(Object... subs) {
+	void stacking(String... subs) {
 		tree.stacking(subs);
+	}
+	
+	@Override
+	void stackingExcept(String... subs) {
+		tree.stackingExcept(subs);		
 	}
 
 	@Override
@@ -39,5 +44,7 @@ public class mLocal extends mData {
 	public String dump() {
 		return tree.dump();
 	}
+
+	
 
 }
