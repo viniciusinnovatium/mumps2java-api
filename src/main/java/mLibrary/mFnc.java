@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 
 public final class mFnc {
 
+
 	/**
 	 * Converts a character to a numeric code.
 	 * 

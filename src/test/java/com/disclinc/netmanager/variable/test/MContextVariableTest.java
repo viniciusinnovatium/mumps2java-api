@@ -12,26 +12,27 @@ public class MContextVariableTest {
 
 	@Test
 	public void testStackingVariableThroughNewOperator() {
+		init();
 		stackingVariables();
 
 		assertEquals(
-				"After calling new operator variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido").get());
 
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido", "item").get());
 
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido", "item", "medicamento").get());
 
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
-				"XSA-3322", m$.var("contrato").get());
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"cod1", m$.var("contrato").get());
 
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				"mm77", m$.var("contrato", "clausula").get());
 	}
 
@@ -39,34 +40,35 @@ public class MContextVariableTest {
 	public void testStakingVariableAndSettingNewValue() {
 		init();
 
-		assertEquals("Fail on recovering value from the tree", "11",
+		assertEquals("Fail to recover value from the tree", "11",
 				m$.var("pedido").get());
 
-		m$.newvar("pedido");
+		stackingVariables();
 
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido", "item").get());
 
 		m$.var("pedido").set("VALOR EMPILHADO");
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				"VALOR EMPILHADO", m$.var("pedido").get());
 
 	}
 
 	@Test
 	public void testUnstackingVariableThroughOldOperator() {
+		init();
 		stackingVariables();
 
 		assertEquals(
-				"After calling new operator should not such variables reinitialized should be removed from the tree",
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido").get());
 
 		unstackingVariables();
 
 		assertEquals(
-				"Fail on recovering value from the tree after unstacking variable after calling old operator",
+				"Fail to recover value from the tree after unstacking variable after calling old operator",
 				"11", m$.var("pedido").get());
 
 		assertEquals(
@@ -74,74 +76,312 @@ public class MContextVariableTest {
 				"100", m$.var("pedido", "item", "medicamento").get());
 
 		assertEquals(
-				"Fail on recovering value from the tree after unstacking variable after calling old operator",
-				"XSA-3322", m$.var("contrato").get());
+				"Fail to recover value from the tree after unstacking variable after calling old operator",
+				"cod1", m$.var("contrato").get());
 
 		assertEquals(
-				"Fail on recovering value from the tree after unstacking variable after calling old operator",
+				"Fail to recover value from the tree after unstacking variable after calling old operator",
 				"mm77", m$.var("contrato", "clausula").get());
 
 	}
 
 	@Test
-	public void testStackingVariableThroughMultipleNewOperatorCalling() {
+	public void testStackingVariableThroughNewOperatorMultipleCalling() {
 		init();
-		m$.newvar("pedido");
+		stackingVariables();
+		
+		assertEquals(
+				"This variable was removed from the tree after stacking variable through calling new operator first time",
+				null, m$.var("pedido").get());
+		
 		m$.var("pedido").set("pilha1");
-
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling new operator first time",
+				"Fail to recover value from the tree after stacking variable through calling new operator first time",
 				"pilha1", m$.var("pedido").get());
 		
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling new operator first time, because he was not stacked",
-				"XSA-3322", m$.var("contrato").get());
+				"Fail to recover value from the tree after stacking variable through calling new operator first time, because he was not stacked",
+				"cod1", m$.var("contrato").get());
 		
-		m$.newvar("pedido");
+		stackingVariables();
+		
+		assertEquals(
+				"Fail to recover value from the tree after stacking variable through calling new operator twice",
+				null, m$.var("pedido").get());
+		
 		m$.var("pedido").set("pilha2");
+		
+		assertEquals(
+				"Fail to recover value from the tree after stacking variable through calling new operator twice",
+				"pilha2", m$.var("pedido").get());
 
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling new operator twice",
-				"pilha2", m$.var("pedido").get());
-		
-		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling new operator twice, because he was not stacked",
-				"XSA-3322", m$.var("contrato").get());
+				"Fail to recover value from the tree after stacking variable through calling new operator twice, because he was not stacked",
+				"cod1", m$.var("contrato").get());
 		
 		unstackingVariables();
+		
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling old operator first time. He should get value from de stack node",
+				"Fail to recover value from the tree after stacking variable through calling old operator first time. He should get value from de stack node",
 				"pilha1", m$.var("pedido").get());
 		
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling new operator twice, because he was not stacked",
-				"XSA-3322", m$.var("contrato").get());
+				"Fail to recover value from the tree after stacking variable through calling new operator twice, because he was not stacked",
+				"cod1", m$.var("contrato").get());
 		
 		unstackingVariables();
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling old operator first time. He should get value from de stack node",
+				"Fail to recover value from the tree after stacking variable through calling old operator first time. He should get value from de stack node",
 				"11", m$.var("pedido").get());
 		
 		assertEquals(
-				"Fail on recovering value from the tree after stacking variable through calling new operator twice, because he was not stacked",
-				"XSA-3322", m$.var("contrato").get());
+				"Fail to recover value from the tree after stacking variable through calling new operator twice, because he was not stacked",
+				"cod1", m$.var("contrato").get());
+	}
+	
+	@Test
+	public void testStackingMultipleVariableThroughNewOperatorCalling() {
+		init();
+		stackingMultipleVariables();
+		recoverStackedVariablesValues();
+	}
+	
+	@Test
+	public void testStackingMultipleVariableThroughNewOperatorMultipleCalling() {
+		init();
+		
+		// Stacking variables first time
+		stackingMultipleVariables();
+		recoverStackedVariablesValues();
+
+		// Inserting new variable values to the first time calling of the new operator
+		m$.var("pedido").set("pedido1");
+		m$.var("item").set("item1");
+		m$.var("eletronico").set("eletronico1");
+		
+		// Stacking variables second time. This code block must be the same as before.
+		stackingMultipleVariables();
+		recoverStackedVariablesValues();
+		
+		m$.var("pedido").set("pedido2");
+		m$.var("item").set("item2");
+		m$.var("eletronico").set("eletronico2");
+		
+		// Recovering variables values from the second stack level. 
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"pedido2", m$.var("pedido").get());
+		
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"item2", m$.var("item").get());
+		
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"eletronico2", m$.var("eletronico").get());
+		
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"18", m$.var("plastico").get());
+		
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"cod1", m$.var("contrato").get());
+		
+		// Recovering variables values from the first stack level.
+		unstackingVariables(); 
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"pedido1", m$.var("pedido").get());
+		
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"item1", m$.var("item").get());
+		
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"eletronico1", m$.var("eletronico").get());
+		
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"18", m$.var("plastico").get());
+		
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"cod1", m$.var("contrato").get());
+		
+		// Recovering variables values from the default stack level, so, they
+		// have to provide the first setting value.
+		unstackingVariables();
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"11", m$.var("pedido").get());
+
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"63", m$.var("item").get());
+
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				"92", m$.var("eletronico").get());
+
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"18", m$.var("plastico").get());
+
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"cod1", m$.var("contrato").get());
 	}
 
+	@Test
+	public void testStackingVariableThroughNewExceptionsOperatorCalling() {
+		init();
+		stackingExceptionVariables();
+		assertEquals(
+				"This variable was not removed from the tree after calling new exception operator, therefore, its value must be the same",
+				"11", m$.var("pedido").get());
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("contrato").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("item").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("plastico").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("eletronico").get());
+	}
+	
+	public void testStackingMultipleVariableThroughNewExceptionsOperatorCalling() {
+		init();
+		stackingExceptionMultipleVariables();
+		
+		assertEquals(
+				"This variable was not removed from the tree after calling new exception operator, therefore, its value must be the same",
+				"11", m$.var("pedido").get());
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"cod1", m$.var("contrato").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"63", m$.var("item").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("plastico").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("eletronico").get());
+	}
+	
+	@Test
+	public void testUnstackingMultipleVariableThroughNewExceptionsOperatorCalling() {
+		init();
+		stackingExceptionMultipleVariables();
+		
+		assertEquals(
+				"This variable was not removed from the tree after calling new exception operator, therefore, its value must be the same",
+				"11", m$.var("pedido").get());
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("contrato").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"63", m$.var("item").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("plastico").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"92", m$.var("eletronico").get());
+		
+		unstackingVariables();
+		
+		assertEquals(
+				"This variable was not removed from the tree after calling new exception operator, therefore, its value must be the same",
+				"11", m$.var("pedido").get());
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"cod1", m$.var("contrato").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"63", m$.var("item").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"18", m$.var("plastico").get());
+		
+		assertEquals(
+				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
+				"92", m$.var("eletronico").get());
+	}
+	
 	private void init() {
 		m$ = new mContext(new mLocal());
 		m$.var("pedido").set("11");
 		m$.var("pedido", "item").set("99");
 		m$.var("pedido", "item", "medicamento").set("100");
-		m$.var("contrato").set("XSA-3322");
+		m$.var("contrato").set("cod1");
 		m$.var("contrato", "clausula").set("mm77");
+		m$.var("item").set("63");
+		m$.var("item", "detergente").set("43x");
+		m$.var("item", "detergente", "neutro").set("9");
+		m$.var("plastico").set("18");
+		m$.var("eletronico").set("92");
 	}
 
 	private void stackingVariables() {
-		init();
-		m$.newvar("pedido");
+		m$.newVar(m$.var("pedido"));
+	}
+	
+	private void stackingMultipleVariables() {
+		m$.newVar(m$.var("pedido"), m$.var("item"), m$.var("eletronico"));
+	}
+	
+	private void stackingExceptionVariables() {
+		m$.newVarExcept(m$.var("pedido"));
+	}
+	
+	private void stackingExceptionMultipleVariables() {
+		m$.newVarExcept(m$.var("pedido"), m$.var("item"), m$.var("eletronico"));
 	}
 
 	private void unstackingVariables() {
-		m$.oldvar("pedido");
+		m$.oldvar(1);
+	}
+	
+	private void recoverStackedVariablesValues() {
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("pedido").get());
+		
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("item").get());
+		
+		assertEquals(
+				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
+				null, m$.var("eletronico").get());
+		
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"18", m$.var("plastico").get());
+		
+		assertEquals(
+				"This variable was not removed from the tree, therefore, its value must be the same",
+				"cod1", m$.var("contrato").get());
+
 	}
 }
