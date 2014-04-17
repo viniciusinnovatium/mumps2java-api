@@ -69,15 +69,7 @@ public class mContext {
 	 * @return
 	 */
 	public mVar newVarRef(String name, Object variable) {
-		if (variable instanceof mVar) {
-			return (mVar) variable;
-		} else {
-			mVar var = var(name);
-			if (variable != null) {
-				var.set(variable);
-			}
-			return var;
-		}
+		return newVarRef(name, variable, null);
 	}
 
 	/**
@@ -91,17 +83,7 @@ public class mContext {
 	 * @return
 	 */
 	public mVar newVarRef(String name, Object variable, Object valueDefault) {
-		if (variable instanceof mVar) {
-			return (mVar) variable;
-		} else {
-			mVar var = var(name);
-			if (variable != null) {
-				var.set(variable);
-			} else {
-				var.set(valueDefault);
-			}
-			return var;
-		}
+		return simulatingVariableThroughReference(name, variable, valueDefault, true);
 	}
 
 	public void oldvar(int totalLevel) {
@@ -128,6 +110,39 @@ public class mContext {
 	}
 
 	public mVar varRef(String name, Object ref) {
-		throw new UnsupportedOperationException();
+		return varRef(name, ref, null);
+	}
+	
+	public mVar varRef(String name, Object ref, Object valueDefault) {
+		return simulatingVariableThroughReference(name, ref, valueDefault, false);
+	}
+	
+		/**
+	 * This method was created to play a role of mumps usage variable through
+	 * reference or value scheme
+	 * @param name
+	 * @param variable
+	 *            variable used to be employed through reference or value
+	 * @param valueDefault default value to be attributed
+	 * @param stackingNeeded parameter indicating stacking variable condition
+	 * @return
+	 */
+	private mVar simulatingVariableThroughReference(String name, Object variable, Object valueDefault, boolean stackingNeeded) {
+		if (variable instanceof mVar) {
+			return (mVar) variable;
+		} else {
+			mVar var = var(name);
+			
+			if (stackingNeeded) {
+				newVar(var);				
+			}
+			
+			if (variable != null) {
+				var.set(variable);
+			} else if(valueDefault != null) {
+				var.set(valueDefault);
+			}
+			return var;
+		}
 	}
 }
