@@ -1,44 +1,58 @@
 package mLibrary;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
+import java.util.Locale;
+
+import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc {
 
-
-	/**
-	 * Converts a character to a numeric code.
-	 * @param expression
-	 * @param position
-	 * <br/> expression -> The character to be converted.
-	 * <br/> position	-> Optional — The position of a character within a character string, counting from 1. The default is 1.
-	 * @return numeric code
-	 */
-	public static Object $ascii(Object expression, Object position) {	
-		Double convertedPosition = numberConverter(position);
-		return Character.codePointAt(String.valueOf(expression).toCharArray(),convertedPosition.intValue()-1);
-	}	
-	
 	public static Object $ascii(Object expression) {
 		return $ascii(expression, 1);
 	}
-	
+
 	/**
-	 * Converts the integer value of an expression to the corresponding ASCII or Unicode character.
+	 * Converts a character to a numeric code.
+	 * 
+	 * @param expression
+	 * @param position
+	 * <br/>
+	 *            expression -> The character to be converted. <br/>
+	 *            position -> Optional — The position of a character within a
+	 *            character string, counting from 1. The default is 1.
+	 * @return numeric code
+	 */
+	public static Object $ascii(Object expression, Object position) {
+		Double convertedPosition = numberConverter(position);
+		return Character.codePointAt(String.valueOf(expression).toCharArray(),
+				convertedPosition.intValue() - 1);
+	}
+
+	/**
+	 * Converts the integer value of an expression to the corresponding ASCII or
+	 * Unicode character.
+	 * 
 	 * @param i
 	 * @return
 	 */
-	public static Object $c(Object...intArgs) {
+	public static Object $c(Object... intArgs) {
 		return $char(intArgs);
 	}
 
 	/**
 	 * Compares expressions and returns the value of the first matching case.
+	 * 
 	 * @param args
-	 * </br> target - A literal or expression the value of which is to be matched against cases.
-	 * </br> case -	A literal or expression the value of which is to be matched with the results of the evaluation of target.
-	 * </br> value - The value to be returned upon a successful match of the corresponding case.
-	 * </br> default - Optional — The value to be returned if no case matches target.
-	 * @return Object 
+	 *            </br> target - A literal or expression the value of which is
+	 *            to be matched against cases. </br> case - A literal or
+	 *            expression the value of which is to be matched with the
+	 *            results of the evaluation of target. </br> value - The value
+	 *            to be returned upon a successful match of the corresponding
+	 *            case. </br> default - Optional — The value to be returned if
+	 *            no case matches target.
+	 * @return Object
 	 */
 	public static Object $case(Object... args) {
 		Boolean hasTrue = false;
@@ -61,8 +75,8 @@ public final class mFnc {
 			if (!hasTrue) {
 				if (args.length % 2 != 0) {
 					throw new IllegalArgumentException(
-							"This method requires at least one pair of condition and value.");					
-				}else{
+							"This method requires at least one pair of condition and value.");
+				} else {
 					returnObj = args[args.length - 1];
 				}
 			}
@@ -89,6 +103,10 @@ public final class mFnc {
 		return mVar.data();
 	}
 
+	public static String $e(Object string) {
+		return $extract(string);
+	}
+
 	public static String $e(Object value, Object index) {
 		return $extract(value, index);
 	}
@@ -97,8 +115,8 @@ public final class mFnc {
 		return $extract(castString(string), castInt(from), castInt(to));
 	}
 
-	public static String $e(Object string) {
-		return $extract(string);
+	public static String $extract(Object string) {
+		return $extract(string, 1);
 	}
 
 	public static String $extract(Object value, Object index) {
@@ -109,10 +127,6 @@ public final class mFnc {
 		return extractImpl(castString(string), castInt(from), castInt(to));
 	}
 
-	public static String $extract(Object string) {
-		return $extract(string, 1);
-	}
-
 	public static int $find(Object string, Object substring) {
 		return $find(string, substring, 1);
 	}
@@ -121,20 +135,68 @@ public final class mFnc {
 		return findImpl(castString(string), castString(substring),
 				castInt(start));
 	}
+
+	public static Object $fnumber(Object inumber, String format) {
+		return $fnumber(inumber, format, null);
+	}
+
 	/**
-	 * Formats a numeric value with a specified format; optionally rounds to a specified precision.
+	 * Formats a numeric value with a specified format; optionally rounds to a
+	 * specified precision.
+	 * 
 	 * @param inumber
 	 * @param format
 	 * @param decimal
 	 * @return returns the number specified by inumber in the specified format
 	 */
 
-	public static Object $fnumber(Object inumber, String format,
-			Object decimal) {
-		//Locale.getDefault().
-		//Locale locale = new Locale(Locale.)
-			//String.format("10 / 3 = %.2f", 10.0);
-		throw new UnsupportedOperationException();
+	public static Object $fnumber(Object inumber, String format, Object decimal) {
+
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+		DecimalFormat formatter = new DecimalFormat();
+		Double inumberDbl = Double.valueOf(String.valueOf(inumber));
+
+		if (decimal != null) {
+			formatter.setMaximumFractionDigits(Integer.valueOf(String
+					.valueOf(decimal)));
+			formatter.setMinimumFractionDigits(Integer.valueOf(String
+					.valueOf(decimal)));
+		}
+		if (format != null) {
+			if (".".contains(format)) {
+				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
+				dfs.setDecimalSeparator(',');
+			} else if (",".contains(format)) {
+				dfs.setGroupingSeparator(String.valueOf(format).charAt(0));
+				dfs.setDecimalSeparator('.');
+			} else if (String.valueOf(format).equals("T")) {
+				formatter.setNegativeSuffix("-");
+			} else if (String.valueOf(format).equals("T+")) {
+				formatter.setPositiveSuffix("+");
+			} else if (String.valueOf(format).equals("P")) {
+				formatter.setNegativePrefix("(");
+				formatter.setNegativeSuffix(")");
+			} else if ("+".equals(format)) {
+				if (!(inumberDbl < 0)) {
+					formatter.setPositivePrefix("+");
+				} else {
+					formatter.setNegativePrefix("");
+				}
+			} else if ("-".equals(format)) {
+				if ((inumberDbl < 0)) {
+					formatter.setPositivePrefix("+");
+				} else {
+					formatter.setNegativePrefix("-");
+				}
+			}
+
+		}
+
+		formatter.setDecimalFormatSymbols(dfs);
+
+		String formatedString = formatter.format(inumberDbl);
+
+		return formatedString;
 	}
 
 	public static Object $g(mVar pstrClass) {
@@ -217,19 +279,43 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $justify(Object object, int i, String $piece) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	/**
+	 * Returns the value of an expression right-aligned within the specified
+	 * width.
+	 * 
+	 * @param expression
+	 * @param width
+	 * @param decimal
+	 * @return <br/>
+	 *         expression -> The value that is to be right-aligned. It can be a
+	 *         numeric value, a string literal, the name of a variable, or any
+	 *         valid Caché ObjectScript expression. <br/>
+	 *         width -> The number of characters within which expression is to
+	 *         be right-aligned. It can be a positive integer value, the name of
+	 *         an integer variable, or any valid Caché ObjectScript expression
+	 *         that evaluates to a positive integer. <br/>
+	 *         decimal -> Optional — The position at which to place the decimal
+	 *         point within the width. It can be a positive integer value, the
+	 *         name of an integer variable, or any valid Caché ObjectScript
+	 *         expression that evaluates to a positive integer.
+	 */
+	public static Object $justify(Object expression, int width, String decimal) {
+		if (decimal != null) {
+			expression = $fnumber(expression, ",", decimal);
+		}
+		String strFormated = new String(new char[width
+				- expression.toString().length()]).replace("\0", " ").concat(
+				String.valueOf(expression));
+		return strFormated;
 	}
 
-	public static Object $justify(String string, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $justify(String expression, int width) {
+		return $justify(expression, width, null);
 	}
 
-	public static Object $justify(String string, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $justify(String expression, Object width) {
+		int widthInt = numberConverter(width).intValue();
+		return $justify(expression, widthInt, null);
 	}
 
 	public static ListObject $l(ListObject list, int init, int end) {
@@ -288,11 +374,6 @@ public final class mFnc {
 	}
 
 	public static Object $order(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $order(mVar var, boolean negative) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -373,36 +454,40 @@ public final class mFnc {
 
 	/**
 	 * Returns the value associated with the first true expression.
+	 * 
 	 * @param args
-	 * <br/>expression - The select test for the associated value parameter.
-	 * <br/>value - The value to be returned if the associated expression evaluates to true.
+	 * <br/>
+	 *            expression - The select test for the associated value
+	 *            parameter. <br/>
+	 *            value - The value to be returned if the associated expression
+	 *            evaluates to true.
 	 * @return Object associated
 	 */
-		public static Object $select(Object... args) {
-			Boolean hasTrue = false;
-			Object returnObj = null;
-			if (args != null) {
-				if (args.length % 2 != 0) {
-					throw new IllegalArgumentException(
-							"This method requires at least one pair of  condition and value that returns as true.");
-				}
-				for (int i = 0; i < args.length; i++) {
-					if (i % 2 == 0) {
-						boolean bool = booleanConverter(args[i]);
-						if (bool) {
-							hasTrue = bool;
-							returnObj = args[i + 1];
-							break;
-						}
+	public static Object $select(Object... args) {
+		Boolean hasTrue = false;
+		Object returnObj = null;
+		if (args != null) {
+			if (args.length % 2 != 0) {
+				throw new IllegalArgumentException(
+						"This method requires at least one pair of  condition and value that returns as true.");
+			}
+			for (int i = 0; i < args.length; i++) {
+				if (i % 2 == 0) {
+					boolean bool = booleanConverter(args[i]);
+					if (bool) {
+						hasTrue = bool;
+						returnObj = args[i + 1];
+						break;
 					}
 				}
-				if (!hasTrue) {
-					throw new IllegalArgumentException(
-							"This method requires at least one pair of  condition and value that returns as true.");
-				}
 			}
-			return returnObj;
+			if (!hasTrue) {
+				throw new IllegalArgumentException(
+						"This method requires at least one pair of  condition and value that returns as true.");
+			}
 		}
+		return returnObj;
+	}
 
 	public static Object $setpiece(Object string, Object delimiter,
 			Object position, Object value) {
@@ -410,9 +495,10 @@ public final class mFnc {
 				castInt(position), castString(value));
 	}
 
+	@TODO
 	public static Object $test() {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return 1;
 	}
 
 	public static Object $tlevel() {
@@ -420,9 +506,9 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $translate(Object $get, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	//
+	public static Object $translate(Object string, Object identifier) {
+		return $translate(string, identifier, null);
 	}
 
 	public static Object $translate(Object string, Object oldCharsequence,
@@ -446,49 +532,17 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zcvt(Object object, String string) {
+	public static Object $zdate(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdate(boolean positive, int i) {
+	public static Object $zdateh(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdate(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object concat, Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object object, Object object2, Object object3,
-			Object object4, Object object5, Object object6, Object object7,
-			Object object8, ListObject $lb) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdatetime(Object $horolog) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdt(Object $h, int i) {
+	public static Object $zdatetime(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -518,12 +572,9 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
 	public static String $ztimestamp() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static String $zts() {
-		return $ztimestamp();
 	}
 
 	public static ListObject $zu(int i) {
@@ -790,7 +841,7 @@ public final class mFnc {
 			String newCharsequence) {
 
 		if (string == null || oldCharsequence == null
-				|| newCharsequence == null || oldCharsequence.length() == 0) {
+				|| oldCharsequence.length() == 0) {
 			return string;
 		}
 
@@ -800,7 +851,8 @@ public final class mFnc {
 		 */
 		char[] stringChars = string.toCharArray();
 		char[] oldChars = oldCharsequence.toCharArray();
-		char[] newChars = newCharsequence.toCharArray();
+		char[] newChars = (newCharsequence != null ? newCharsequence : "")
+				.toCharArray();
 
 		// Aqui vamos completar o newChars de substiticao pois quando
 		// os tamanhos nao forem identicos isso indicara que os valores
@@ -815,7 +867,11 @@ public final class mFnc {
 			copy = stringChars[i];
 			for (int j = 0; j < oldChars.length; j++) {
 				if (copy == oldChars[j]) {
-					copy = newChars[j];
+					if (newCharsequence != null) {
+						copy = newChars[j];
+					} else {
+						copy = '\0';
+					}
 					break;
 				}
 			}

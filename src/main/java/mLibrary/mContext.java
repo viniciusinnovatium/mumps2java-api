@@ -11,15 +11,33 @@ public class mContext {
 		this.mData = mData;
 	}
 
-	public mVar var(Object... subs) {
-		return new mVar(subs, this.mData);
-	}
-
-	public mVar newref(Object obj, String name) {
+	public mVar indirect(Object string) {
+		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public mVar incref(Object obj, String name) {
+	public mVar indirectVar(Object val) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar lastvar(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar lastVar(Object... subs) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public void newcontext() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar newref(Object object, String string, Object $$$no) {
+		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
@@ -31,7 +49,7 @@ public class mContext {
 		mData.stacking(newVarName);
 		newVarName = null;
 	}
-	
+
 	public void newVarExcept(mVar... vars) {
 		newVarName = new String[vars.length];
 		for (int i = 0; i < vars.length; i++) {
@@ -41,64 +59,15 @@ public class mContext {
 		newVarName = null;
 	}
 
-	public mVar piece(String $extract, String string, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(mVar p$1, String string, int i, Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(mVar p$1, String string, Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(Object $zdate, String string, int i, int subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(Object $get, Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar piece(mVar p$1, Object $$$comma, Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar newref(Object object, String string, String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar newref(Object object, String string, Object $$$no) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar indirect(Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar lastvar(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public void newcontext() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public void oldvar(int totalLevel) {
-		while (totalLevel-- > 0) {
-			mData.unstacking();
+	public mVar newVarRef(String name, Object variable) {
+		if (variable instanceof mVar) {
+			return (mVar) variable;
+		} else {
+			mVar var = var(name);
+			if (variable != null) {
+				var.set(variable);
+			}
+			return var;
 		}
 	}
 
@@ -115,16 +84,28 @@ public class mContext {
 			return var;
 		}
 	}
-	
-	public mVar newVarRef(String name, Object variable) {
-		if (variable instanceof mVar) {
-			return (mVar) variable;
-		} else {
-			mVar var = var(name);
-			if (variable != null) {
-				var.set(variable);
-			} 
-			return var;
+
+	public void oldvar(int totalLevel) {
+		while (totalLevel-- > 0) {
+			mData.unstacking();
 		}
+	}
+
+	public mVar pieceVar(mVar var, Object del, Object ipos) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar pieceVar(mVar var, Object del, Object ipos, Object epos) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar var(Object... subs) {
+		return new mVar(subs, this.mData);
+	}
+
+	public mVar varRef(String name, Object ref) {
+		throw new UnsupportedOperationException();
 	}
 }
