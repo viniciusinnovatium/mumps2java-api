@@ -59,6 +59,15 @@ public class mContext {
 		newVarName = null;
 	}
 
+	/**
+	 * This method was created to play a role of mumps usage variable through
+	 * reference or value scheme
+	 * 
+	 * @param name
+	 * @param variable
+	 *            variable used to be employed through reference or value
+	 * @return
+	 */
 	public mVar newVarRef(String name, Object variable) {
 		if (variable instanceof mVar) {
 			return (mVar) variable;
@@ -71,6 +80,16 @@ public class mContext {
 		}
 	}
 
+	/**
+	 * This method was created to play a role of mumps usage variable through
+	 * reference or value scheme
+	 * 
+	 * @param name
+	 * @param variable
+	 *            variable used to be employed through reference or value
+	 * @param valueDefault default value to be attributed
+	 * @return
+	 */
 	public mVar newVarRef(String name, Object variable, Object valueDefault) {
 		if (variable instanceof mVar) {
 			return (mVar) variable;
@@ -86,6 +105,9 @@ public class mContext {
 	}
 
 	public void oldvar(int totalLevel) {
+		if (totalLevel <= 0) {
+			return;
+		}
 		while (totalLevel-- > 0) {
 			mData.unstacking();
 		}
