@@ -1,6 +1,6 @@
 package com.disclinc.netmanager.variable.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
 import mLibrary.mLocal;
 import mLibrary.mVar;
@@ -32,6 +32,6 @@ public class VariableThroughReferenceOrValueTest {
 		mVar other = m$.newVarRef("pedido", "cod1");
 		assertEquals(
 				"This method have to return the same object when used a wrapper variable as second parameter",
-				"cod1", var.get());
+				var.get(), other.get());
 	}
 }

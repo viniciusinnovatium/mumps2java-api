@@ -1,5 +1,6 @@
 package mLibrary;
 
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
@@ -8,10 +9,6 @@ import java.util.Locale;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc {
-
-	public static Object $ascii(Object expression) {
-		return $ascii(expression, 1);
-	}
 
 	/**
 	 * Converts a character to a numeric code.
@@ -28,6 +25,10 @@ public final class mFnc {
 		Double convertedPosition = numberConverter(position);
 		return Character.codePointAt(String.valueOf(expression).toCharArray(),
 				convertedPosition.intValue() - 1);
+	}
+
+	public static Object $ascii(Object expression) {
+		return $ascii(expression, 1);
 	}
 
 	/**
@@ -136,10 +137,6 @@ public final class mFnc {
 				castInt(start));
 	}
 
-	public static Object $fnumber(Object inumber, String format) {
-		return $fnumber(inumber, format, null);
-	}
-
 	/**
 	 * Formats a numeric value with a specified format; optionally rounds to a
 	 * specified precision.
@@ -149,7 +146,6 @@ public final class mFnc {
 	 * @param decimal
 	 * @return returns the number specified by inumber in the specified format
 	 */
-
 	public static Object $fnumber(Object inumber, String format, Object decimal) {
 
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
@@ -197,6 +193,10 @@ public final class mFnc {
 		String formatedString = formatter.format(inumberDbl);
 
 		return formatedString;
+	}
+
+	public static Object $fnumber(Object inumber, String format) {
+		return $fnumber(inumber, format, null);
 	}
 
 	public static Object $g(mVar pstrClass) {
