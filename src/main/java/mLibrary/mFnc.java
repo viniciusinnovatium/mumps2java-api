@@ -3,7 +3,9 @@ package mLibrary;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Locale;
 
 import br.com.innovatium.mumps2java.todo.TODO;
@@ -532,7 +534,79 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdate(Object... object) {
+	/**
+	 * Validates date and converts format.
+	 * 
+	 * @param hdate
+	 * @param dformat
+	 * @param monthlist
+	 * @param yearopt
+	 * @param startwin
+	 * @param endwin
+	 * @param mindate
+	 * @param maxdate
+	 * @param erropt
+	 * @return
+	 */
+	public static Object $zdate(Object hdate, Object dformat, Object monthlist,
+			Object yearopt, Object startwin, Object endwin, Object mindate,
+			Object maxdate, Object erropt) {
+
+		String dFormatStr = "MM/dd/yy";
+		Calendar cal = Calendar.getInstance();
+
+		String returnDate = "";
+
+		if (dFormatStr.equals("-1")) {
+			dFormatStr = "";
+		} else if (dFormatStr.equals("0")) {
+			dFormatStr = "dd MMM yy";
+		} else if (dFormatStr.equals("1")) {
+			dFormatStr = "MM/dd/yy";
+		} else if (dFormatStr.equals("2")) {
+			dFormatStr = "dd MMM yy";
+		} else if (dFormatStr.equals("3")) {
+			dFormatStr = "yyyy-MM-dd";
+		} else if (dFormatStr.equals("4")) {
+			dFormatStr = "dd/MM/yy";
+		} else if (dFormatStr.equals("5")) {
+			dFormatStr = "MMM d, yyyy";
+		} else if (dFormatStr.equals("6")) {
+			dFormatStr = "MMM d yyyy";
+		} else if (dFormatStr.equals("7")) {
+			dFormatStr = "MMM dd yy";
+		} else if (dFormatStr.equals("8")) {
+			dFormatStr = "yyyyMMdd";
+		} else if (dFormatStr.equals("9")) {
+			dFormatStr = "MMMM d, yyyy";
+		} else if (dFormatStr.equals("10")) {
+			returnDate = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
+			dFormatStr = "";
+		} else if (dFormatStr.equals("11")) {
+			dFormatStr = "ddd";
+		} else if (dFormatStr.equals("12")) {
+			dFormatStr = "ddd";
+		} else if (dFormatStr.equals("13")) {
+			dFormatStr = "ddd";
+		} else if (dFormatStr.equals("14")) {
+			dFormatStr = "ddd";
+			cal.get(Calendar.DAY_OF_YEAR);
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
+
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdate(Object object, Object object2) {
+
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdate(Object object) {
+
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
