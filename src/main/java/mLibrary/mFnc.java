@@ -1,10 +1,16 @@
 package mLibrary;
 
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+<<<<<<< HEAD
 import java.util.Date;
+=======
+import java.util.Arrays;
+import java.util.Calendar;
+>>>>>>> 1d5ca2a99a92e875f72c8b622912c3d68281f64d
 import java.util.Locale;
 
 import br.com.innovatium.mumps2java.todo.TODO;
@@ -105,6 +111,10 @@ public final class mFnc {
 		return mVar.data();
 	}
 
+	public static String $e(Object string) {
+		return $extract(string);
+	}
+
 	public static String $e(Object value, Object index) {
 		return $extract(value, index);
 	}
@@ -113,8 +123,8 @@ public final class mFnc {
 		return $extract(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
-	public static String $e(Object string) {
-		return $extract(string);
+	public static String $extract(Object string) {
+		return $extract(string, 1);
 	}
 
 	public static String $extract(Object value, Object index) {
@@ -123,10 +133,6 @@ public final class mFnc {
 
 	public static String $extract(Object string, Object from, Object to) {
 		return mFncUtil.extractImpl(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
-	}
-
-	public static String $extract(Object string) {
-		return $extract(string, 1);
 	}
 
 	public static int $find(Object string, Object substring) {
@@ -147,7 +153,6 @@ public final class mFnc {
 	 * @param decimal
 	 * @return returns the number specified by inumber in the specified format
 	 */
-
 	public static Object $fnumber(Object inumber, String format, Object decimal) {
 
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
@@ -490,6 +495,12 @@ public final class mFnc {
 		return returnObj;
 	}
 
+	public static Object $setpiece(Object string, Object delimiter,
+			Object position, Object value) {
+		return setPieceImpl(castString(string), castString(delimiter),
+				castInt(position), castString(value));
+	}
+
 	@TODO
 	public static Object $test() {
 		// TODO Auto-generated method stub
@@ -628,6 +639,10 @@ public final class mFnc {
 	public static String $ztimestamp() {
 		throw new UnsupportedOperationException();
 	}
+	
+	public static String $zts() {
+		throw new UnsupportedOperationException();
+	}
 
 	public static ListObject $zu(int i) {
 		// TODO Auto-generated method stub
@@ -639,4 +654,363 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
+<<<<<<< HEAD
+=======
+	public static Boolean booleanConverter(Object obj) {
+		Boolean bool = false;
+		if (obj instanceof Boolean) {
+			bool = Boolean.parseBoolean(String.valueOf(obj));
+		} else {
+			Double dbl = numberConverter(obj);
+			if (dbl != 0) {
+				bool = true;
+			}
+		}
+		return bool;
+	}
+
+	public static Double castDouble(Object obj) {
+		try {
+			return (Double) obj;
+		} catch (ClassCastException e) {
+			return 0d;
+		}
+	}
+
+	public static Integer castInt(Object obj) {
+		try {
+			return (Integer) obj;
+		} catch (ClassCastException e) {
+			return 0;
+		}
+	}
+
+	public static Integer[] castIntArray(Object... obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj.length == 0) {
+			return new Integer[] {};
+		}
+
+		final Integer[] array = new Integer[obj.length];
+		for (int i = 0; i < obj.length; i++) {
+			array[i] = castInt(obj[i]);
+		}
+		return array;
+	}
+
+	public static String castString(Object obj) {
+		try {
+			return (String) obj;
+		} catch (ClassCastException e) {
+			return null;
+		}
+	}
+
+	public static String characterImpl(Integer... codes) {
+		if (codes == null) {
+			return null;
+		}
+
+		if (codes.length == 1 && codes[0] == null) {
+			return null;
+		}
+
+		final Character[] chars = new Character[codes.length];
+		for (int i = 0; i < codes.length; i++) {
+			// Apenas os inteiros nao-negativos deve ser convertidos.
+			if (codes[i] != null && codes[i] > 0) {
+				chars[i] = Character.toChars(codes[i])[0];
+			}
+		}
+
+		return generateString(chars, null, true);
+	}
+
+	public static String extractImpl(String string, int from, int to) {
+		if (string == null) {
+			return null;
+		}
+		try {
+			return string.substring(from - 1, to);
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	public static int findImpl(String string, String substring, int start) {
+		if (string == null || string.trim().length() == 0 || substring == null
+				|| substring.length() == 0) {
+			return 0;
+		}
+
+		if (start < 1 || start >= string.length()) {
+			return 0;
+		}
+
+		string = string.substring(start);
+
+		char[] substringChar = substring.toCharArray();
+		char[] stringChar = string.toCharArray();
+
+		int j = 0;
+		int max = substringChar.length;
+		for (int i = 0; i < stringChar.length; i++) {
+			if (stringChar[i] == substringChar[j]) {
+				j++;
+			} else {
+				j = 0;
+			}
+
+			if (j == max) {
+				return ++i + (start + 1);
+			}
+		}
+		return 0;
+	}
+
+	private static String generateString(Object[] array, String delimiter) {
+		return generateString(array, delimiter, false);
+	}
+
+	private static String generateString(Object[] array, String delimiter,
+			boolean avoidNull) {
+		final StringBuilder result = new StringBuilder();
+		final int indexToInsert = array.length - 1;
+		for (int i = 0; i < array.length; i++) {
+			if (avoidNull && array[i] == null) {
+				continue;
+			}
+			result.append(array[i]);
+			if (delimiter != null && i < indexToInsert) {
+				result.append(delimiter);
+			}
+		}
+		return result.toString();
+	}
+
+	private static boolean hasElementOnListObject(ListObject list, int position) {
+		Object elemet = list(list, position);
+		return elemet != null && !"".equals(elemet.toString().trim());
+	}
+
+	public static Object list(ListObject list) {
+		return list.firstElement();
+	}
+
+	public static Object list(ListObject list, int position) {
+		return list.element(position);
+	}
+
+	public static int listData(ListObject list, int position) {
+		return hasElementOnListObject(list, position) ? 1 : 0;
+	}
+
+	public static Object listGet(ListObject list, int position,
+			String defaultValue) {
+		if (hasElementOnListObject(list, position)) {
+			return list(list, position);
+		} else {
+			return defaultValue;
+		}
+	}
+
+	public static Double numberConverter(Object obj) {
+		Double dbl = null;
+		try {
+			dbl = Double.valueOf(String.valueOf(obj));
+		} catch (NumberFormatException nfe) {
+			String result = "";
+			char[] charArray = obj.toString().toCharArray();
+			boolean startNumber = false;
+			boolean hasPoint = false;
+			for (int i = 0; i < charArray.length; i++) {
+				char c = charArray[i];
+				if (!startNumber && (c == '+' || c == '-')) {
+					if (result.isEmpty()) {
+						result = String.valueOf(c);
+					} else {
+						if (result.equals(String.valueOf(c))) {
+							result = "+";
+						} else {
+							result = "-";
+						}
+					}
+					continue;
+				}
+				if (Character.isDigit(c)) {
+					startNumber = true;
+					result = result.concat(String.valueOf(c));
+					continue;
+				}
+				if (c == '.') {
+					startNumber = true;
+					if (!hasPoint) {
+						hasPoint = true;
+						result = result.concat(String.valueOf(c));
+						continue;
+					}
+				}
+				if (result.isEmpty() || !startNumber) {
+					result = "0";
+				}
+				break;
+			}
+			dbl = Double.valueOf(result);
+		}
+		return dbl;
+	}
+
+	public static String pieceImpl(String string, String delimiter) {
+		return $piece(string, delimiter, 1);
+	}
+
+	public static String pieceImpl(String string, String delimiter, int index) {
+
+		if (string == null) {
+			return null;
+		}
+
+		return string.split(delimiter)[index - 1];
+	}
+
+	public static String pieceImpl(String string, String delimiter, int from,
+			int to) {
+		if (string == null) {
+			return null;
+		}
+
+		if (from > to) {
+			return null;
+		}
+
+		final String[] array = Arrays.copyOfRange(string.split(delimiter),
+				from - 1, to);
+
+		return generateString(array, delimiter);
+	}
+
+	public static String setPieceImpl(String string, String delimiter,
+			Integer position, String value) {
+		if (string == null || position < 0) {
+			return string;
+		}
+
+		final String[] array = string.split(delimiter);
+		if (value == null) {
+			value = "";
+		}
+		array[position - 1] = value;
+
+		return generateString(array, delimiter);
+	}
+
+	public static String translateImpl(String string, String oldCharsequence,
+			String newCharsequence) {
+
+		if (string == null || oldCharsequence == null
+				|| oldCharsequence.length() == 0) {
+			return string;
+		}
+
+		/*
+		 * Esse mecanismo foi escolhido para evidar de criar muitas strings no
+		 * pool e evitar o consumo de memoria excessivo.
+		 */
+		char[] stringChars = string.toCharArray();
+		char[] oldChars = oldCharsequence.toCharArray();
+		char[] newChars = (newCharsequence != null ? newCharsequence : "")
+				.toCharArray();
+
+		// Aqui vamos completar o newChars de substiticao pois quando
+		// os tamanhos nao forem identicos isso indicara que os valores
+		// excedentes devem ser substituidos pelo caracter "vazio".
+		if (newChars.length < oldChars.length) {
+			newChars = Arrays.copyOf(newChars, oldChars.length);
+		}
+
+		final StringBuilder result = new StringBuilder();
+		char copy;
+		for (int i = 0; i < stringChars.length; i++) {
+			copy = stringChars[i];
+			for (int j = 0; j < oldChars.length; j++) {
+				if (copy == oldChars[j]) {
+					if (newCharsequence != null) {
+						copy = newChars[j];
+					} else {
+						copy = '\0';
+					}
+					break;
+				}
+			}
+
+			// Caso o caracter seja vazio nao devemos inclui-lo na string
+			// gerada.
+			if ('\0' != copy) {
+				result.append(copy);
+			}
+
+		}
+
+		return result.toString();
+	}
+
+	public static Object zconvert(Object string, Object mode) {
+		return zconvertImpl(castString(string), castString(mode));
+	}
+
+	public static String zconvertImpl(String string, String mode) {
+		if (mode == null || mode.trim().length() == 0) {
+			return string;
+		}
+
+		if ("L".equalsIgnoreCase(mode)) {
+			string = string.toLowerCase();
+		} else if ("U".equalsIgnoreCase(mode)) {
+			string = string.toUpperCase();
+		}
+		return string;
+	}
+
+	private mFnc() {
+	}
+
+	public Object $order(mData mData) {
+		return $order(mData, 1);
+	}
+
+	public Object $order(mData mData, int direction) {
+		return mData.order(direction);
+	}
+
+	public Object length(Object string) {
+		return length(castString(string));
+	}
+
+	public Object length(Object string, Object delimiter) {
+		return lengthImpl(castString(string), castString(delimiter));
+	}
+
+	public int lengthImpl(String string) {
+		if (string == null) {
+			return 0;
+		}
+
+		return string.length();
+	}
+
+	public Object lengthImpl(String string, String delimiter) {
+		if (delimiter == null && string == null) {
+			return 0;
+		}
+
+		if (delimiter != null && string == null) {
+			return 1;
+		}
+
+		return string.split(delimiter).length;
+	}
+
+>>>>>>> 1d5ca2a99a92e875f72c8b622912c3d68281f64d
 }
