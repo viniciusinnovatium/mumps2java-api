@@ -1,13 +1,8 @@
 package com.disclinc.netmanager.function.test;
 
-import static mLibrary.mFnc.*;
-import static org.junit.Assert.assertEquals;
-import mLibrary.ListObject;
-
-import org.junit.Test;
 
 public class ListBuildFunctionTest {
-
+/*
 	@Test
 	public void testCreatingListObjectDefault() {
 		assertEquals(
@@ -100,6 +95,6 @@ public class ListBuildFunctionTest {
 				"Fail on recovering default element od the list object because there is present in the position.",
 				"pera", listGet(l1, 3, "pera"));
 	}
-	
+	*/
 	
 }

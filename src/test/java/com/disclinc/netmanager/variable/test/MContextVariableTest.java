@@ -359,7 +359,6 @@ public class MContextVariableTest {
 	}
 
 	private void unstackingVariables() {
-		m$.oldvar(1);
 	}
 	
 	private void recoverStackedVariablesValues() {

@@ -30,7 +30,7 @@ public final class mOp {
 	}
 
 	public static boolean Logical(Object object) {
-		return mFnc.booleanConverter(object);
+		return mFncUtil.booleanConverter(object);
 	}
 
 	public static boolean Equal(Object x, Object y) {

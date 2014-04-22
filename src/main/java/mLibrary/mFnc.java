@@ -2,9 +2,8 @@ package mLibrary;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -24,7 +23,7 @@ public final class mFnc {
 	 * @return numeric code
 	 */
 	public static Object $ascii(Object expression, Object position) {
-		Double convertedPosition = numberConverter(position);
+		Double convertedPosition = mFncUtil.numberConverter(position);
 		return Character.codePointAt(String.valueOf(expression).toCharArray(),
 				convertedPosition.intValue() - 1);
 	}
@@ -91,7 +90,7 @@ public final class mFnc {
 		if (codes == null || codes.length == 0) {
 			return null;
 		}
-		return characterImpl(castIntArray(codes));
+		return mFncUtil.characterImpl(mFncUtil.castIntArray(codes));
 	}
 
 	public static ListObject $concat(ListObject... lists) {
@@ -99,7 +98,7 @@ public final class mFnc {
 	}
 
 	public static boolean $d(mVar var) {
-		return booleanConverter($data(var));
+		return mFncUtil.booleanConverter($data(var));
 	}
 
 	public static int $data(mVar mVar) {
@@ -111,7 +110,7 @@ public final class mFnc {
 	}
 
 	public static String $e(Object string, Object from, Object to) {
-		return $extract(castString(string), castInt(from), castInt(to));
+		return $extract(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static String $e(Object string) {
@@ -123,7 +122,7 @@ public final class mFnc {
 	}
 
 	public static String $extract(Object string, Object from, Object to) {
-		return extractImpl(castString(string), castInt(from), castInt(to));
+		return mFncUtil.extractImpl(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static String $extract(Object string) {
@@ -135,8 +134,8 @@ public final class mFnc {
 	}
 
 	public static int $find(Object string, Object substring, Object start) {
-		return findImpl(castString(string), castString(substring),
-				castInt(start));
+		return mFncUtil.findImpl(mFncUtil.castString(string), mFncUtil.castString(substring),
+				mFncUtil.castInt(start));
 	}
 
 	/**
@@ -248,7 +247,7 @@ public final class mFnc {
 	public static boolean $isNumber(Object numStr) {
 		boolean isNumber = true;
 		try {
-			Double dbl = numberConverter(numStr);
+			Double dbl = mFncUtil.numberConverter(numStr);
 			if (dbl == 0d && !String.valueOf(dbl).equals("0")) {
 				isNumber = false;
 			}
@@ -317,7 +316,7 @@ public final class mFnc {
 	}
 
 	public static Object $justify(String expression, Object width) {
-		int widthInt = numberConverter(width).intValue();
+		int widthInt = mFncUtil.numberConverter(width).intValue();
 		return $justify(expression, widthInt, null);
 	}
 
@@ -377,8 +376,7 @@ public final class mFnc {
 	}
 
 	public static Object $order(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return var.order();
 	}
 
 	public static Object $order(mVar var, Object $get) {
@@ -387,18 +385,18 @@ public final class mFnc {
 	}
 
 	public static Object $piece(Object string, Object delimiter) {
-		return pieceImpl(castString(string), castString(delimiter), 1);
+		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter), 1);
 	}
 
 	public static String $piece(Object string, Object delimiter, Object index) {
-		return pieceImpl(castString(string), castString(delimiter),
-				castInt(index));
+		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
+				mFncUtil.castInt(index));
 	}
 
 	public static Object $piece(Object string, Object delimiter, Object from,
 			Object to) {
-		return pieceImpl(castString(string), castString(delimiter),
-				castInt(from), castInt(to));
+		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
+				mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static Object $qlength(Object object) {
@@ -476,7 +474,7 @@ public final class mFnc {
 			}
 			for (int i = 0; i < args.length; i++) {
 				if (i % 2 == 0) {
-					boolean bool = booleanConverter(args[i]);
+					boolean bool = mFncUtil.booleanConverter(args[i]);
 					if (bool) {
 						hasTrue = bool;
 						returnObj = args[i + 1];
@@ -510,8 +508,8 @@ public final class mFnc {
 
 	public static Object $translate(Object string, Object oldCharsequence,
 			Object newCharsequence) {
-		return translateImpl(castString(string), castString(oldCharsequence),
-				castString(newCharsequence));
+		return mFncUtil.translateImpl(mFncUtil.castString(string), mFncUtil.castString(oldCharsequence),
+				mFncUtil.castString(newCharsequence));
 	}
 
 	public static Object $zconvert(Object object, String string) {
@@ -543,74 +541,59 @@ public final class mFnc {
 	 * @param erropt
 	 * @return
 	 */
-	public static Object $zdate(Object hdate, Object dformat, Object monthlist,
+	private static Object $zdate(Object hdate, Object dformat,
+			Object monthlist, Object yearopt, Object startwin, Object endwin,
+			Object mindate, Object maxdate, Object erropt) {
+
+		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate));
+
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+
+		return sdf.format(dt);
+	}
+
+	public static Object $zdate(Object hdate, Object dformat) {
+
+		return $zdate(hdate, dformat, null, null, null, null, null, null, null);
+	}
+
+	public static Object $zdate(Object hdate) {
+
+		return $zdate(hdate, null, null, null, null, null, null, null, null);
+	}
+
+	public static Object $zdateh(Object date, Object dformat, Object monthlist,
 			Object yearopt, Object startwin, Object endwin, Object mindate,
 			Object maxdate, Object erropt) {
 
-		String dFormatStr = "MM/dd/yy";
-		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+		String returnDate = erropt != null ? String.valueOf(erropt) : null;
+		try {
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(sdf.parse(String.valueOf(date))));
+		} catch (ParseException e) {
 
-		String returnDate = "";
-
-		if (dFormatStr.equals("-1")) {
-			dFormatStr = "";
-		} else if (dFormatStr.equals("0")) {
-			dFormatStr = "dd MMM yy";
-		} else if (dFormatStr.equals("1")) {
-			dFormatStr = "MM/dd/yy";
-		} else if (dFormatStr.equals("2")) {
-			dFormatStr = "dd MMM yy";
-		} else if (dFormatStr.equals("3")) {
-			dFormatStr = "yyyy-MM-dd";
-		} else if (dFormatStr.equals("4")) {
-			dFormatStr = "dd/MM/yy";
-		} else if (dFormatStr.equals("5")) {
-			dFormatStr = "MMM d, yyyy";
-		} else if (dFormatStr.equals("6")) {
-			dFormatStr = "MMM d yyyy";
-		} else if (dFormatStr.equals("7")) {
-			dFormatStr = "MMM dd yy";
-		} else if (dFormatStr.equals("8")) {
-			dFormatStr = "yyyyMMdd";
-		} else if (dFormatStr.equals("9")) {
-			dFormatStr = "MMMM d, yyyy";
-		} else if (dFormatStr.equals("10")) {
-			returnDate = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
-			dFormatStr = "";
-		} else if (dFormatStr.equals("11")) {
-			dFormatStr = "ddd";
-		} else if (dFormatStr.equals("12")) {
-			dFormatStr = "ddd";
-		} else if (dFormatStr.equals("13")) {
-			dFormatStr = "ddd";
-		} else if (dFormatStr.equals("14")) {
-			dFormatStr = "ddd";
-			cal.get(Calendar.DAY_OF_YEAR);
+			e.printStackTrace();
 		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
-
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return returnDate;
 	}
 
-	public static Object $zdate(Object object, Object object2) {
+	public static Object $zdateh(Object date, Object dformat) {
 
-		// TODO Auto-generated method stub
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+		String returnDate = null;
+		try {
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(sdf.parse(String.valueOf(date))));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return returnDate;
+	}	
+	public static Object $zdateh(Object date) {
 		throw new UnsupportedOperationException();
 	}
-
-	public static Object $zdate(Object object) {
-
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public static Object $zdatetime(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -654,354 +637,6 @@ public final class mFnc {
 	public static Object $zutil(int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}
-
-	public static Boolean booleanConverter(Object obj) {
-		Boolean bool = false;
-		if (obj instanceof Boolean) {
-			bool = Boolean.parseBoolean(String.valueOf(obj));
-		} else {
-			Double dbl = numberConverter(obj);
-			if (dbl != 0) {
-				bool = true;
-			}
-		}
-		return bool;
-	}
-
-	public static Double castDouble(Object obj) {
-		try {
-			return (Double) obj;
-		} catch (ClassCastException e) {
-			return 0d;
-		}
-	}
-
-	public static Integer castInt(Object obj) {
-		try {
-			return (Integer) obj;
-		} catch (ClassCastException e) {
-			return 0;
-		}
-	}
-
-	public static Integer[] castIntArray(Object... obj) {
-		if (obj == null) {
-			return null;
-		} else if (obj.length == 0) {
-			return new Integer[] {};
-		}
-
-		final Integer[] array = new Integer[obj.length];
-		for (int i = 0; i < obj.length; i++) {
-			array[i] = castInt(obj[i]);
-		}
-		return array;
-	}
-
-	public static String castString(Object obj) {
-		try {
-			return (String) obj;
-		} catch (ClassCastException e) {
-			return null;
-		}
-	}
-
-	public static String characterImpl(Integer... codes) {
-		if (codes == null) {
-			return null;
-		}
-
-		if (codes.length == 1 && codes[0] == null) {
-			return null;
-		}
-
-		final Character[] chars = new Character[codes.length];
-		for (int i = 0; i < codes.length; i++) {
-			// Apenas os inteiros nao-negativos deve ser convertidos.
-			if (codes[i] != null && codes[i] > 0) {
-				chars[i] = Character.toChars(codes[i])[0];
-			}
-		}
-
-		return generateString(chars, null, true);
-	}
-
-	public static String extractImpl(String string, int from, int to) {
-		if (string == null) {
-			return null;
-		}
-		try {
-			return string.substring(from - 1, to);
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	public static int findImpl(String string, String substring, int start) {
-		if (string == null || string.trim().length() == 0 || substring == null
-				|| substring.length() == 0) {
-			return 0;
-		}
-
-		if (start < 1 || start >= string.length()) {
-			return 0;
-		}
-
-		string = string.substring(start);
-
-		char[] substringChar = substring.toCharArray();
-		char[] stringChar = string.toCharArray();
-
-		int j = 0;
-		int max = substringChar.length;
-		for (int i = 0; i < stringChar.length; i++) {
-			if (stringChar[i] == substringChar[j]) {
-				j++;
-			} else {
-				j = 0;
-			}
-
-			if (j == max) {
-				return ++i + (start + 1);
-			}
-		}
-		return 0;
-	}
-
-	private static String generateString(Object[] array, String delimiter) {
-		return generateString(array, delimiter, false);
-	}
-
-	private static String generateString(Object[] array, String delimiter,
-			boolean avoidNull) {
-		final StringBuilder result = new StringBuilder();
-		final int indexToInsert = array.length - 1;
-		for (int i = 0; i < array.length; i++) {
-			if (avoidNull && array[i] == null) {
-				continue;
-			}
-			result.append(array[i]);
-			if (delimiter != null && i < indexToInsert) {
-				result.append(delimiter);
-			}
-		}
-		return result.toString();
-	}
-
-	private static boolean hasElementOnListObject(ListObject list, int position) {
-		Object elemet = list(list, position);
-		return elemet != null && !"".equals(elemet.toString().trim());
-	}
-
-	public static Object list(ListObject list) {
-		return list.firstElement();
-	}
-
-	public static Object list(ListObject list, int position) {
-		return list.element(position);
-	}
-
-	public static int listData(ListObject list, int position) {
-		return hasElementOnListObject(list, position) ? 1 : 0;
-	}
-
-	public static Object listGet(ListObject list, int position,
-			String defaultValue) {
-		if (hasElementOnListObject(list, position)) {
-			return list(list, position);
-		} else {
-			return defaultValue;
-		}
-	}
-
-	public static Double numberConverter(Object obj) {
-		Double dbl = null;
-		try {
-			dbl = Double.valueOf(String.valueOf(obj));
-		} catch (NumberFormatException nfe) {
-			String result = "";
-			char[] charArray = obj.toString().toCharArray();
-			boolean startNumber = false;
-			boolean hasPoint = false;
-			for (int i = 0; i < charArray.length; i++) {
-				char c = charArray[i];
-				if (!startNumber && (c == '+' || c == '-')) {
-					if (result.isEmpty()) {
-						result = String.valueOf(c);
-					} else {
-						if (result.equals(String.valueOf(c))) {
-							result = "+";
-						} else {
-							result = "-";
-						}
-					}
-					continue;
-				}
-				if (Character.isDigit(c)) {
-					startNumber = true;
-					result = result.concat(String.valueOf(c));
-					continue;
-				}
-				if (c == '.') {
-					startNumber = true;
-					if (!hasPoint) {
-						hasPoint = true;
-						result = result.concat(String.valueOf(c));
-						continue;
-					}
-				}
-				if (result.isEmpty() || !startNumber) {
-					result = "0";
-				}
-				break;
-			}
-			dbl = Double.valueOf(result);
-		}
-		return dbl;
-	}
-
-	public static String pieceImpl(String string, String delimiter) {
-		return $piece(string, delimiter, 1);
-	}
-
-	public static String pieceImpl(String string, String delimiter, int index) {
-
-		if (string == null) {
-			return null;
-		}
-
-		return string.split(delimiter)[index - 1];
-	}
-
-	public static String pieceImpl(String string, String delimiter, int from,
-			int to) {
-		if (string == null) {
-			return null;
-		}
-
-		if (from > to) {
-			return null;
-		}
-
-		final String[] array = Arrays.copyOfRange(string.split(delimiter),
-				from - 1, to);
-
-		return generateString(array, delimiter);
-	}
-
-	public static String setPieceImpl(String string, String delimiter,
-			Integer position, String value) {
-		if (string == null || position < 0) {
-			return string;
-		}
-
-		final String[] array = string.split(delimiter);
-		if (value == null) {
-			value = "";
-		}
-		array[position - 1] = value;
-
-		return generateString(array, delimiter);
-	}
-
-	public static String translateImpl(String string, String oldCharsequence,
-			String newCharsequence) {
-
-		if (string == null || oldCharsequence == null
-				|| oldCharsequence.length() == 0) {
-			return string;
-		}
-
-		/*
-		 * Esse mecanismo foi escolhido para evidar de criar muitas strings no
-		 * pool e evitar o consumo de memoria excessivo.
-		 */
-		char[] stringChars = string.toCharArray();
-		char[] oldChars = oldCharsequence.toCharArray();
-		char[] newChars = (newCharsequence != null ? newCharsequence : "")
-				.toCharArray();
-
-		// Aqui vamos completar o newChars de substiticao pois quando
-		// os tamanhos nao forem identicos isso indicara que os valores
-		// excedentes devem ser substituidos pelo caracter "vazio".
-		if (newChars.length < oldChars.length) {
-			newChars = Arrays.copyOf(newChars, oldChars.length);
-		}
-
-		final StringBuilder result = new StringBuilder();
-		char copy;
-		for (int i = 0; i < stringChars.length; i++) {
-			copy = stringChars[i];
-			for (int j = 0; j < oldChars.length; j++) {
-				if (copy == oldChars[j]) {
-					if (newCharsequence != null) {
-						copy = newChars[j];
-					} else {
-						copy = '\0';
-					}
-					break;
-				}
-			}
-
-			// Caso o caracter seja vazio nao devemos inclui-lo na string
-			// gerada.
-			if ('\0' != copy) {
-				result.append(copy);
-			}
-
-		}
-
-		return result.toString();
-	}
-
-	public static Object zconvert(Object string, Object mode) {
-		return zconvertImpl(castString(string), castString(mode));
-	}
-
-	public static String zconvertImpl(String string, String mode) {
-		if (mode == null || mode.trim().length() == 0) {
-			return string;
-		}
-
-		if ("L".equalsIgnoreCase(mode)) {
-			string = string.toLowerCase();
-		} else if ("U".equalsIgnoreCase(mode)) {
-			string = string.toUpperCase();
-		}
-		return string;
-	}
-
-	private mFnc() {
-	}
-
-	public Object length(Object string) {
-		return length(castString(string));
-	}
-
-	public Object length(Object string, Object delimiter) {
-		return lengthImpl(castString(string), castString(delimiter));
-	}
-
-	public int lengthImpl(String string) {
-		if (string == null) {
-			return 0;
-		}
-
-		return string.length();
-	}
-
-	public Object lengthImpl(String string, String delimiter) {
-		if (delimiter == null && string == null) {
-			return 0;
-		}
-
-		if (delimiter != null && string == null) {
-			return 1;
-		}
-
-		return string.split(delimiter).length;
 	}
 
 }

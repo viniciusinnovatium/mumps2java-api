@@ -4,9 +4,6 @@ public class mContext {
 	private mData mData;
 	private String[] newVarName;
 
-	public mContext() {
-	}
-
 	public mContext(mLibrary.mData mData) {
 		this.mData = mData;
 	}
@@ -63,6 +60,12 @@ public class mContext {
 	public mVar lastVar(Object... subs) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
+	}
+
+	public mVar oldvar(String subs) {
+		mVar var = this.var(subs);
+		//var.unstacking();
+		return var;
 	}
 
 }

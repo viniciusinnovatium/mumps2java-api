@@ -1,7 +1,9 @@
 package com.disclinc.netmanager.function.test;
 
-import static mLibrary.mFnc.*;
-import static org.junit.Assert.*;
+import static mLibrary.mFnc.$replace;
+import static mLibrary.mFnc.$translate;
+import static org.junit.Assert.assertEquals;
+import mLibrary.mFncUtil;
 
 import org.junit.Test;
 
@@ -70,19 +72,19 @@ public class ReplaceFunctionTest {
 	@Test
 	public void testCovertToUppercase() {
 		assertEquals("Fail on converto to uppcase", "ASDF33", 
-				zconvert("asdf33", "u"));
+				mFncUtil.zconvert("asdf33", "u"));
 	}
 	
 	@Test
 	public void testCovertToLowercase() {
 		assertEquals("Fail on converto to lowercase", "asdf33", 
-				zconvert("ASDF33", "L"));
+				mFncUtil.zconvert("ASDF33", "L"));
 	}
 	
 	@Test
 	public void testCovertUsingModeNotDefined() {
 		assertEquals("Fail on converto to lowercase", "asdf33", 
-				zconvert("asdf33", "X"));
+				mFncUtil.zconvert("asdf33", "X"));
 	}
 
 }
