@@ -10,7 +10,7 @@ import br.com.innovatium.mumps2java.datastructure.Node;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class mGlobal extends mData {
-
+private Object tableName;
 	private final CacheManager cacheManager;
 
 	public mGlobal(CacheManager cacheManager) {
@@ -25,6 +25,13 @@ public class mGlobal extends mData {
 		this(CacheType.REMOTE);
 	}
 
+	public mData subs(Object... subs) {
+		if (subs != null) {
+			tableName = subs[0].toString().replace("^", "");	
+		}
+		return super.subs(subs);
+	}
+	
 	public void set(Object value) {
 		if (tempSubs != null) {
 			cacheManager.put(Tree.generateKey(tempSubs), value);

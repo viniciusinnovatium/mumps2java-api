@@ -17,7 +17,7 @@ public class mVar {
 		this.subs = subs;
 		this.mData = mData;
 	}
-	
+
 	public void set(Object value) {
 		mData.subs(subs).set(value);
 	}
@@ -38,41 +38,27 @@ public class mVar {
 		return mData.data(subs);
 	}
 
-	public mVar var(mVar childKey) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public mVar var(Object... subs) {
+		return new mVar(concat(subs), mData);
 	}
 
-	public mVar var() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar var(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public mVar var(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public Object var(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public Object var(Object object, String string, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-	
 	/*
 	 * This method should remove toString call from subscripts array element.
 	 */
 	@TODO
 	public String getName() {
 		return subs[0].toString();
+	}
+
+	private Object[] concat(Object[] subs) {
+		Object[] copy = new Object[this.subs.length + subs.length];
+		for (int i = 0; i < this.subs.length; i++) {
+			copy[i] = this.subs[i];
+		}
+
+		for (int i = 0; i < subs.length; i++) {
+			copy[i + this.subs.length] = subs[i];
+		}
+		return copy;
 	}
 }

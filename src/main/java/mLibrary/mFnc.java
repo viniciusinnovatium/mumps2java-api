@@ -650,6 +650,10 @@ public final class mFnc {
 	public static String $ztimestamp() {
 		throw new UnsupportedOperationException();
 	}
+	
+	public static String $zts() {
+		throw new UnsupportedOperationException();
+	}
 
 	public static ListObject $zu(int i) {
 		// TODO Auto-generated method stub
