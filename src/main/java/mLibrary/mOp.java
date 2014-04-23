@@ -144,8 +144,8 @@ public final class mOp {
 		}
 	}
 
-	public static boolean Match(Object string, String regex) {
-		return String.valueOf(string).matches(regex);
+	public static boolean Match(Object string, Object regex) {
+		return String.valueOf(string).matches(String.valueOf(regex));
 	}
 
 	public static boolean NotLess(Object object, Object object2) {

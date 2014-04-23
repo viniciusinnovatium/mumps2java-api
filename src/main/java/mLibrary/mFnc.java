@@ -5,12 +5,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-<<<<<<< HEAD
 import java.util.Date;
-=======
 import java.util.Arrays;
 import java.util.Calendar;
->>>>>>> 1d5ca2a99a92e875f72c8b622912c3d68281f64d
 import java.util.Locale;
 
 import br.com.innovatium.mumps2java.todo.TODO;
@@ -306,7 +303,7 @@ public final class mFnc {
 	 *         name of an integer variable, or any valid Caché ObjectScript
 	 *         expression that evaluates to a positive integer.
 	 */
-	public static Object $justify(Object expression, int width, String decimal) {
+	public static Object $justify(Object expression, int width, Object decimal) {
 		if (decimal != null) {
 			expression = $fnumber(expression, ",", decimal);
 		}
@@ -320,7 +317,7 @@ public final class mFnc {
 		return $justify(expression, width, null);
 	}
 
-	public static Object $justify(String expression, Object width) {
+	public static Object $justify(Object expression, Object width) {
 		int widthInt = mFncUtil.numberConverter(width).intValue();
 		return $justify(expression, widthInt, null);
 	}
@@ -370,6 +367,11 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+	
+	public static Object $listget(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 
 	public static int $listlength(ListObject list) {
 		return list.length();
@@ -625,7 +627,7 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object object, String string) {
+	public static Object $zstrip(Object object, Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -654,8 +656,6 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-<<<<<<< HEAD
-=======
 	public static Boolean booleanConverter(Object obj) {
 		Boolean bool = false;
 		if (obj instanceof Boolean) {
@@ -1012,5 +1012,29 @@ public final class mFnc {
 		return string.split(delimiter).length;
 	}
 
->>>>>>> 1d5ca2a99a92e875f72c8b622912c3d68281f64d
+	public static Object $zerror() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdatetimeh(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zsearch(Object string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zversion() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $random(Object multiply) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 }
