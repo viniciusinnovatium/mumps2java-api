@@ -632,8 +632,7 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object object, String string, Object object2,
-			String string2) {
+	public static Object $zstrip(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -1020,7 +1019,7 @@ public final class mFnc {
 	public static Object $zdatetimeh(Object object, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}
+	} 
 
 	public static Object $zsearch(Object string) {
 		// TODO Auto-generated method stub
@@ -1033,6 +1032,11 @@ public final class mFnc {
 	}
 
 	public static Object $random(Object multiply) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $isvalidnum(Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
