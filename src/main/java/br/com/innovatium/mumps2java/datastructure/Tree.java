@@ -68,31 +68,33 @@ public final class Tree extends Node {
 	public Object order(Path path, int direction) {
 
 		if (path == null) {
-			return null;
+			return "";
 		}
 
 		if (path.isLastEmpty() && direction >= 1) {
 			path = path.generate(path.length() - 1);
 			changeToNode(path.toArray());
-			return currentNode.firstChild().getSubscript();
+			Node first = currentNode.firstChild(); 
+			return first != null ? first.getSubscript() : "";
 		}
 
 		if (path.isLastEmpty() && direction < 1) {
 			path = path.generate(path.length() - 1);
 			changeToNode(path.toArray());
-			return currentNode.lastChild().getSubscript();
+			Node last = currentNode.lastChild(); 
+			return last != null ? last.getSubscript() : "";
 		}
 
 		changeToNode(path.toArray());
 		if (currentNode == null) {
-			return null;
+			return "";
 		}
 
 		Node next = currentNode.next(direction);
 		if (next != null) {
 			return next.getSubscript();
 		} else {
-			return null;
+			return "";
 		}
 
 	}
