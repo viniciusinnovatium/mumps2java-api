@@ -15,6 +15,8 @@ public class   mClass{
 		return m$;
 	}
 	
+	
+	
 	public void cmd$Do(String methodName) {
 		cmd$Do(methodName, (Object[]) null);
 	}

@@ -165,7 +165,7 @@ public final class mFncUtil {
 		}
 	}
 
-	public static Long dateMumpsToJava(Object internalDate) {
+	public static Double dateMumpsToJava(Object internalDate) {
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(1840, 12, 31);
 
@@ -175,13 +175,13 @@ public final class mFncUtil {
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
 
 		Long days = Long.valueOf(String.valueOf(internalDate));
-		Long dateMilli = days * 24 * 60 * 60 * 1000 - dateDif;
+		Double dateMilli = days * 24d * 60d * 60d * 1000d - dateDif;
 		
 		return dateMilli;
 
 	}
 	
-	public static Long dateJavaToMumps(Object internalDate) {
+	public static Double dateJavaToMumps(Object internalDate) {
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(1840, 12, 31);
 
@@ -191,7 +191,7 @@ public final class mFncUtil {
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
 
 		Long millis = Long.valueOf(String.valueOf(internalDate));
-		Long days = (millis+dateDif) / 24 / 60 / 60 /1000;
+		Double days = (millis+dateDif) / 24d / 60d / 60d /1000d;
 		
 		return days;
 

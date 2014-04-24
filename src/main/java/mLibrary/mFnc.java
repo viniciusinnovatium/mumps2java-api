@@ -1,6 +1,5 @@
 package mLibrary;
 
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -9,6 +8,8 @@ import java.util.Date;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
@@ -117,7 +118,8 @@ public final class mFnc {
 	}
 
 	public static String $e(Object string, Object from, Object to) {
-		return $extract(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
+		return $extract(mFncUtil.castString(string), mFncUtil.castInt(from),
+				mFncUtil.castInt(to));
 	}
 
 	public static String $extract(Object string) {
@@ -129,7 +131,8 @@ public final class mFnc {
 	}
 
 	public static String $extract(Object string, Object from, Object to) {
-		return mFncUtil.extractImpl(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
+		return mFncUtil.extractImpl(mFncUtil.castString(string),
+				mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static int $find(Object string, Object substring) {
@@ -137,8 +140,8 @@ public final class mFnc {
 	}
 
 	public static int $find(Object string, Object substring, Object start) {
-		return mFncUtil.findImpl(mFncUtil.castString(string), mFncUtil.castString(substring),
-				mFncUtil.castInt(start));
+		return mFncUtil.findImpl(mFncUtil.castString(string),
+				mFncUtil.castString(substring), mFncUtil.castInt(start));
 	}
 
 	/**
@@ -280,7 +283,7 @@ public final class mFnc {
 	}
 
 	public static Object $job() {
-		throw new UnsupportedOperationException();
+		return 1;
 	}
 
 	/**
@@ -363,15 +366,15 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $listget(Object object, Object object2) {
+	public static Object $listget(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public static Object $listget(Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
+	}
 
 	public static int $listlength(ListObject list) {
 		return list.length();
@@ -392,18 +395,20 @@ public final class mFnc {
 	}
 
 	public static Object $piece(Object string, Object delimiter) {
-		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter), 1);
+		return mFncUtil.pieceImpl(mFncUtil.castString(string),
+				mFncUtil.castString(delimiter), 1);
 	}
 
 	public static String $piece(Object string, Object delimiter, Object index) {
-		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
-				mFncUtil.castInt(index));
+		return mFncUtil.pieceImpl(mFncUtil.castString(string),
+				mFncUtil.castString(delimiter), mFncUtil.castInt(index));
 	}
 
 	public static Object $piece(Object string, Object delimiter, Object from,
 			Object to) {
-		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
-				mFncUtil.castInt(from), mFncUtil.castInt(to));
+		return mFncUtil.pieceImpl(mFncUtil.castString(string),
+				mFncUtil.castString(delimiter), mFncUtil.castInt(from),
+				mFncUtil.castInt(to));
 	}
 
 	public static Object $qlength(Object object) {
@@ -521,7 +526,8 @@ public final class mFnc {
 
 	public static Object $translate(Object string, Object oldCharsequence,
 			Object newCharsequence) {
-		return mFncUtil.translateImpl(mFncUtil.castString(string), mFncUtil.castString(oldCharsequence),
+		return mFncUtil.translateImpl(mFncUtil.castString(string),
+				mFncUtil.castString(oldCharsequence),
 				mFncUtil.castString(newCharsequence));
 	}
 
@@ -558,7 +564,7 @@ public final class mFnc {
 			Object monthlist, Object yearopt, Object startwin, Object endwin,
 			Object mindate, Object maxdate, Object erropt) {
 
-		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate));
+		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate).longValue());
 
 		SimpleDateFormat sdf = new SimpleDateFormat(
 				mFncUtil.dateCodeFormatMumpsToJava(dformat));
@@ -584,7 +590,8 @@ public final class mFnc {
 				mFncUtil.dateCodeFormatMumpsToJava(dformat));
 		String returnDate = erropt != null ? String.valueOf(erropt) : null;
 		try {
-			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(sdf.parse(String.valueOf(date))));
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
+					sdf.parse(String.valueOf(date))).longValue());
 		} catch (ParseException e) {
 
 			e.printStackTrace();
@@ -598,15 +605,18 @@ public final class mFnc {
 				mFncUtil.dateCodeFormatMumpsToJava(dformat));
 		String returnDate = null;
 		try {
-			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(sdf.parse(String.valueOf(date))));
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
+					sdf.parse(String.valueOf(date))).longValue());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return returnDate;
-	}	
+	}
+
 	public static Object $zdateh(Object date) {
 		throw new UnsupportedOperationException();
 	}
+
 	public static Object $zdatetime(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -638,9 +648,15 @@ public final class mFnc {
 	}
 
 	public static String $ztimestamp() {
-		throw new UnsupportedOperationException();
+		Calendar cal = Calendar.getInstance(new SimpleTimeZone(
+				SimpleTimeZone.UTC_TIME, "UTC"));
+		Double daysMumps = mFncUtil.dateJavaToMumps(cal.getTimeInMillis());
+		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
+		Double fra = (sec - sec.longValue()) * 1000d;
+
+		return daysMumps.longValue() + "," + sec.longValue() + "." + fra.longValue();
 	}
-	
+
 	public static String $zts() {
 		throw new UnsupportedOperationException();
 	}
@@ -1019,7 +1035,7 @@ public final class mFnc {
 	public static Object $zdatetimeh(Object object, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	} 
+	}
 
 	public static Object $zsearch(Object string) {
 		// TODO Auto-generated method stub

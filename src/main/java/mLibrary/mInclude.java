@@ -90,7 +90,7 @@ public abstract class mInclude {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void cmd$Write(Object object, String string) {
+	public static void cmd$Write(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
