@@ -3,7 +3,9 @@ package mLibrary;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
@@ -24,7 +26,7 @@ public final class mFnc {
 	 * @return numeric code
 	 */
 	public static Object $ascii(Object expression, Object position) {
-		Double convertedPosition = numberConverter(position);
+		Double convertedPosition = mFncUtil.numberConverter(position);
 		return Character.codePointAt(String.valueOf(expression).toCharArray(),
 				convertedPosition.intValue() - 1);
 	}
@@ -91,7 +93,7 @@ public final class mFnc {
 		if (codes == null || codes.length == 0) {
 			return null;
 		}
-		return characterImpl(castIntArray(codes));
+		return mFncUtil.characterImpl(mFncUtil.castIntArray(codes));
 	}
 
 	public static ListObject $concat(ListObject... lists) {
@@ -99,7 +101,7 @@ public final class mFnc {
 	}
 
 	public static boolean $d(mVar var) {
-		return booleanConverter($data(var));
+		return mFncUtil.booleanConverter($data(var));
 	}
 
 	public static int $data(mVar mVar) {
@@ -115,7 +117,7 @@ public final class mFnc {
 	}
 
 	public static String $e(Object string, Object from, Object to) {
-		return $extract(castString(string), castInt(from), castInt(to));
+		return $extract(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static String $extract(Object string) {
@@ -127,7 +129,7 @@ public final class mFnc {
 	}
 
 	public static String $extract(Object string, Object from, Object to) {
-		return extractImpl(castString(string), castInt(from), castInt(to));
+		return mFncUtil.extractImpl(mFncUtil.castString(string), mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static int $find(Object string, Object substring) {
@@ -135,8 +137,8 @@ public final class mFnc {
 	}
 
 	public static int $find(Object string, Object substring, Object start) {
-		return findImpl(castString(string), castString(substring),
-				castInt(start));
+		return mFncUtil.findImpl(mFncUtil.castString(string), mFncUtil.castString(substring),
+				mFncUtil.castInt(start));
 	}
 
 	/**
@@ -247,7 +249,7 @@ public final class mFnc {
 	public static boolean $isNumber(Object numStr) {
 		boolean isNumber = true;
 		try {
-			Double dbl = numberConverter(numStr);
+			Double dbl = mFncUtil.numberConverter(numStr);
 			if (dbl == 0d && !String.valueOf(dbl).equals("0")) {
 				isNumber = false;
 			}
@@ -301,7 +303,7 @@ public final class mFnc {
 	 *         name of an integer variable, or any valid Caché ObjectScript
 	 *         expression that evaluates to a positive integer.
 	 */
-	public static Object $justify(Object expression, int width, String decimal) {
+	public static Object $justify(Object expression, int width, Object decimal) {
 		if (decimal != null) {
 			expression = $fnumber(expression, ",", decimal);
 		}
@@ -315,8 +317,8 @@ public final class mFnc {
 		return $justify(expression, width, null);
 	}
 
-	public static Object $justify(String expression, Object width) {
-		int widthInt = numberConverter(width).intValue();
+	public static Object $justify(Object expression, Object width) {
+		int widthInt = mFncUtil.numberConverter(width).intValue();
 		return $justify(expression, widthInt, null);
 	}
 
@@ -365,6 +367,11 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+	
+	public static Object $listget(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 
 	public static int $listlength(ListObject list) {
 		return list.length();
@@ -385,18 +392,18 @@ public final class mFnc {
 	}
 
 	public static Object $piece(Object string, Object delimiter) {
-		return pieceImpl(castString(string), castString(delimiter), 1);
+		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter), 1);
 	}
 
 	public static String $piece(Object string, Object delimiter, Object index) {
-		return pieceImpl(castString(string), castString(delimiter),
-				castInt(index));
+		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
+				mFncUtil.castInt(index));
 	}
 
 	public static Object $piece(Object string, Object delimiter, Object from,
 			Object to) {
-		return pieceImpl(castString(string), castString(delimiter),
-				castInt(from), castInt(to));
+		return mFncUtil.pieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
+				mFncUtil.castInt(from), mFncUtil.castInt(to));
 	}
 
 	public static Object $qlength(Object object) {
@@ -474,7 +481,7 @@ public final class mFnc {
 			}
 			for (int i = 0; i < args.length; i++) {
 				if (i % 2 == 0) {
-					boolean bool = booleanConverter(args[i]);
+					boolean bool = mFncUtil.booleanConverter(args[i]);
 					if (bool) {
 						hasTrue = bool;
 						returnObj = args[i + 1];
@@ -514,8 +521,8 @@ public final class mFnc {
 
 	public static Object $translate(Object string, Object oldCharsequence,
 			Object newCharsequence) {
-		return translateImpl(castString(string), castString(oldCharsequence),
-				castString(newCharsequence));
+		return mFncUtil.translateImpl(mFncUtil.castString(string), mFncUtil.castString(oldCharsequence),
+				mFncUtil.castString(newCharsequence));
 	}
 
 	public static Object $zconvert(Object object, String string) {
@@ -547,74 +554,59 @@ public final class mFnc {
 	 * @param erropt
 	 * @return
 	 */
-	public static Object $zdate(Object hdate, Object dformat, Object monthlist,
+	private static Object $zdate(Object hdate, Object dformat,
+			Object monthlist, Object yearopt, Object startwin, Object endwin,
+			Object mindate, Object maxdate, Object erropt) {
+
+		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate));
+
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+
+		return sdf.format(dt);
+	}
+
+	public static Object $zdate(Object hdate, Object dformat) {
+
+		return $zdate(hdate, dformat, null, null, null, null, null, null, null);
+	}
+
+	public static Object $zdate(Object hdate) {
+
+		return $zdate(hdate, null, null, null, null, null, null, null, null);
+	}
+
+	public static Object $zdateh(Object date, Object dformat, Object monthlist,
 			Object yearopt, Object startwin, Object endwin, Object mindate,
 			Object maxdate, Object erropt) {
 
-		String dFormatStr = "MM/dd/yy";
-		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+		String returnDate = erropt != null ? String.valueOf(erropt) : null;
+		try {
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(sdf.parse(String.valueOf(date))));
+		} catch (ParseException e) {
 
-		String returnDate = "";
-
-		if (dFormatStr.equals("-1")) {
-			dFormatStr = "";
-		} else if (dFormatStr.equals("0")) {
-			dFormatStr = "dd MMM yy";
-		} else if (dFormatStr.equals("1")) {
-			dFormatStr = "MM/dd/yy";
-		} else if (dFormatStr.equals("2")) {
-			dFormatStr = "dd MMM yy";
-		} else if (dFormatStr.equals("3")) {
-			dFormatStr = "yyyy-MM-dd";
-		} else if (dFormatStr.equals("4")) {
-			dFormatStr = "dd/MM/yy";
-		} else if (dFormatStr.equals("5")) {
-			dFormatStr = "MMM d, yyyy";
-		} else if (dFormatStr.equals("6")) {
-			dFormatStr = "MMM d yyyy";
-		} else if (dFormatStr.equals("7")) {
-			dFormatStr = "MMM dd yy";
-		} else if (dFormatStr.equals("8")) {
-			dFormatStr = "yyyyMMdd";
-		} else if (dFormatStr.equals("9")) {
-			dFormatStr = "MMMM d, yyyy";
-		} else if (dFormatStr.equals("10")) {
-			returnDate = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
-			dFormatStr = "";
-		} else if (dFormatStr.equals("11")) {
-			dFormatStr = "ddd";
-		} else if (dFormatStr.equals("12")) {
-			dFormatStr = "ddd";
-		} else if (dFormatStr.equals("13")) {
-			dFormatStr = "ddd";
-		} else if (dFormatStr.equals("14")) {
-			dFormatStr = "ddd";
-			cal.get(Calendar.DAY_OF_YEAR);
+			e.printStackTrace();
 		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
-
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return returnDate;
 	}
 
-	public static Object $zdate(Object object, Object object2) {
+	public static Object $zdateh(Object date, Object dformat) {
 
-		// TODO Auto-generated method stub
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+		String returnDate = null;
+		try {
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(sdf.parse(String.valueOf(date))));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return returnDate;
+	}	
+	public static Object $zdateh(Object date) {
 		throw new UnsupportedOperationException();
 	}
-
-	public static Object $zdate(Object object) {
-
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zdateh(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public static Object $zdatetime(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -635,13 +627,12 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object object, String string) {
+	public static Object $zstrip(Object object, Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object object, String string, Object object2,
-			String string2) {
+	public static Object $zstrip(Object... object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -1018,6 +1009,36 @@ public final class mFnc {
 		}
 
 		return string.split(delimiter).length;
+	}
+
+	public static Object $zerror() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdatetimeh(Object object, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	} 
+
+	public static Object $zsearch(Object string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zversion() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $random(Object multiply) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $isvalidnum(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 }

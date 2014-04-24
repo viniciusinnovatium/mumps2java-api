@@ -4,8 +4,8 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class mClass {
-	protected mContext m$ = new mContext();
+public class   mClass{
+	protected mContext m$ = new mContext(new mLocal());
 
 	public void cmd$Do(String methodName, Object... parameters) {
 		throw new UnsupportedOperationException();
@@ -33,6 +33,11 @@ public class mClass {
 		cmd$Write(string);
 	}
 
+	public void cmd$SQL() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
 	public void cmd$WriteHtml(Object... string) {
 		cmd$Write(string);
 	}
@@ -94,6 +99,21 @@ public class mClass {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+	
+	public void cmd$Unlock(mVar var) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
+	public void cmd$Unlock(mVar var, String str) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
+	
+	public void cmd$LockInc(mVar var, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 	/*
 	 * Pausa o processamento por um determinado número de milisegundos
 	 */
@@ -107,4 +127,8 @@ public class mClass {
 		}
 
 	}
+	public void cmd$Job(String string, String string2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}	
 }
