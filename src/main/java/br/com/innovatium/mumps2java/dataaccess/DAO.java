@@ -22,7 +22,7 @@ public class DAO {
 		Map<String, String> map = null;
 		try {
 			con = ConnectionFactory.getConnection();
-			String like = "select key, value from \""+tableName+"\" where key like ? order by key asc;";
+			String like = "select key_, value_ from \""+tableName+"\" where key_ like ? order by key_ asc;";
 			
 			PreparedStatement select = con.prepareStatement(like);
 			select.setString(1, key+ "%");
@@ -54,8 +54,8 @@ public class DAO {
 		Connection con = null;
 		try {
 			con = ConnectionFactory.getConnection();
-			String selectOne = "select key, value from \"" + tableName
-					+ "\" where key = ?;";
+			String selectOne = "select key_, value_ from \"" + tableName
+					+ "\" where key_ = ?;";
 			PreparedStatement select = con.prepareStatement(selectOne);
 			select.setObject(1, key);
 			ResultSet result = select.executeQuery();
@@ -68,7 +68,7 @@ public class DAO {
 				insert.setObject(2, value);
 			} else {
 				String updateQuery = "update \"" + tableName
-						+ "\" set value = ? where key = ?;";
+						+ "\" set value_ = ? where key_ = ?;";
 				insert = con.prepareStatement(updateQuery);
 				insert.setObject(1, value);
 				insert.setObject(2, key);
@@ -97,8 +97,8 @@ public class DAO {
 		Connection con = null;
 		try {
 			con = ConnectionFactory.getConnection();
-			String selectOne = "select key, value from \"" + tableName
-					+ "\" where key = ?;";
+			String selectOne = "select key_, value_ from \"" + tableName
+					+ "\" where key_ = ?;";
 			PreparedStatement ps = con.prepareStatement(selectOne);
 			ps.setString(1, key);
 			ResultSet result = ps.executeQuery();

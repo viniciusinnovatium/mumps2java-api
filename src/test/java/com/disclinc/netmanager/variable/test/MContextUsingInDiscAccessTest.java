@@ -31,20 +31,20 @@ public class MContextUsingInDiscAccessTest {
 		mVar pedido = m$.var("^www001", "pedido");
 		pedido = pedido.var("cliente");
 		pedido.set("54");
+		
 		assertEquals("54", m$.var("^www001", "pedido", "cliente").get());
 	}
 	
 	@Test
-	public void testOrderFunction() {
-		// Setting value in two steps
+	public void testSearchNodeAtSameLevelThroughOrderFunction() {
 		m$.var("^www001", "pai", "filho1", "neto1").set("1");
 		m$.var("^www001", "pai", "filho1", "neto166").set("1");
 		m$.var("^www001", "pai", "filho2", "neto2").set("12");
 		m$.var("^www001", "pai", "filho3", "equipamento1").set("13");
 		
 		mVar item = m$.var("^www001", "pai", "filho1");
-		assertEquals("filho2", item.order());
-		assertEquals("filho3", item.order());
-		assertEquals(null, item.order());
+		assertEquals("Fail to find the next node on the tree through order function", "filho2", item.order());
+		assertEquals("Fail to find the next node on the tree through order function", "filho3", item.order());
+		assertEquals("Fail to find the next node on the tree through order function", "", item.order());
 	}
 }

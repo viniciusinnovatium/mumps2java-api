@@ -68,7 +68,7 @@ public final class Tree extends Node {
 	public Object order(Path path, int direction) {
 
 		if (path == null) {
-			return null;
+			return "";
 		}
 
 		if (path.isLastEmpty() && direction >= 1) {
@@ -85,14 +85,14 @@ public final class Tree extends Node {
 
 		changeToNode(path.toArray());
 		if (currentNode == null) {
-			return null;
+			return "";
 		}
 
 		Node next = currentNode.next(direction);
 		if (next != null) {
 			return next.getSubscript();
 		} else {
-			return null;
+			return "";
 		}
 
 	}
