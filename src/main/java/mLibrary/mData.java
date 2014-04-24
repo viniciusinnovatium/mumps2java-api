@@ -1,10 +1,16 @@
 package mLibrary;
 
+import java.util.Arrays;
+
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public abstract class mData {
 	Object[] tempSubs;
+	Object[] orderSubs;
+
 	boolean subsChanged;
+	boolean firstExecutionOrder = true;
+
 	final Tree tree = new Tree();
 
 	public abstract Object get(Object... subs);
@@ -18,11 +24,11 @@ public abstract class mData {
 	abstract void onKill(Object... subs);
 
 	abstract void stacking(String... subs);
-	
+
 	abstract void stackingExcept(String... subs);
 
 	abstract void unstacking();
-	
+
 	abstract String dump();
 
 	public void kill(Object... subs) {
@@ -40,8 +46,16 @@ public abstract class mData {
 	public Object order(int direction) {
 		if (subsChanged) {
 			onOrder();
+			firstExecutionOrder = true;
 		}
-		return tree.order(direction, tempSubs);
+
+		if (firstExecutionOrder) {
+			firstExecutionOrder = false;
+			orderSubs = Arrays.copyOfRange(tempSubs, 0, tempSubs.length);
+			return orderSubs[orderSubs.length - 1] = tree.order(direction, tempSubs);
+		} else {
+			return orderSubs[orderSubs.length - 1] = tree.order(direction, orderSubs);
+		}
 	}
 
 	public mData subs(Object... subs) {

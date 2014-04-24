@@ -18,6 +18,15 @@ public class mVar {
 		this.mData = mData;
 	}
 
+	public Object order(int direction) {
+		mData.subs(subs);
+		return mData.order(direction);
+	}
+	
+	public Object order() {
+		return order(1);
+	}
+	
 	public void set(Object value) {
 		mData.subs(subs).set(value);
 	}

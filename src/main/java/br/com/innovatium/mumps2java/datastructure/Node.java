@@ -16,6 +16,7 @@ public class Node {
 
 	private Object subscript;
 	private Object path;
+	private Object[] subs;
 	private Object value;
 	private List<Node> subnodes;
 	private Node parent;
@@ -34,16 +35,26 @@ public class Node {
 	}
 
 	public Node(Object subscript, Object path, Object value) {
-		this(subscript, path, value, false);
+		this(new Object[]{subscript}, path, value, false);
 	}
 
-	public Node(Object subscript, Object path, Object value, boolean isTree) {
-		this.subscript = subscript;
+	public Node(Object[] subscript, Object path, Object value, boolean isTree) {
+		if(subscript != null && subscript.length > 0) {
+			this.subscript= subscript[subscript.length - 1];
+		}
+		this.subs = subscript;
 		this.path = path;
 		this.value = value;
 		this.isTree = isTree;
 	}
 
+	public Object getVariableName() {
+		if (subs != null) {
+			return subs[0];
+		}
+		return null;
+	}
+	
 	public Integer getStackLevel() {
 		return stackLevel;
 	}
@@ -299,3 +310,5 @@ public class Node {
 		}
 	}
 }
+
+

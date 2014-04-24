@@ -10,14 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.innovatium.mumps2java.datastructure.Node;
+import br.com.innovatium.mumps2java.todo.TODO;
 
 public class CacheManagerJDBC extends CacheManager {
-	private final String INSERT = "insert into \"KEY_VALUE\" values (?, ?) ;";
-	private final String UPDATE = "update \"KEY_VALUE\" set value = ? where key = ?;";
-	private final String SELECT_ONE = "select key, value from \"KEY_VALUE\" where key = ?;";
-	private final String SELECT_LIKE = "select key, value from \"KEY_VALUE\" where key like ? order by key asc;";
-	private final String DELETE = "delete from \"KEY_VALUE\" where key = ?;";
-	private final String DELETE_LIKE = "delete from \"KEY_VALUE\" where key like ?;";
 
 	public CacheManagerJDBC() {
 		super(new HashMap<Object, Object>());
@@ -32,8 +27,10 @@ public class CacheManagerJDBC extends CacheManager {
 		Connection con = null;
 		try {
 			con = openConnection();
-
-			PreparedStatement select = con.prepareStatement(SELECT_LIKE);
+			
+			String like = "select key, value from \""+path.split("~")[0].replace("^", "")+"\" where key like ? order by key asc;";
+			
+			PreparedStatement select = con.prepareStatement(like);
 			select.setString(1, path + "%");
 			ResultSet result = select.executeQuery();
 			while (result.next()) {
@@ -56,14 +53,18 @@ public class CacheManagerJDBC extends CacheManager {
 		return l;
 	}
 
-	
+	// Remove hardcoded delimiter
+	@TODO
 	public void kill(String path) {
 		Connection con = null;
 		try {
 			con = openConnection();
-			
-			PreparedStatement delete = con.prepareStatement(DELETE_LIKE);
-			delete.setString(1, path+"%");
+
+			String string = "delete from \""
+					+ path.split("~")[0].replace("^", "")
+					+ "\" where key like ?;";
+			PreparedStatement delete = con.prepareStatement(string);
+			delete.setString(1, path + "%");
 			delete.execute();
 
 		} catch (SQLException e) {
@@ -80,33 +81,33 @@ public class CacheManagerJDBC extends CacheManager {
 			}
 		}
 	}
-	
-	@Override
-	public void put(Node node) {
-		put(node.getPath(), node.getValue());
-	}
 
 	@Override
-	public void put(Object key, Object value) {
+	public void put(Node node) {
 		Connection con = null;
 		try {
 			con = openConnection();
-			
-			PreparedStatement select = con.prepareStatement(SELECT_ONE);
-			select.setObject(1, key);
+			String selectOne = "select key, value from \""
+					+ node.getVariableName() + "\" where key = ?;";
+			PreparedStatement select = con.prepareStatement(selectOne);
+			select.setObject(1, node.getPath());
 			ResultSet result = select.executeQuery();
 			PreparedStatement insert = null;
 			if (!result.next()) {
-				insert = con.prepareStatement(INSERT);
-				insert.setObject(1, key);
-				insert.setObject(2, value);
+				String insertQuery = "insert into " + node.getVariableName()
+						+ " values (?, ?) ;";
+				insert = con.prepareStatement(insertQuery);
+				insert.setObject(1, node.getPath());
+				insert.setObject(2, node.getValue());
 			} else {
-				insert = con.prepareStatement(UPDATE);
-				insert.setObject(1, value);
-				insert.setObject(2, key);
+				String updateQuery = "update \"" + node.getVariableName()
+						+ "\" set value = ? where key = ?;";
+				insert = con.prepareStatement(updateQuery);
+				insert.setObject(1, node.getValue());
+				insert.setObject(2, node.getPath());
 			}
 
-			insert.execute();	
+			insert.execute();
 
 		} catch (SQLException e) {
 			throw new IllegalStateException(
@@ -121,14 +122,46 @@ public class CacheManagerJDBC extends CacheManager {
 				}
 			}
 		}
+
 	}
-	
+
+	/*
+	 * We have to study a better way to do inserts and create string to make
+	 * queries.
+	 */
+	@TODO
+	@Override
+	public void put(Object key, Object value) {
+		/*
+		 * Connection con = null; try { con = openConnection();
+		 * 
+		 * PreparedStatement select = con.prepareStatement(SELECT_ONE);
+		 * select.setObject(1, key); ResultSet result = select.executeQuery();
+		 * PreparedStatement insert = null; if (!result.next()) { insert =
+		 * con.prepareStatement(INSERT); insert.setObject(1, key);
+		 * insert.setObject(2, value); } else { insert =
+		 * con.prepareStatement(UPDATE); insert.setObject(1, value);
+		 * insert.setObject(2, key); }
+		 * 
+		 * insert.execute();
+		 * 
+		 * } catch (SQLException e) { throw new IllegalStateException(
+		 * "Fail on opening a new connection to insert data", e); } finally { if
+		 * (con != null) { try { con.close(); } catch (SQLException e) { throw
+		 * new IllegalStateException(
+		 * "Fail on close connection after insert data", e); } } }
+		 */
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public Object get(String key) {
 		Connection con = null;
 		try {
 			con = openConnection();
-			PreparedStatement ps = con.prepareStatement(SELECT_ONE);
+			String selectOne = "select key, value from \""
+					+ key.split("~")[0].replace("^", "") + "\" where key = ?;";
+			PreparedStatement ps = con.prepareStatement(selectOne);
 			ps.setString(1, key);
 			ResultSet result = ps.executeQuery();
 
@@ -148,13 +181,17 @@ public class CacheManagerJDBC extends CacheManager {
 			}
 		}
 	}
-	
+
+	// Remove split method to recover variable name
+	@TODO
 	@Override
 	public void remove(String key) {
 		Connection con = null;
 		try {
 			con = openConnection();
-			PreparedStatement ps = con.prepareStatement(DELETE);
+			String delete = "delete from \""
+					+ key.split("~")[0].replace("^", "") + "\" where key = ?;";
+			PreparedStatement ps = con.prepareStatement(delete);
 			ps.setString(1, key);
 			ps.execute();
 
@@ -170,14 +207,16 @@ public class CacheManagerJDBC extends CacheManager {
 							"Fail on close connection after delete data", e);
 				}
 			}
-		}		
+		}
 	}
 
+	// Replace the database connection parameter to properties file.
+	@TODO
 	private Connection openConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:postgresql://localhost:5432/infinispan", "postgres",
+		return DriverManager.getConnection(
+				"jdbc:postgresql://localhost:5432/metadata", "postgres",
 				"@postgresql15");
 
 	}
-	
-	
+
 }

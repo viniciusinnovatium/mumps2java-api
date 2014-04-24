@@ -8,25 +8,26 @@ import mLibrary.mContext;
 import mLibrary.mLocal;
 import mLibrary.mVar;
 
-public class MContextTest {
+public class MContextUsingInMemoryAccessTest {
 	private mContext m$;
-	
+
 	@Before
 	public void init() {
 		m$ = new mContext(new mLocal());
+	}
+
+	@Test
+	public void testSettingVariableValueInTwoSteps() {
+		// Setting value in two steps
 		mVar pedido = m$.var("pedido");
 		pedido.var("item").set(33);
-		
-		m$.var("carro", "esportivo").set(66);
-	}
-	
-	@Test
-	public void test(){
 		assertEquals(33, m$.var("pedido", "item").get());
 	}
-	
+
 	@Test
-	public void test2(){
+	public void testSettingVariableValueInSingleStep() {
+		// Setting value in single step
+		m$.var("carro", "esportivo").set(66);
 		assertEquals(66, m$.var("carro", "esportivo").get());
 	}
 }

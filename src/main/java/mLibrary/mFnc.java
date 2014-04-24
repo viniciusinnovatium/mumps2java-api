@@ -376,8 +376,7 @@ public final class mFnc {
 	}
 
 	public static Object $order(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return var.order();
 	}
 
 	public static Object $order(mVar var, Object $get) {

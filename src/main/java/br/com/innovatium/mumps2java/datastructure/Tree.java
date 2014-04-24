@@ -11,7 +11,7 @@ public final class Tree extends Node {
 	private StackNode stack;
 
 	public Tree() {
-		super("", "", null, true);
+		super(null, null, null, true);
 	}
 
 	public void stacking(String... subs) {
