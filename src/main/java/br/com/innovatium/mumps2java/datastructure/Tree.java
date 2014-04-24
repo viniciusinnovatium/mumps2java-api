@@ -74,13 +74,15 @@ public final class Tree extends Node {
 		if (path.isLastEmpty() && direction >= 1) {
 			path = path.generate(path.length() - 1);
 			changeToNode(path.toArray());
-			return currentNode.firstChild().getSubscript();
+			Node first = currentNode.firstChild(); 
+			return first != null ? first.getSubscript() : "";
 		}
 
 		if (path.isLastEmpty() && direction < 1) {
 			path = path.generate(path.length() - 1);
 			changeToNode(path.toArray());
-			return currentNode.lastChild().getSubscript();
+			Node last = currentNode.lastChild(); 
+			return last != null ? last.getSubscript() : "";
 		}
 
 		changeToNode(path.toArray());

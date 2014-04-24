@@ -10,6 +10,15 @@ import java.util.Map;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class DAO {
+	private ConnectionType connectionType;
+
+	public DAO() {
+		this(ConnectionType.JDBC);
+	}
+
+	public DAO(ConnectionType connectionType) {
+		this.connectionType = connectionType;
+	}
 
 	// Check another return type different from the map.
 	@TODO
@@ -17,15 +26,16 @@ public class DAO {
 		if (key == null) {
 			return null;
 		}
-		
+
 		Connection con = null;
 		Map<String, String> map = null;
 		try {
-			con = ConnectionFactory.getConnection();
-			String like = "select key_, value_ from \""+tableName+"\" where key_ like ? order by key_ asc;";
-			
+			con = ConnectionFactory.getConnection(connectionType);
+			String like = "select key_, value_ from \"" + tableName
+					+ "\" where key_ like ? order by key_ asc;";
+
 			PreparedStatement select = con.prepareStatement(like);
-			select.setString(1, key+ "%");
+			select.setString(1, key + "%");
 			ResultSet result = select.executeQuery();
 			map = new HashMap<String, String>();
 			while (result.next()) {
@@ -47,13 +57,13 @@ public class DAO {
 		}
 		return map;
 	}
-	
+
 	// Remove table name treatment.
 	@TODO
 	public void insert(String tableName, Object key, Object value) {
 		Connection con = null;
 		try {
-			con = ConnectionFactory.getConnection();
+			con = ConnectionFactory.getConnection(connectionType);
 			String selectOne = "select key_, value_ from \"" + tableName
 					+ "\" where key_ = ?;";
 			PreparedStatement select = con.prepareStatement(selectOne);
@@ -96,7 +106,7 @@ public class DAO {
 	public Object find(String tableName, String key) {
 		Connection con = null;
 		try {
-			con = ConnectionFactory.getConnection();
+			con = ConnectionFactory.getConnection(connectionType);
 			String selectOne = "select key_, value_ from \"" + tableName
 					+ "\" where key_ = ?;";
 			PreparedStatement ps = con.prepareStatement(selectOne);

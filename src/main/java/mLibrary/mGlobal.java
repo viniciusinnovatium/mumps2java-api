@@ -8,13 +8,14 @@ import java.util.Set;
 import br.com.innovatium.mumps2java.cachemanager.CacheManager;
 import br.com.innovatium.mumps2java.cachemanager.CacheManagerFactory;
 import br.com.innovatium.mumps2java.cachemanager.CacheType;
+import br.com.innovatium.mumps2java.dataaccess.ConnectionType;
 import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mGlobal extends mData {
 	private final CacheManager cacheManager;
-	private DAO dao = new DAO();
+	private DAO dao = new DAO(ConnectionType.DATASOURCE);
 	private String tableName;
 
 	public mGlobal(CacheManager cacheManager) {
