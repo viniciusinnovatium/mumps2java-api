@@ -10,7 +10,11 @@ public class   mClass{
 	public void cmd$Do(String methodName, Object... parameters) {
 		throw new UnsupportedOperationException();
 	}
-
+	
+	public mContext getContext(){
+		return m$;
+	}
+	
 	public void cmd$Do(String methodName) {
 		cmd$Do(methodName, (Object[]) null);
 	}

@@ -1041,4 +1041,14 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
+	public static Object $name(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zabs(Object subtract) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 }
