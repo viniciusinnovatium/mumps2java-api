@@ -8,7 +8,7 @@ public class   mClass{
 	protected mContext m$ = new mContext(new mLocal());
 
 	public void cmd$Do(String methodName, Object... parameters) {
-		throw new UnsupportedOperationException();
+		m$.dispatch(methodName, parameters);
 	}
 	
 	public mContext getContext(){
