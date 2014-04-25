@@ -7,20 +7,31 @@ import java.util.Set;
 public class mContext {
 	private mData mData;
 	private String[] newVarName;
-
+	private mRequest mReq;
+	private mSession mSes;
+	
 	public mContext() {
 	}
 
 	public mContext(mLibrary.mData mData) {
 		this.mData = mData;
 	}
-
-	public void populateParameter(Map<String, String[]> map){
-		Set<Entry<String, String[]>> results = map.entrySet();
-		for (Entry<String, String[]> result : results) {
-			mData.subs("%request.Data", result.getKey()).set(result.getValue()[0]);
-		}
+	
+	public mSession getSession(){
+		return mSes;
 	}
+	
+	public mRequest getRequest(){
+		return mReq;
+	}
+	
+	public void setSession(mSession mSes){
+		this.mSes = mSes;
+	}
+	
+	public void setRequest(mRequest mReq){
+		this.mReq = mReq;
+	}	
 	
 	public mVar indirect(Object string) {
 		// TODO Auto-generated method stub

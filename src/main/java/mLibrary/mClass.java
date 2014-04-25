@@ -8,7 +8,7 @@ public class   mClass{
 	protected mContext m$ = new mContext(new mLocal());
 
 	public void cmd$Do(String methodName, Object... parameters) {
-		throw new UnsupportedOperationException();
+		//throw new UnsupportedOperationException();
 	}
 	
 	public mContext getContext(){
@@ -22,7 +22,7 @@ public class   mClass{
 	}
 
 	public Object fnc$(String methodName, Object... parameters) {
-		throw new UnsupportedOperationException();
+		return 0;//throw new UnsupportedOperationException();
 	}
 
 	public void cmd$Write(Object... string) {
