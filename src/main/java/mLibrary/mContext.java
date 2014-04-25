@@ -15,6 +15,9 @@ public class mContext {
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
 
+	private mRequest mReq;
+	private mSession mSes;
+	
 	public mContext() {
 	}
 
@@ -80,6 +83,23 @@ public class mContext {
 		}
 	}
 
+	
+	public mSession getSession(){
+		return mSes;
+	}
+	
+	public mRequest getRequest(){
+		return mReq;
+	}
+	
+	public void setSession(mSession mSes){
+		this.mSes = mSes;
+	}
+	
+	public void setRequest(mRequest mReq){
+		this.mReq = mReq;
+	}	
+	
 	public mVar indirect(Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();

@@ -283,7 +283,7 @@ public final class mFnc {
 	}
 
 	public static Object $job() {
-		return 1;
+		return 0;
 	}
 
 	/**

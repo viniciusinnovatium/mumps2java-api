@@ -22,7 +22,7 @@ public class   mClass{
 	}
 
 	public Object fnc$(String methodName, Object... parameters) {
-		throw new UnsupportedOperationException();
+		return 0;//throw new UnsupportedOperationException();
 	}
 
 	public void cmd$Write(Object... string) {
