@@ -211,8 +211,8 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $get(Object content) {
-		throw new UnsupportedOperationException();
+	public static Object $get(mVar var) {
+		return var.get();
 	}
 
 	public static Object $get(Object content, Object defaultValue) {

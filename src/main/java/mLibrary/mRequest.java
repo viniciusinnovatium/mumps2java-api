@@ -1,31 +1,53 @@
 package mLibrary;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class mRequest {
 	
-	private mData mData = new mLocal();
+	private mData mDataRequest = new mLocal();
+	private Map<String,String[]> cgiEnvs = new HashMap<String,String[]>();
+	
+	public mRequest(Map<String, String[]> map) {
+		populateParameter(map);
+	}	
 	
 	public void populateParameter(Map<String, String[]> map){
 		Set<Entry<String, String[]>> results = map.entrySet();
 		for (Entry<String, String[]> result : results) {
 			for (int i = 0; i < result.getValue().length; i++) {
-				mData.subs(result.getKey(), i+1).set(result.getValue()[i]);				
+				setData(result.getKey(), i+1, result.getValue()[i]);
 			}
 		}
 	}	
 	
-	public Object getCgiEnvs(String str){		
-		throw new UnsupportedOperationException();
+	public mVar getCgiEnvs(String key){			
+		mVar var = getData(key,1);
+		return var;
 	}
 	
+	
+	public Map<String, String[]> getCgiEnvs() {
+		return cgiEnvs;
+	}
+
+	public void setCgiEnvs(Map<String, String[]> cgiEnvs) {
+		this.cgiEnvs = cgiEnvs;
+		populateParameter(cgiEnvs);
+	}
+
 	public mVar getData(Object... args){
-		throw new UnsupportedOperationException();
+		return new mVar(args, this.mDataRequest);
 	}
 	
-	public Object setData(Object... args){
+	public void setData(Object subs, Object idx, Object value){
+		mDataRequest.subs(subs, idx).set(value);			
+	}
+
+	public void killData(Object object, int i) {
 		throw new UnsupportedOperationException();
+		
 	}	
 }
