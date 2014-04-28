@@ -1,21 +1,23 @@
 package mLibrary;
 
+import java.net.URI;
+
 public class mPage extends mClass {
 
 	public String EscapeURL(String string){		
-		throw new UnsupportedOperationException();
+		return URI.create(string).toASCIIString();
 	}
 	
 	public String Encrypt(String string){
-		throw new UnsupportedOperationException();
+		return string;
 	}
 	
 	public String Decrypt(String string){
-		throw new UnsupportedOperationException();		
+		return string;
 	}
 	
 	String HyperEventCal(String method , String args, Integer type){
-		throw new UnsupportedOperationException();	
+		return "";
 	}
 }
 
