@@ -192,8 +192,7 @@ public class mContext {
 	}
 
 	public mVar pieceVar(mVar var, Object del, Object ipos) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return new mPieceVar(var, del, ipos);
 	}
 
 	public mVar pieceVar(mVar var, Object del, Object ipos, Object epos) {

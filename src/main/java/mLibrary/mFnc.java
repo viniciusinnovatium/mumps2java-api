@@ -216,6 +216,10 @@ public final class mFnc {
 	}
 
 	public static Object $get(Object content, Object defaultValue) {
+		if (content == null) {
+			throw new IllegalArgumentException("Content must not be null");
+		}
+		content = ((mVar) content).get();
 		if (content == null && defaultValue != null) {
 			return defaultValue;
 		} else if (content == null && defaultValue == null) {
@@ -792,16 +796,19 @@ public final class mFnc {
 		return 0;
 	}
 
-	private static String generateString(Object[] array, String delimiter) {
+	public static String generateString(Object[] array, String delimiter) {
 		return generateString(array, delimiter, false);
 	}
 
-	private static String generateString(Object[] array, String delimiter,
+	public static String generateString(Object[] array, String delimiter,
 			boolean avoidNull) {
 		final StringBuilder result = new StringBuilder();
 		final int indexToInsert = array.length - 1;
 		for (int i = 0; i < array.length; i++) {
-			if (avoidNull && array[i] == null) {
+			if (array[i] == null) {
+				array[i] = "";
+			}
+			if (avoidNull) {
 				continue;
 			}
 			result.append(array[i]);
@@ -915,14 +922,15 @@ public final class mFnc {
 
 	public static String setPieceImpl(String string, String delimiter,
 			Integer position, String value) {
-		if (string == null || position < 0) {
-			return string;
+		Object[] array = string == null ? new Object[position] : string
+				.toString().split(delimiter);
+		if (position > array.length) {
+			array = Arrays.copyOfRange(array, 0, position);
 		}
-
-		final String[] array = string.split(delimiter);
 		if (value == null) {
 			value = "";
 		}
+
 		array[position - 1] = value;
 
 		return generateString(array, delimiter);
