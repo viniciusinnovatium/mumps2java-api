@@ -217,8 +217,10 @@ public final class mFnc {
 	
 	public static Object $get(Object content, Object defaultValue) {
 
-		if(content == null) {
+		if (content == null && defaultValue != null) {
 			return defaultValue;
+		} else if (content == null && defaultValue == null) {
+			return "";
 		} else {
 			return content;
 		}
@@ -659,7 +661,8 @@ public final class mFnc {
 		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
 		Double fra = (sec - sec.longValue()) * 1000d;
 
-		return daysMumps.longValue() + "," + sec.longValue() + "." + fra.longValue();
+		return daysMumps.longValue() + "," + sec.longValue() + "."
+				+ fra.longValue();
 	}
 
 	public static String $zts() {
