@@ -212,11 +212,15 @@ public final class mFnc {
 	}
 
 	public static Object $get(Object content) {
-		throw new UnsupportedOperationException();
+		return $get(content, null);
 	}
 
 	public static Object $get(Object content, Object defaultValue) {
-		throw new UnsupportedOperationException();
+		if(content == null) {
+			return defaultValue;
+		} else {
+			return content;
+		}
 	}
 
 	public static Object $h() {

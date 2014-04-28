@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.disclinc.netmanager.variable.test.Macros;
 
 public class mContext {
 	private mData mData;
