@@ -29,6 +29,18 @@ public class DispatchMethodsTest {
 		// must have the same value before the calling
 		assertEquals(78, m$.var("pedido").get());
 	}
+	
+	@Test
+	public void testMethodCallingNewOperatorAndGetVariableUnchanged() {
+		// Executing some function which makes no one new operator calling
+		assertEquals(57, m$.dispatch(
+				"com.disclinc.netmanager.variable.test.Macros.$$$recuperarValorInalteradoDepoisDoOperadorNew",
+				m$));
+
+		// After a function call which does not make new operator calling we
+		// must have the same value before the calling
+		assertEquals(78, m$.var("pedido").get());
+	}
 
 	@Test
 	public void test() {

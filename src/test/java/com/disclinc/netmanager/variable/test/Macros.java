@@ -11,6 +11,11 @@ public final class Macros {
 		m$.newVar(m$.var("pedido"));
 		return m$.var("pedido").get();
 	}
+	
+	public static Object $$$recuperarValorInalteradoDepoisDoOperadorNew(mContext m$) {
+		m$.newVar(m$.var("pedido"));
+		return m$.var("entrega").get();
+	}
 
 	public static Object $$$recuperarValorNovoDepois3ChamadasDoOperadorNew(
 			mContext m$) {
