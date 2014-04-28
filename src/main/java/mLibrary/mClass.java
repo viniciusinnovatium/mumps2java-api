@@ -12,6 +12,7 @@ public class   mClass{
 	}
 
 	public void cmd$Do(String methodName, Object... parameters) {
+		methodName = defineMethodName(methodName);				
 		m$.dispatch(methodName, parameters);
 	}
 	
@@ -26,6 +27,7 @@ public class   mClass{
 	}
 
 	public Object fnc$(String methodName, Object... parameters) {
+		methodName = defineMethodName(methodName);				
 		return m$.dispatch(methodName, parameters);
 	}
 
@@ -140,4 +142,11 @@ public class   mClass{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}	
+	
+	private String defineMethodName(String methodName) {
+		if(methodName!=null && !methodName.contains(".")){
+			methodName = this.getClass().getName().concat(".").concat(methodName);
+		}
+		return methodName;
+	}
 }
