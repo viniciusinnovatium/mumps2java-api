@@ -211,8 +211,12 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $get(mVar var) {
-		return var.get();
+	public static Object $get(Object var) {
+		if (var instanceof mVar) {
+			return ((mVar) var).get();
+		} else {
+			return null;
+		}
 	}
 
 	public static Object $get(Object content, Object defaultValue) {
@@ -654,7 +658,8 @@ public final class mFnc {
 		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
 		Double fra = (sec - sec.longValue()) * 1000d;
 
-		return daysMumps.longValue() + "," + sec.longValue() + "." + fra.longValue();
+		return daysMumps.longValue() + "," + sec.longValue() + "."
+				+ fra.longValue();
 	}
 
 	public static String $zts() {
