@@ -44,7 +44,4 @@ public class mLocal extends mData {
 	public String dump() {
 		return tree.dump();
 	}
-
-	
-
 }

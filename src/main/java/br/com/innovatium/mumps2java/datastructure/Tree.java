@@ -54,7 +54,9 @@ public final class Tree extends Node {
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
 			for (Node stacked : stackedNodes) {
 				Node node = searchSubnode((String) stacked.getSubscript());
-				node.kill();
+				if (node != null) {
+					node.kill();
+				}
 				addSubnode(stacked);
 			}
 			currentStackLevel--;

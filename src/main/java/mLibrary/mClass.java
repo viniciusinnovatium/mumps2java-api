@@ -5,10 +5,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class   mClass{
-	protected mContext m$ = new mContext(new mLocal());
+	public mContext m$;
+	
+	public void setContext(mContext context) {
+		this.m$ = context;
+	}
 
 	public void cmd$Do(String methodName, Object... parameters) {
-		//throw new UnsupportedOperationException();
+		m$.dispatch(methodName, parameters);
 	}
 	
 	public mContext getContext(){
@@ -22,7 +26,7 @@ public class   mClass{
 	}
 
 	public Object fnc$(String methodName, Object... parameters) {
-		return 0;//throw new UnsupportedOperationException();
+		return m$.dispatch(methodName, parameters);
 	}
 
 	public void cmd$Write(Object... string) {
@@ -69,7 +73,6 @@ public class   mClass{
 	}
 
 	public void cmd$Goto(String label) {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
