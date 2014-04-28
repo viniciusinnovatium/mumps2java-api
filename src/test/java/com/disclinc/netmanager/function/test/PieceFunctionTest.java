@@ -54,7 +54,7 @@ public class PieceFunctionTest {
 	
 	@Test
 	public void testSettingValueToNullPiecePosition() {
-		assertEquals("Fail on setting a new value to a null string", null, $setpiece(null, DELIMITER, to, "NOVA STRING AQUI"));
+		assertEquals("Fail on setting a new value to a null string", DELIMITER+"NOVA STRING AQUI", $setpiece(null, DELIMITER, to, "NOVA STRING AQUI"));
 	}
 	
 	@Test
