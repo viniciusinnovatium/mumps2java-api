@@ -210,15 +210,16 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	public static Object $get(Object content) {
 		return $get(content, null);
 	}
-
+	
 	public static Object $get(Object content, Object defaultValue) {
 		if (content == null) {
 			throw new IllegalArgumentException("Content must not be null");
 		}
+		
 		content = ((mVar) content).get();
 		if (content == null && defaultValue != null) {
 			return defaultValue;
