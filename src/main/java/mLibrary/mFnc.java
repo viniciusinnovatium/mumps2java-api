@@ -210,9 +210,11 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
-		throw new UnsupportedOperationException();	}
-
+	
+	public static Object $get(Object content) {
+		return $get(content, null);
+	}
+	
 	public static Object $get(Object content, Object defaultValue) {
 
 		if(content == null) {
