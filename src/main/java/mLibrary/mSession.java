@@ -41,6 +41,6 @@ public class mSession {
 
 	public Object getLogin(Object object, Object object2, int i) {
 		// TODO Auto-generated method stub
-		return null;
+		return 1;
 	}		
 }

@@ -3,31 +3,30 @@ package mLibrary;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
-public class   mClass{
+public class mClass {
 	public mContext m$;
-	
+
 	public void setContext(mContext context) {
 		this.m$ = context;
 	}
 
 	public void cmd$Do(String methodName, Object... parameters) {
-		methodName = defineMethodName(methodName);				
+		methodName = defineMethodName(methodName);
 		m$.dispatch(methodName, parameters);
 	}
-	
-	public mContext getContext(){
+
+	public mContext getContext() {
 		return m$;
 	}
-	
-	
-	
+
 	public void cmd$Do(String methodName) {
 		cmd$Do(methodName, (Object[]) null);
 	}
 
 	public Object fnc$(String methodName, Object... parameters) {
-		methodName = defineMethodName(methodName);				
+		methodName = defineMethodName(methodName);
 		return m$.dispatch(methodName, parameters);
 	}
 
@@ -48,8 +47,8 @@ public class   mClass{
 	public void cmd$SQL() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
-	
+	}
+
 	public void cmd$WriteHtml(Object... string) {
 		cmd$Write(string);
 	}
@@ -65,8 +64,26 @@ public class   mClass{
 	}
 
 	public void cmd$Xecute(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if (String.valueOf(object).startsWith("do ")) {
+			String methodName = String.valueOf(object);
+			String methodSrc = String.valueOf(object).replaceAll("do ", "");
+			if (object.equals("do ^WWWFORM")) {
+				methodName = "WWWFORM.main";
+			} else {
+				if (methodSrc.contains("^")) {
+					String[] methodSplit = methodSrc.split("\\^");
+					if (methodSplit.length == 2) {
+						methodName = methodSplit[1].concat(".").concat(
+								methodSplit[0]);
+					} else if (methodSplit.length == 1) {
+						methodName = methodSplit[0];
+					}
+				}
+			}
+			cmd$Do(methodName);
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public void cmd$Merge(mVar target, mVar source) {
@@ -79,7 +96,7 @@ public class   mClass{
 	}
 
 	/*
-	 * Exibe mensagem no console solicitando entrada de dados. 
+	 * Exibe mensagem no console solicitando entrada de dados.
 	 */
 	public void cmd$Read(Object... parameters) {
 		Scanner s = null;
@@ -110,21 +127,22 @@ public class   mClass{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public void cmd$Unlock(mVar var) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
-	
+	}
+
 	public void cmd$Unlock(mVar var, String str) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
-	
+	}
+
 	public void cmd$LockInc(mVar var, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
+	}
+
 	/*
 	 * Pausa o processamento por um determinado número de milisegundos
 	 */
@@ -138,14 +156,16 @@ public class   mClass{
 		}
 
 	}
+
 	public void cmd$Job(String string, String string2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}	
-	
+	}
+
 	private String defineMethodName(String methodName) {
-		if(methodName!=null && !methodName.contains(".")){
-			methodName = this.getClass().getName().concat(".").concat(methodName);
+		if (methodName != null && !methodName.contains(".")) {
+			methodName = this.getClass().getName().concat(".")
+					.concat(methodName);
 		}
 		return methodName;
 	}

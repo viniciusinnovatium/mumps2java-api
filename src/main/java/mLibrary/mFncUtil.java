@@ -271,11 +271,11 @@ public final class mFncUtil {
 						continue;
 					}
 				}
-				if (result.isEmpty() || !startNumber) {
-					result = "0";
-				}
 				break;
 			}
+			if (result.isEmpty() || !startNumber) {
+				result = "0";
+			}			
 			dbl = Double.valueOf(result);
 		}
 		return dbl;
@@ -290,8 +290,12 @@ public final class mFncUtil {
 		if (string == null) {
 			return null;
 		}
-
-		return string.split(delimiter)[index - 1];
+		String[] splitStr = string.split(delimiter);
+		if(splitStr.length>index && index>0){
+			return splitStr[index - 1];			
+		}else{
+			return splitStr[0];		
+		}
 	}
 
 	public static String pieceImpl(String string, String delimiter, int from,

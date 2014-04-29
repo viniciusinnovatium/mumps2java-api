@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class mRequest {
 	
-	private mData mDataRequest = new mLocal();
+	private mData data = new mLocal();
 	private Map<String,String[]> cgiEnvs = new HashMap<String,String[]>();
 	
 	public mRequest(Map<String, String[]> map) {
@@ -44,7 +44,11 @@ public class mRequest {
 	}
 
 	public mVar varData(Object... args){
-		return new mVar(args, this.mDataRequest);
+		mVar var = null;
+		if(args!=null && args.length>0){
+		}
+		var = new mVar(args, this.data);
+		return var;
 	}
 	
 	public Object getData(Object... args){
@@ -53,10 +57,15 @@ public class mRequest {
 	
 	
 	public void setData(Object subs, Object idx, Object value){
-		mDataRequest.subs(subs, idx).set(value);			
+		data.subs(subs, idx).set(value);			
 	}
 
 	public void killData(Object object, int i) {
+		throw new UnsupportedOperationException();
+		
+	}
+
+	public void setCgiEnvs(String string, Object object) {
 		throw new UnsupportedOperationException();
 		
 	}	

@@ -15,6 +15,10 @@ import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc {
 
+	public static Object $ascii(Object expression) {
+		return $ascii(expression, 1);
+	}
+
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -30,10 +34,6 @@ public final class mFnc {
 		Double convertedPosition = mFncUtil.numberConverter(position);
 		return Character.codePointAt(String.valueOf(expression).toCharArray(),
 				convertedPosition.intValue() - 1);
-	}
-
-	public static Object $ascii(Object expression) {
-		return $ascii(expression, 1);
 	}
 
 	/**
@@ -144,6 +144,10 @@ public final class mFnc {
 				mFncUtil.castString(substring), mFncUtil.castInt(start));
 	}
 
+	public static Object $fnumber(Object inumber, String format) {
+		return $fnumber(inumber, format, null);
+	}
+
 	/**
 	 * Formats a numeric value with a specified format; optionally rounds to a
 	 * specified precision.
@@ -202,10 +206,6 @@ public final class mFnc {
 		return formatedString;
 	}
 
-	public static Object $fnumber(Object inumber, String format) {
-		return $fnumber(inumber, format, null);
-	}
-
 	public static Object $g(mVar pstrClass) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -219,8 +219,9 @@ public final class mFnc {
 		if (content == null) {
 			throw new IllegalArgumentException("Content must not be null");
 		}
-		
-		content = ((mVar) content).get();
+		if(content instanceof mVar){
+			content = ((mVar) content).get();
+		}
 		if (content == null && defaultValue != null) {
 			return defaultValue;
 		} else if (content == null && defaultValue == null) {
@@ -236,8 +237,12 @@ public final class mFnc {
 	}
 
 	public static Object $horolog() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		Calendar cal = Calendar.getInstance(new SimpleTimeZone(
+				SimpleTimeZone.UTC_TIME, "UTC"));
+		Double daysMumps = mFncUtil.dateJavaToMumps(cal.getTimeInMillis());
+		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
+
+		return daysMumps.longValue() + "," + sec.longValue();		
 	}
 
 	public static Object $i(mVar var) {
@@ -246,13 +251,12 @@ public final class mFnc {
 	}
 
 	public static Object $increment(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return $increment(var, 1) ;
 	}
 
 	public static Object $increment(mVar var, Object increment) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		var.set(mFncUtil.numberConverter(var.get())+mFncUtil.numberConverter(increment));
+		return var.get();
 	}
 
 	public static Object $io() {
@@ -264,7 +268,7 @@ public final class mFnc {
 		boolean isNumber = true;
 		try {
 			Double dbl = mFncUtil.numberConverter(numStr);
-			if (dbl == 0d && !String.valueOf(dbl).equals("0")) {
+			if (dbl == 0d && !String.valueOf(dbl).equals("0.0")) {
 				isNumber = false;
 			}
 		} catch (NumberFormatException nfe) {
@@ -289,6 +293,11 @@ public final class mFnc {
 	}
 
 	public static Object $isobject(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $isvalidnum(Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -327,13 +336,13 @@ public final class mFnc {
 		return strFormated;
 	}
 
-	public static Object $justify(String expression, int width) {
-		return $justify(expression, width, null);
-	}
-
 	public static Object $justify(Object expression, Object width) {
 		int widthInt = mFncUtil.numberConverter(width).intValue();
 		return $justify(expression, widthInt, null);
+	}
+
+	public static Object $justify(String expression, int width) {
+		return $justify(expression, width, null);
 	}
 
 	public static ListObject $l(ListObject list, int init, int end) {
@@ -396,13 +405,17 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
+	public static Object $name(Object object, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 	public static Object $order(mVar var) {
 		return var.order();
 	}
 
-	public static Object $order(mVar var, Object $get) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $order(mVar var, Object dir) {
+		return var.order(mFncUtil.numberConverter(dir).intValue());
 	}
 
 	public static Object $piece(Object string, Object delimiter) {
@@ -433,6 +446,11 @@ public final class mFnc {
 	}
 
 	public static Object $query(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $random(Object multiply) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -519,6 +537,16 @@ public final class mFnc {
 				castInt(position), castString(value));
 	}
 
+	public static Object $stack(Object... objs) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $storage() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 	@TODO
 	public static Object $test() {
 		// TODO Auto-generated method stub
@@ -542,6 +570,11 @@ public final class mFnc {
 				mFncUtil.castString(newCharsequence));
 	}
 
+	public static Object $zabs(Object subtract) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 	public static Object $zconvert(Object object, String string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -555,6 +588,16 @@ public final class mFnc {
 	public static Object $zcrc(Object object, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zdate(Object hdate) {
+
+		return $zdate(hdate, null, null, null, null, null, null, null, null);
+	}
+
+	public static Object $zdate(Object hdate, Object dformat) {
+
+		return $zdate(hdate, dformat, null, null, null, null, null, null, null);
 	}
 
 	/**
@@ -583,14 +626,22 @@ public final class mFnc {
 		return sdf.format(dt);
 	}
 
-	public static Object $zdate(Object hdate, Object dformat) {
-
-		return $zdate(hdate, dformat, null, null, null, null, null, null, null);
+	public static Object $zdateh(Object date) {
+		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdate(Object hdate) {
+	public static Object $zdateh(Object date, Object dformat) {
 
-		return $zdate(hdate, null, null, null, null, null, null, null, null);
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat));
+		String returnDate = null;
+		try {
+			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
+					sdf.parse(String.valueOf(date))).longValue());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return returnDate;
 	}
 
 	public static Object $zdateh(Object date, Object dformat, Object monthlist,
@@ -610,25 +661,12 @@ public final class mFnc {
 		return returnDate;
 	}
 
-	public static Object $zdateh(Object date, Object dformat) {
-
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				mFncUtil.dateCodeFormatMumpsToJava(dformat));
-		String returnDate = null;
-		try {
-			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
-					sdf.parse(String.valueOf(date))).longValue());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return returnDate;
-	}
-
-	public static Object $zdateh(Object date) {
+	public static Object $zdatetime(Object... object) {
+		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdatetime(Object... object) {
+	public static Object $zdatetimeh(Object object, int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -638,7 +676,21 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
+	public static Object $zerror() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zhex(Object $zjob) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 	public static Object $zhorolog() {
+		return 1; 
+	}
+
+	public static Object $zjob() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -648,12 +700,17 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object object, Object string) {
+	public static Object $zsearch(Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
 	public static Object $zstrip(Object... object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zstrip(Object object, Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -679,6 +736,21 @@ public final class mFnc {
 	}
 
 	public static Object $zutil(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zutil(Object obj1, Object... obj) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zutil(Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zversion() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -1043,52 +1115,12 @@ public final class mFnc {
 		return string.split(delimiter).length;
 	}
 
-	public static Object $zerror() {
+	public static Object $principal() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zdatetimeh(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zsearch(Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zversion() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $random(Object multiply) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $isvalidnum(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $name(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zabs(Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $stack(Object... objs) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $zutil(int i, int j, Object $job) {
+	public static Object $znspace() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}

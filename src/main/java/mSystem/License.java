@@ -13,17 +13,17 @@ public class License {
 
 	public static Object MaxConnections() {
 		// TODO Auto-generated method stub
-		return null;
+		return 100;
 	}
 
 	public static Object ConnectionCount(Object object) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	public static Object Login(Object object) {
 		// TODO Auto-generated method stub
-		return null;
+		return 1;
 	}
 
 	public static Object LUMaxConsumed() {
