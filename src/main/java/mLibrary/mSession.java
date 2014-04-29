@@ -37,5 +37,10 @@ public class mSession {
 	
 	public void setData(Object subs, Object idx, Object value){
 		mDataSession.subs(subs, idx).set(value);			
+	}
+
+	public Object getLogin(Object object, Object object2, int i) {
+		// TODO Auto-generated method stub
+		return null;
 	}		
 }

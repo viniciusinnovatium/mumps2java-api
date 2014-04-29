@@ -1,6 +1,8 @@
 package mLibrary;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,14 +27,23 @@ public class mContext {
 	}
 
 	public Object dispatch(String methodName, Object... parameters) {
-		Method m = getMethod(methodName);
+		Method m = getMethod(methodName);		
 		Object result = null;
-
+		Object obj = null;
 		try {
+			if(!Modifier.isStatic(m.getModifiers())){
+				obj = m.getDeclaringClass().newInstance();
+				if(obj instanceof mClass){
+					((mClass) obj).setContext(this);						
+				}		
+			}
+			if(m.getParameterTypes()!=null && m.getParameterTypes().length>0 &&  m.getParameterTypes()[0].isArray()){
+				parameters = new Object[]{parameters};
+			}
 			if (m.getReturnType().equals(Void.TYPE)) {
-				m.invoke(null, parameters);
+				m.invoke(obj, parameters);					
 			} else {
-				result = m.invoke(null, parameters);	
+				result = m.invoke(obj, parameters);	
 			}
 			
 		} catch (Exception e) {

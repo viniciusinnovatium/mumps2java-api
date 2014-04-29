@@ -24,7 +24,7 @@ public class mPage extends mClass {
 		return string;
 	}
 	
-	public static String HyperEventCal(String method , String args, Integer type){
+	public static String HyperEventCall(String method , String args, Integer type){
 		return "";
 	}
 }
