@@ -1083,4 +1083,14 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
+	public static Object $stack(Object... objs) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public static Object $zutil(int i, int j, Object $job) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 }

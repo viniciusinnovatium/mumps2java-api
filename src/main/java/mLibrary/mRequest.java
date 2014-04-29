@@ -24,10 +24,15 @@ public class mRequest {
 	}	
 	
 	public mVar getCgiEnvs(String key){			
-		mVar var = getData(key,1);
+		mVar var = varData(key,1);
 		return var;
 	}
 	
+	public mVar getCgiEnvs(String key, int idx){			
+		mVar var = varData(key,idx);
+		return var;
+	}
+		
 	
 	public Map<String, String[]> getCgiEnvs() {
 		return cgiEnvs;
@@ -38,9 +43,14 @@ public class mRequest {
 		populateParameter(cgiEnvs);
 	}
 
-	public mVar getData(Object... args){
+	public mVar varData(Object... args){
 		return new mVar(args, this.mDataRequest);
 	}
+	
+	public Object getData(Object... args){
+		return varData(args).get();
+	}
+	
 	
 	public void setData(Object subs, Object idx, Object value){
 		mDataRequest.subs(subs, idx).set(value);			

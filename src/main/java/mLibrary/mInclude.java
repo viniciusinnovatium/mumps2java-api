@@ -84,8 +84,7 @@ public abstract class mInclude {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void cmd$Do(String string, Object object, Object object2,
-			Object object3, Object object4, Object object5) {
+	public static void cmd$Do(Object... string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
