@@ -1,19 +1,16 @@
 package br.com.innovatium.mumps2java.datastructure.refactoring;
 
-import java.util.HashSet;
-import java.util.Set;
-
 class Node implements Comparable<Node> {
 
-	final Object[] subs;
-	final String key;
-	final Object susbcript;
+	private final Object[] subs;
+	private final String key;
+	private final Object susbcript;
 	final boolean isInteger;
 	Object value;
 
 	private Node parent;
-
-	Set<Node> subnodes;
+	private Node subnode;
+	private Node next;
 
 	public Node(Object[] subs, String key) {
 		this(subs, null, key);
@@ -43,15 +40,66 @@ class Node implements Comparable<Node> {
 		}
 	}
 
-	public void addSubnode(Node subnode) {
-		if (subnodes == null) {
-			subnodes = new HashSet<Node>();
-		}
-		if (!subnodes.add(subnode)) {
-			throw new IllegalStateException(
-					"Nao foi possivel adicionar o node: " + subnode.key);
+	public Node getParent() {
+		return parent;
+	}
+
+	public Node getSubnode() {
+		return subnode;
+	}
+
+	public Object[] getSubs() {
+		return subs;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public Object getSusbcript() {
+		return susbcript;
+	}
+
+	public Node getNext() {
+		return next;
+	}
+
+	public void addSubnode(Node newSubnode) {
+		if (subnode == null) {
+			subnode = newSubnode;
+		} else {
+			Node previous = findPrevious(subnode, newSubnode);
+			// When previous node is the first sub node into the hierarchy we
+			// have to switch its positions to maintain the order mechanism.
+			if (previous.isFirstSubnode()) {
+				subnode = newSubnode;
+				subnode.next = previous;
+			} else {
+				newSubnode.next = previous.next;
+				previous.next = newSubnode;
+			}
+
 		}
 		subnode.parent = this;
+	}
+
+	public Node findPrevious(Node previous, Node subnode) {
+		if (previous.compareTo(subnode) > 0) {
+			return previous;
+		} else if (previous.hasNext()) {
+			return findPrevious(previous.next, subnode);
+		} else {
+			return previous;
+		}
+
+	}
+
+	public boolean isFirstSubnode() {
+		return this.parent.getSubnode().equals(this);
+	}
+
+	public boolean hasNext() {
+		return this.next != null;
 	}
 
 	public boolean isRoot() {
@@ -59,7 +107,7 @@ class Node implements Comparable<Node> {
 	}
 
 	public boolean hasSubnodes() {
-		return subnodes != null && !subnodes.isEmpty();
+		return subnode != null;
 	}
 
 	public Object getValue() {
@@ -68,10 +116,6 @@ class Node implements Comparable<Node> {
 
 	public void setValue(Object value) {
 		this.value = value;
-	}
-
-	public Set<Node> getSubnodes() {
-		return subnodes;
 	}
 
 	public int compareTo(Node o) {
@@ -106,38 +150,5 @@ class Node implements Comparable<Node> {
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	
-
-	public static void main(String[] asd) {
-		Node pedido = new Node(new Object[] { "pedido" }, "pedido",
-				Tree.generateKey(new Object[] { "pedido" }));
-		pedido.addSubnode(new Node(new Object[] { "10" }, 10, Tree
-				.generateKey(new Object[] { "10" })));
-		pedido.addSubnode(new Node(new Object[] { "2" }, 2, Tree
-				.generateKey(new Object[] { "2" })));
-		pedido.addSubnode(new Node(new Object[] { "1" }, 1, Tree
-				.generateKey(new Object[] { "1" })));
-
-		pedido.addSubnode(new Node(new Object[] { "item", "1" }, 1, Tree
-				.generateKey(new Object[] { "item", "1" })));
-		pedido.addSubnode(new Node(new Object[] { "item", "2" }, 1, Tree
-				.generateKey(new Object[] { "item", "2" })));
-		pedido.addSubnode(new Node(new Object[] { "medicamento", "1" }, 1, Tree
-				.generateKey(new Object[] { "medicamento", "1" })));
-		pedido.addSubnode(new Node(new Object[] { "medicamento", "2" }, 1,
-				"valor"));
-		pedido.addSubnode(new Node(new Object[] { "medicamento", "antibiotico",
-				1 }, 1, Tree.generateKey(new Object[] { "medicamento",
-				"antibiotico", 1 })));
-		pedido.addSubnode(new Node(new Object[] { "medicamento", "antibiotico",
-				2 }, 1, Tree.generateKey(new Object[] { "medicamento",
-				"antibiotico", 2 })));
-
-		for (Node e : pedido.getSubnodes()) {
-			System.out.println(e);
-		}
-
 	}
 }

@@ -7,7 +7,7 @@ public final class Tree extends Node {
 	private Node lookedUp;
 
 	public Tree() {
-		super(new Object[] { "" }, null, null);
+		super(new Object[] { "root" }, null, "root");
 	}
 
 	public void set(Object[] subs, Object value) {
@@ -20,7 +20,30 @@ public final class Tree extends Node {
 		node.setValue(value);
 	}
 
-	protected final Node generateNode(Object[] subs) {
+	public Object order(Object[] subs, int direction) {
+		Object lastSubscript = subs[subs.length - 1];
+		Object subscript = "";
+
+		final boolean isEmptyLastSubs = lastSubscript == null
+				|| lastSubscript.toString().length() == 0;
+
+		// Condition to return to first element on list of subnodes.
+		if (isEmptyLastSubs) {
+			subs = Arrays.copyOf(subs, subs.length - 1);
+		}
+
+		final Node node = findNode(subs);
+		if (isEmptyLastSubs && node != null) {
+			subscript = node.hasSubnodes() ? node.getSubnode().getSusbcript()
+					: "";
+		} else if (node != null) {
+			subscript = node.hasNext() ? node.getNext().getSusbcript() : "";
+		}
+
+		return subscript;
+	}
+
+	private final Node generateNode(Object[] subs) {
 		return generateNode(this, subs, 0);
 	}
 
@@ -61,6 +84,14 @@ public final class Tree extends Node {
 		return findSubnode(this, subs);
 	}
 
+	public Object get(Object[] subs) {
+		Node node = findSubnode(this, subs);
+		if (node != null) {
+			return node.getValue();
+		}
+		return null;
+	}
+
 	private Node findSubnode(Node node, Object[] subs) {
 		lookedUp = null;
 		findSubnode(node, subs, node.isRoot() ? 0 : 1);
@@ -72,31 +103,33 @@ public final class Tree extends Node {
 			return;
 		}
 		if (node.hasSubnodes()) {
-			for (Node subnode : node.getSubnodes()) {
-				if (subnode.susbcript.equals(subs[index])) {
+			Node subnode = node.getSubnode();
+			do {
+				if (subnode.getSusbcript().equals(subs[index])) {
 					if (index == subs.length - 1) {
 						lookedUp = subnode;
 					}
 					findSubnode(subnode, subs, index + 1);
 				}
-			}
+			} while ((subnode = subnode.getNext()) != null);
 		}
 	}
 
 	public static void main(String[] asd) {
 		Tree tree = new Tree();
-		tree.set(new Object[] { "pedido" }, 32);
-		tree.set(new Object[] { "pedido", "item", 1 }, 66);
-		tree.set(new Object[] { "pedido", "medicamento", 1 }, 770);
-		tree.set(new Object[] { "pedido", "entrada", 1 }, 90);
-		tree.set(new Object[] { "pedido", "entrada" }, 33);
+		tree.set(new Object[] { "pedido", "medicamento" }, 770);
+		tree.set(new Object[] { "pedido", "item" }, 66);
+		tree.set(new Object[] { "pedido", "automovel" }, 88);
 
-		System.out.println(tree.findNode(
-				new Object[] { "pedido", "entrada", 1 }).getValue());
-		System.out.println(tree.findNode(new Object[] { "pedido", "entrada" })
-				.getValue());
+		System.out.println(tree.get(new Object[] { "pedido", "medicamento" }));
+		System.out.println(tree.get(new Object[] { "item" }));
 
-		System.out.println(tree.findNode(new Object[] { "pedido" }).getValue());
+		Object order = "item";
+		int i = 0;
+		while (++i < 10) {
+			order = tree.order(new Object[] { "pedido", order }, 1);
+			System.out.println("ordenando: " + order);
+		}
 	}
 
 }
