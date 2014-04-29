@@ -191,6 +191,10 @@ public class mContext {
 		oldvar(countNewOperator);
 	}
 
+	public mVar pieceVar(mVar var, Object del) {
+		return new mPieceVar(var, del, 1);
+	}
+	
 	public mVar pieceVar(mVar var, Object del, Object ipos) {
 		return new mPieceVar(var, del, ipos);
 	}
