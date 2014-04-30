@@ -20,6 +20,15 @@ public final class Tree extends Node {
 		node.setValue(value);
 	}
 
+	public Node kill(Object[] subs) {
+		Node node = findNode(subs);
+		if (node != null) {
+			node.kill();
+			return node;
+		}
+		return null;
+	}
+
 	public Object order(Object[] subs, int direction) {
 		Object lastSubscript = subs[subs.length - 1];
 		Object subscript = "";
@@ -92,6 +101,24 @@ public final class Tree extends Node {
 		return null;
 	}
 
+	public String dump() {
+		StringBuilder string = new StringBuilder();
+		dump(this, string);
+		return string.toString();
+	}
+
+	private void dump(Node node, final StringBuilder string) {
+		if(node != null){
+			Node next = node;
+			do {
+				string.append(next).append("\n");
+				if(next.hasSubnodes()) {
+					dump(next.getSubnode(), string);
+				}
+			} while ((next = next.getNext()) != null);
+		}
+	}
+
 	private Node findSubnode(Node node, Object[] subs) {
 		lookedUp = null;
 		findSubnode(node, subs, node.isRoot() ? 0 : 1);
@@ -108,7 +135,8 @@ public final class Tree extends Node {
 				// Here the looked up subscripts is coming as string, so we have
 				// to compare strings always, on other way, we never find the
 				// nodes.
-				if (subnode.getSusbcriptAsString().equals(subs[index].toString())) {
+				if (subnode.getSusbcriptAsString().equals(
+						subs[index].toString())) {
 					if (index == subs.length - 1) {
 						lookedUp = subnode;
 					}
@@ -120,43 +148,56 @@ public final class Tree extends Node {
 
 	public static void main(String[] asd) {
 		Tree tree = new Tree();
-		/*
-		 * tree.set(new Object[] { "pedido", "medicamento" }, 770); tree.set(new
-		 * Object[] { "pedido", "item" }, 66); tree.set(new Object[] { "pedido",
-		 * "automovel" }, 88);
-		 * 
-		 * tree.set(new Object[] { "pedido", "medicamento", "10" }, "dec");
-		 * tree.set(new Object[] { "pedido", "medicamento", "1" }, "pri");
-		 * tree.set(new Object[] { "pedido", "medicamento", "2" }, "seg");
-		 * System.out.println(tree.get(new Object[] { "pedido", "medicamento"
-		 * })); System.out.println(tree .get(new Object[] { "pedido",
-		 * "medicamento", "2" }));
-		 */
-		
-		
-		
+
 		tree.set(new Object[] { "x", "10" }, "dec");
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
-		
+
 		Object order = "1";
 		int i = 0;
 		while (++i < 10) {
 			order = tree.order(new Object[] { "x", order }, 1);
-			System.out.println("subscritp: " + order+" value: "+tree.get(new Object[] { "x", order }));
+			System.out.println("subscritp: " + order + " value: "
+					+ tree.get(new Object[] { "x", order }));
 		}
+
 		
 		tree.set(new Object[] { "y", "elemento2" }, "e1");
 		tree.set(new Object[] { "y", "elemento1" }, "e1");
 		tree.set(new Object[] { "y", "aelemento1" }, "a1");
-
 		
 		order = "";
 		i = 0;
 		while (++i < 4) {
 			order = tree.order(new Object[] { "y", order }, 1);
-			System.out.println("subscritp: " + order+" value: "+tree.get(new Object[] { "y", order }));
+			System.out.println("subscritp: " + order + " value: "
+					+ tree.get(new Object[] { "y", order }));
 		}
+
+		tree.set(new Object[] { "w", "1" }, "1");
+		tree.set(new Object[] { "w", "2" }, "2");
+		tree.set(new Object[] { "w", "3" }, "3");
+		tree.set(new Object[] { "w", "1", "1" }, "11");
+		tree.set(new Object[] { "w", "1", "2" }, "12");
+		tree.set(new Object[] { "w", "1", "3" }, "13");
+
+		System.out.println("\n----- dumping -----");
+		System.out.println(tree.dump());
+
+		
+		System.out.println("pegando: "
+				+ tree.get(new Object[] { "w", "1", "2" }));
+		System.out.println("matou: "+tree.kill(new Object[] { "w", "1" }));
+		
+		System.out.println("\n----- dumping -----");
+		System.out.println(tree.dump());
+		
+		System.out.println("pegando: "
+				+ tree.get(new Object[] { "w", "1", "2" }));
+		System.out.println("pegando: " + tree.get(new Object[] { "w", "1" }));
+		System.out.println("pegando: "
+				+ tree.get(new Object[] { "w", "1", "3" }));
+
 	}
 
 }

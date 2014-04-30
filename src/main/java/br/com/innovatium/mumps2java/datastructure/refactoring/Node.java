@@ -11,6 +11,7 @@ class Node implements Comparable<Node> {
 	private Node parent;
 	private Node subnode;
 	private Node next;
+	private Node previous;
 
 	public Node(Object[] subs, String key) {
 		this(subs, null, key);
@@ -68,6 +69,10 @@ class Node implements Comparable<Node> {
 		return next;
 	}
 
+	public Node getPrevious() {
+		return previous;
+	}
+
 	public void addSubnode(Node newSubnode) {
 		if (subnode == null) {
 			subnode = newSubnode;
@@ -75,16 +80,22 @@ class Node implements Comparable<Node> {
 			Node previous = findPrevious(subnode, newSubnode);
 			// When previous node is the first sub node into the hierarchy we
 			// have to switch its positions to maintain the order mechanism.
-			if (previous.isFirstSubnode()) {
+			if (previous.isFirstSubnode() && previous.isAfter(newSubnode)) {
 				subnode = newSubnode;
 				subnode.next = previous;
+				previous.previous = subnode;
 			} else {
 				newSubnode.next = previous.next;
 				previous.next = newSubnode;
+				newSubnode.previous = previous;
 			}
 
 		}
-		subnode.parent = this;
+		newSubnode.parent = this;
+	}
+
+	public Node findPrevious() {
+		return findPrevious(parent.subnode, this);
 	}
 
 	public Node findPrevious(Node previous, Node subnode) {
@@ -124,6 +135,18 @@ class Node implements Comparable<Node> {
 
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+	public void kill() {
+		if (isFirstSubnode()) {
+			parent.subnode = this.next;
+		} else {
+			this.previous = this.next;
+		}
+		// Canceling all references that node does.
+		this.parent = null;
+		this.next = null;
+		this.previous = null;
 	}
 
 	public int compareTo(Node o) {
