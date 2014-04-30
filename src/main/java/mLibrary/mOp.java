@@ -14,7 +14,7 @@ public final class mOp {
 	}
 
 	public static Object Positive(Object num) {
-		double d1 = Double.valueOf(String.valueOf(num));
+		double d1 = mFncUtil.numberConverter(num);
 		if (d1 <= 0) {
 			d1 = d1 * -1;
 		}
@@ -22,7 +22,7 @@ public final class mOp {
 	}
 
 	public static Object Negative(Object num) {
-		double d1 = Double.valueOf(String.valueOf(num));
+		double d1 = mFncUtil.numberConverter(num);
 		if (d1 >= 0) {
 			d1 = d1 * -1;
 		}
@@ -71,12 +71,8 @@ public final class mOp {
 	}
 
 	public static boolean Greater(Object object, Object object2) {
-		if (mFnc.$isNumber(object)) {
-			return Double.valueOf(String.valueOf(object)) > Double
-					.valueOf(String.valueOf(object));
-		} else {
-			return true;
-		}
+			return mFncUtil.numberConverter(object) > mFncUtil.numberConverter(object2);
+		
 	}
 
 	public static Object Subtract(Object num1, Object num2) {
@@ -90,21 +86,11 @@ public final class mOp {
 	}
 
 	public static boolean GreaterOrEqual(Object object, Object object2) {
-		if (mFnc.$isNumber(object)) {
-			return Double.valueOf(String.valueOf(object)) >= Double
-					.valueOf(String.valueOf(object));
-		} else {
-			return true;
-		}
+		return mFncUtil.numberConverter(object) >= mFncUtil.numberConverter(object2);
 	}
 
 	public static boolean LessOrEqual(Object object, Object object2) {
-		if (mFnc.$isNumber(object)) {
-			return Double.valueOf(String.valueOf(object)) <= Double
-					.valueOf(String.valueOf(object));
-		} else {
-			return true;
-		}
+		return mFncUtil.numberConverter(object) <= mFncUtil.numberConverter(object2);		
 	}
 
 	public static boolean Contains(Object str1, Object str2) {
@@ -112,36 +98,31 @@ public final class mOp {
 	}
 
 	public static Object Multiply(Object num1, Object num2) {
-		double d1 = Double.valueOf(String.valueOf(num1));
-		double d2 = Double.valueOf(String.valueOf(num2));
+		double d1 = mFncUtil.numberConverter(num1);
+		double d2 = mFncUtil.numberConverter(num2);
 		return (d1 * d2);
 	}
 
 	public static Object Add(Object num1, Object num2) {
-		double d1 = Double.valueOf(String.valueOf(num1));
-		double d2 = Double.valueOf(String.valueOf(num2));
+		double d1 = mFncUtil.numberConverter(num1);
+		double d2 = mFncUtil.numberConverter(num2);
 		return (d1 + d2);
 	}
 
 	public static Object Modulus(Object num1, Object num2) {
-		double d1 = Double.valueOf(String.valueOf(num1));
-		double d2 = Double.valueOf(String.valueOf(num2));
+		double d1 = mFncUtil.numberConverter(num1);
+		double d2 = mFncUtil.numberConverter(num2);
 		return (d1 % d2);
 	}
 
 	public static Object IntegerDivide(Object num1, Object num2) {
-		double d1 = Double.valueOf(String.valueOf(num1));
-		double d2 = Double.valueOf(String.valueOf(num2));
+		double d1 = mFncUtil.numberConverter(num1);
+		double d2 = mFncUtil.numberConverter(num2);
 		return (d1 / d2);
 	}
 
 	public static boolean Less(Object object, Object object2) {
-		if (mFnc.$isNumber(object)) {
-			return Double.valueOf(String.valueOf(object)) < Double
-					.valueOf(String.valueOf(object));
-		} else {
-			return true;
-		}
+		return mFncUtil.numberConverter(object) < mFncUtil.numberConverter(object2);				
 	}
 
 	public static boolean Match(Object string, Object regex) {

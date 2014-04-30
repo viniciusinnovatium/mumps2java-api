@@ -23,10 +23,10 @@ public final class Tree extends Node {
 		for (String subscript : subs) {
 			node = searchSubnode(subscript);
 			// Avoid some variables which does not exist into the tree.
-			if (node != null){
+			if (node != null) {
 				node.setStackLevel(currentStackLevel);
 				stack.push(node);
-				kill(subscript);	
+				kill(subscript);
 			}
 		}
 	}
@@ -37,11 +37,11 @@ public final class Tree extends Node {
 		}
 		currentStackLevel++;
 		List<Node> nodes = searchSubnodeExcepts(subs);
-		if (nodes != null){
+		if (nodes != null) {
 			for (Node node : nodes) {
 				node.setStackLevel(currentStackLevel);
 				stack.push(node);
-				kill(node.getSubscript());		
+				kill(node.getSubscript());
 			}
 		}
 	}
@@ -76,14 +76,20 @@ public final class Tree extends Node {
 		if (path.isLastEmpty() && direction >= 1) {
 			path = path.generate(path.length() - 1);
 			changeToNode(path.toArray());
-			Node first = currentNode.firstChild(); 
+			if (currentNode == null) {
+				return "";
+			}
+			Node first = currentNode.firstChild();
 			return first != null ? first.getSubscript() : "";
 		}
 
 		if (path.isLastEmpty() && direction < 1) {
 			path = path.generate(path.length() - 1);
 			changeToNode(path.toArray());
-			Node last = currentNode.lastChild(); 
+			if (currentNode == null) {
+				return "";
+			}
+			Node last = currentNode.lastChild();
 			return last != null ? last.getSubscript() : "";
 		}
 
@@ -251,8 +257,7 @@ public final class Tree extends Node {
 
 		List<Node> list = null;
 
-		subnodes:
-		for (Node node : this.getSubnodes()) {
+		subnodes: for (Node node : this.getSubnodes()) {
 			for (int i = 0; i < subs.length; i++) {
 				if (subs[i] != null && subs[i].equals(node.getSubscript())) {
 					continue subnodes;
