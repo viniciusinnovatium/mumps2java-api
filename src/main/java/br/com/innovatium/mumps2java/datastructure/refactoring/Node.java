@@ -1,5 +1,8 @@
 package br.com.innovatium.mumps2java.datastructure.refactoring;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class Node implements Comparable<Node> {
 
 	private final Object[] subs;
@@ -129,6 +132,10 @@ class Node implements Comparable<Node> {
 		return subnode != null;
 	}
 
+	public boolean isLeaf() {
+		return !isRoot() && !hasSubnodes();
+	}
+
 	public Object getValue() {
 		return value;
 	}
@@ -183,6 +190,20 @@ class Node implements Comparable<Node> {
 	@Override
 	public int hashCode() {
 		return this.key.hashCode();
+	}
+
+	public List<Node> getSubnodes() {
+
+		if (this == null || !this.hasSubnodes()) {
+			return null;
+		}
+
+		final List<Node> list = new ArrayList<Node>(30);
+		Node next = this.getSubnode();
+		do {
+			list.add(next);
+		} while ((next = next.getNext()) != null);
+		return list;
 	}
 
 	private Integer toInt(String string) {

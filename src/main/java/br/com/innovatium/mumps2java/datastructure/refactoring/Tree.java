@@ -2,12 +2,34 @@ package br.com.innovatium.mumps2java.datastructure.refactoring;
 
 import java.util.Arrays;
 
+import br.com.innovatium.mumps2java.todo.TODO;
+
 public final class Tree extends Node {
 	private static final String DELIMETER = "~";
 	private Node lookedUp;
 
 	public Tree() {
 		super(new Object[] { "root" }, null, "root");
+	}
+
+	public int data(Object[] subs) {
+		Node node = findNode(subs);
+		if (node == null) {
+			return 0;
+		}
+		int cod = -1;
+		boolean hasValue = node.getValue() != null;
+		boolean hasChildPopulated = hasPopulatedSubnode(node);
+		if (!hasValue && !hasChildPopulated) {
+			cod = 0;
+		} else if (hasValue && !hasChildPopulated) {
+			cod = 1;
+		} else if (!hasValue && hasChildPopulated) {
+			cod = 10;
+		} else if (hasValue && hasChildPopulated) {
+			cod = 11;
+		}
+		return cod;
 	}
 
 	public void set(Object[] subs, Object value) {
@@ -89,6 +111,45 @@ public final class Tree extends Node {
 		return builder.toString();
 	}
 
+	public boolean hasPopulatedSubnode(Node node) {
+
+		boolean isPreenchido = false;
+		if (node.hasSubnodes()) {
+			for (Node subnode : node.getSubnodes()) {
+				if (subnode.getValue() != null) {
+					isPreenchido = true;
+					break;
+				}
+
+				isPreenchido = hasPopulatedSubnode(subnode);
+				if (isPreenchido) {
+					return true;
+				}
+			}
+		}
+
+		return isPreenchido;
+
+	}
+
+	// The method which returns the sub nodes of the node should be enhanced.
+	@TODO
+	public boolean hasPopulatedSubnode(Node node, boolean found) {
+
+		if (!found && node.hasSubnodes()) {
+			Node subnode = node.getSubnode();
+			if (subnode.getValue() != null) {
+				found = true;
+			}
+			found = hasPopulatedSubnode(subnode, found);
+		} else if (!found && node.isLeaf() && node.getValue() != null) {
+			found = true;
+		} else if (!found && node.hasNext()) {
+			found = hasPopulatedSubnode(node.getNext(), found);
+		}
+		return found;
+	}
+
 	public Node findNode(Object[] subs) {
 		return findSubnode(this, subs);
 	}
@@ -108,11 +169,11 @@ public final class Tree extends Node {
 	}
 
 	private void dump(Node node, final StringBuilder string) {
-		if(node != null){
+		if (node != null) {
 			Node next = node;
 			do {
 				string.append(next).append("\n");
-				if(next.hasSubnodes()) {
+				if (next.hasSubnodes()) {
 					dump(next.getSubnode(), string);
 				}
 			} while ((next = next.getNext()) != null);
@@ -139,6 +200,7 @@ public final class Tree extends Node {
 						subs[index].toString())) {
 					if (index == subs.length - 1) {
 						lookedUp = subnode;
+						break;
 					}
 					findSubnode(subnode, subs, index + 1);
 				}
@@ -148,7 +210,6 @@ public final class Tree extends Node {
 
 	public static void main(String[] asd) {
 		Tree tree = new Tree();
-
 		tree.set(new Object[] { "x", "10" }, "dec");
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
@@ -161,11 +222,10 @@ public final class Tree extends Node {
 					+ tree.get(new Object[] { "x", order }));
 		}
 
-		
 		tree.set(new Object[] { "y", "elemento2" }, "e1");
 		tree.set(new Object[] { "y", "elemento1" }, "e1");
 		tree.set(new Object[] { "y", "aelemento1" }, "a1");
-		
+
 		order = "";
 		i = 0;
 		while (++i < 4) {
@@ -184,20 +244,36 @@ public final class Tree extends Node {
 		System.out.println("\n----- dumping -----");
 		System.out.println(tree.dump());
 
-		
 		System.out.println("pegando: "
 				+ tree.get(new Object[] { "w", "1", "2" }));
-		System.out.println("matou: "+tree.kill(new Object[] { "w", "1" }));
-		
+		System.out.println("matou: " + tree.kill(new Object[] { "w", "1" }));
+
 		System.out.println("\n----- dumping -----");
 		System.out.println(tree.dump());
-		
-		System.out.println("pegando: "
-				+ tree.get(new Object[] { "w", "1", "2" }));
-		System.out.println("pegando: " + tree.get(new Object[] { "w", "1" }));
-		System.out.println("pegando: "
-				+ tree.get(new Object[] { "w", "1", "3" }));
 
+		tree.set(new Object[] { "1" }, 1);
+		tree.set(new Object[] { "1", "11" }, null);
+		tree.set(new Object[] { "1", "12" }, 12);
+		tree.set(new Object[] { "1", "3" }, null);
+		tree.set(new Object[] { "1", "3", "33" }, 33);
+		tree.set(new Object[] { "1", "4" }, 4);
+		tree.set(new Object[] { "2" }, null);
+		System.out.println(tree.get(new Object[] { "1", "3", "33" }));
+
+		System.out
+				.println("Funcao data deve ser igual a 0 valor: false subnodes: false => "
+						+ tree.data(new Object[] { "2" }));
+		System.out
+				.println("Funcao data deve ser igual a 0 valor: false subnodes: false => "
+						+ tree.data(new Object[] { "1", "11" }));
+		System.out
+				.println("Funcao data deve ser igual a 1 valor: true subnodes: false => "
+						+ tree.data(new Object[] { "1", "4" }));
+		System.out
+				.println("Funcao data deve ser igual a 10 valor: false subnodes: true => "
+						+ tree.data(new Object[] { "1", "3" }));
+		System.out
+				.println("Funcao data deve ser igual a 11 valor: true subnodes: true => "
+						+ tree.data(new Object[] { "1" }));
 	}
-
 }
