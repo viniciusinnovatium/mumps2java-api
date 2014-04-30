@@ -1,15 +1,74 @@
 package br.com.innovatium.mumps2java.datastructure.refactoring;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private static final String DELIMETER = "~";
+	private int currentStackLevel = 0;
 	private Node lookedUp;
+	private StackNode stack;
 
 	public Tree() {
 		super(new Object[] { "root" }, null, "root");
+	}
+
+	public void stacking(String... subs) {
+		if (stack == null) {
+			stack = new StackNode();
+		}
+		currentStackLevel++;
+		Node node = null;
+		/*
+		 * Iterating over variable names collection. Here we suppose the
+		 * variable name is the first subscript of the array.
+		 */
+		for (String subscript : subs) {
+			node = findNode(new Object[] { subscript });
+			// Avoid some variables which does not exist into the tree.
+			if (node != null) {
+				node.setStackLevel(currentStackLevel);
+				stack.push(node);
+				kill(subs);
+			}
+		}
+	}
+
+	public void unstacking() {
+		if (stack == null) {
+			stack = new StackNode();
+		}
+		final List<Node> stackedNodes = stack.pull(currentStackLevel);
+		if (stackedNodes != null && !stackedNodes.isEmpty()) {
+			for (Node stacked : stackedNodes) {
+				Node nodeOntheTree = findNode(stacked.getSubs());
+				if (nodeOntheTree != null) {
+					nodeOntheTree.kill();
+				}
+				addSubnode(stacked);
+			}
+			currentStackLevel--;
+		}
+	}
+
+	public void stackingExcept(String... subs) {
+		if (stack == null) {
+			stack = new StackNode();
+		}
+		currentStackLevel++;
+		List<Node> nodes = searchSubnodeExcepts(subs);
+		if (nodes != null) {
+			for (Node node : nodes) {
+				node.setStackLevel(currentStackLevel);
+				stack.push(node);
+				if (node != null) {
+					node.kill();
+				}
+			}
+		}
 	}
 
 	public int data(Object[] subs) {
@@ -72,26 +131,6 @@ public final class Tree extends Node {
 		}
 
 		return subscript;
-	}
-
-	private final Node generateNode(Object[] subs) {
-		return generateNode(this, subs, 0);
-	}
-
-	private Node generateNode(final Node parent, final Object[] subs, int index) {
-		final Object[] subnodeArray = Arrays.copyOf(subs, index + 1);
-		Node nodefound = findSubnode(parent, subnodeArray);
-		boolean exist = nodefound != null;
-
-		if (!exist) {
-			nodefound = new Node(subnodeArray, generateKey(subnodeArray));
-			parent.addSubnode(nodefound);
-		}
-
-		if (++index < subs.length) {
-			nodefound = generateNode(nodefound, subs, index);
-		}
-		return nodefound;
 	}
 
 	public static String generateKey(Object... subs) {
@@ -208,6 +247,50 @@ public final class Tree extends Node {
 		}
 	}
 
+	private List<Node> searchSubnodeExcepts(String... subs) {
+		if (subs == null) {
+			return null;
+		}
+
+		List<Node> list = null;
+		List<Node> variables = this.getSubnodes();
+
+		subnodes: for (Node node : variables) {
+			for (int i = 0; i < subs.length; i++) {
+				if (subs[i] != null
+						&& subs[i].equals(node.getSusbcriptAsString())) {
+					continue subnodes;
+				}
+			}
+			if (list == null) {
+				list = new ArrayList<Node>(30);
+			}
+			list.add(node);
+
+		}
+		return list;
+	}
+
+	private final Node generateNode(Object[] subs) {
+		return generateNode(this, subs, 0);
+	}
+
+	private Node generateNode(final Node parent, final Object[] subs, int index) {
+		final Object[] subnodeArray = Arrays.copyOf(subs, index + 1);
+		Node nodefound = findSubnode(parent, subnodeArray);
+		boolean exist = nodefound != null;
+
+		if (!exist) {
+			nodefound = new Node(subnodeArray, generateKey(subnodeArray));
+			parent.addSubnode(nodefound);
+		}
+
+		if (++index < subs.length) {
+			nodefound = generateNode(nodefound, subs, index);
+		}
+		return nodefound;
+	}
+
 	public static void main(String[] asd) {
 		Tree tree = new Tree();
 		tree.set(new Object[] { "x", "10" }, "dec");
@@ -275,5 +358,6 @@ public final class Tree extends Node {
 		System.out
 				.println("Funcao data deve ser igual a 11 valor: true subnodes: true => "
 						+ tree.data(new Object[] { "1" }));
+
 	}
 }

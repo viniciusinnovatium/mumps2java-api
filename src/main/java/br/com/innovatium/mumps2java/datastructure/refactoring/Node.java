@@ -9,7 +9,9 @@ class Node implements Comparable<Node> {
 	private final String key;
 	private final Object susbcript;
 	final boolean isInteger;
-	Object value;
+	private Integer stackLevel;
+
+	private Object value;
 
 	private Node parent;
 	private Node subnode;
@@ -204,6 +206,14 @@ class Node implements Comparable<Node> {
 			list.add(next);
 		} while ((next = next.getNext()) != null);
 		return list;
+	}
+
+	public Integer getStackLevel() {
+		return stackLevel;
+	}
+
+	public void setStackLevel(Integer stackLevel) {
+		this.stackLevel = stackLevel;
 	}
 
 	private Integer toInt(String string) {
