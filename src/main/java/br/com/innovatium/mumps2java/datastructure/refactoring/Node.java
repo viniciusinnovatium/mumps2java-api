@@ -60,6 +60,10 @@ class Node implements Comparable<Node> {
 		return susbcript;
 	}
 
+	public Object getSusbcriptAsString() {
+		return susbcript.toString();
+	}
+
 	public Node getNext() {
 		return next;
 	}
@@ -98,6 +102,10 @@ class Node implements Comparable<Node> {
 		return this.parent.getSubnode().equals(this);
 	}
 
+	public boolean isAfter(Node node) {
+		return this.compareTo(node) > 0;
+	}
+
 	public boolean hasNext() {
 		return this.next != null;
 	}
@@ -120,7 +128,17 @@ class Node implements Comparable<Node> {
 
 	public int compareTo(Node o) {
 		if (isInteger) {
-			return ((Integer) susbcript).compareTo((Integer) o.susbcript);
+			try {
+				return ((Integer) susbcript).compareTo((Integer) o.susbcript);
+			} catch (ClassCastException e) {
+				throw new IllegalArgumentException(
+						"There is some inconsistence when was setted the nodes "
+								+ this + " and " + o
+								+ ". Fail to compare subscript: "
+								+ this.susbcript + " and this subscript: "
+								+ ((Node) o).susbcript
+								+ ". They must have to be the same type.", e);
+			}
 		}
 		return this.susbcript.toString().compareTo(o.susbcript.toString());
 	}

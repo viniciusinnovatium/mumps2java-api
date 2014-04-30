@@ -105,7 +105,10 @@ public final class Tree extends Node {
 		if (node.hasSubnodes()) {
 			Node subnode = node.getSubnode();
 			do {
-				if (subnode.getSusbcript().equals(subs[index])) {
+				// Here the looked up subscripts is coming as string, so we have
+				// to compare strings always, on other way, we never find the
+				// nodes.
+				if (subnode.getSusbcriptAsString().equals(subs[index].toString())) {
 					if (index == subs.length - 1) {
 						lookedUp = subnode;
 					}
@@ -117,18 +120,42 @@ public final class Tree extends Node {
 
 	public static void main(String[] asd) {
 		Tree tree = new Tree();
-		tree.set(new Object[] { "pedido", "medicamento" }, 770);
-		tree.set(new Object[] { "pedido", "item" }, 66);
-		tree.set(new Object[] { "pedido", "automovel" }, 88);
-
-		System.out.println(tree.get(new Object[] { "pedido", "medicamento" }));
-		System.out.println(tree.get(new Object[] { "item" }));
-
-		Object order = "item";
+		/*
+		 * tree.set(new Object[] { "pedido", "medicamento" }, 770); tree.set(new
+		 * Object[] { "pedido", "item" }, 66); tree.set(new Object[] { "pedido",
+		 * "automovel" }, 88);
+		 * 
+		 * tree.set(new Object[] { "pedido", "medicamento", "10" }, "dec");
+		 * tree.set(new Object[] { "pedido", "medicamento", "1" }, "pri");
+		 * tree.set(new Object[] { "pedido", "medicamento", "2" }, "seg");
+		 * System.out.println(tree.get(new Object[] { "pedido", "medicamento"
+		 * })); System.out.println(tree .get(new Object[] { "pedido",
+		 * "medicamento", "2" }));
+		 */
+		
+		
+		
+		tree.set(new Object[] { "x", "10" }, "dec");
+		tree.set(new Object[] { "x", "2" }, "seg");
+		tree.set(new Object[] { "x", "1" }, "pri");
+		
+		Object order = "1";
 		int i = 0;
 		while (++i < 10) {
-			order = tree.order(new Object[] { "pedido", order }, 1);
-			System.out.println("ordenando: " + order);
+			order = tree.order(new Object[] { "x", order }, 1);
+			System.out.println("subscritp: " + order+" value: "+tree.get(new Object[] { "x", order }));
+		}
+		
+		tree.set(new Object[] { "y", "elemento2" }, "e1");
+		tree.set(new Object[] { "y", "elemento1" }, "e1");
+		tree.set(new Object[] { "y", "aelemento1" }, "a1");
+
+		
+		order = "";
+		i = 0;
+		while (++i < 4) {
+			order = tree.order(new Object[] { "y", order }, 1);
+			System.out.println("subscritp: " + order+" value: "+tree.get(new Object[] { "y", order }));
 		}
 	}
 
