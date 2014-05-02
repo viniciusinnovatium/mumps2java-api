@@ -1,12 +1,12 @@
 package com.disclinc.cachemanager.test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import br.com.innovatium.mumps2java.cachemanager.CacheManager;
 import br.com.innovatium.mumps2java.cachemanager.CacheManagerFactory;
 import br.com.innovatium.mumps2java.cachemanager.CacheType;
-import br.com.innovatium.mumps2java.datastructure.Node;
+import br.com.innovatium.mumps2java.datastructure.Tree;
 
 
 public class MultiCacheAccessDataTest {
@@ -16,8 +16,7 @@ public class MultiCacheAccessDataTest {
 	private final String path = "pedido";
 	
 	public MultiCacheAccessDataTest() {
-		Node n = new Node(path, path, "77");
-		cache1.put(n);
+		cache1.put(Tree.generateKey(path), "77");
 	}
 	
 	@Test

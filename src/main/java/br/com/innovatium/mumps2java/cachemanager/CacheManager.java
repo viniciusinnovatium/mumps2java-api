@@ -5,6 +5,7 @@ import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.Node;
 
+
 public abstract class CacheManager {
 
 	private final Map<Object, Object> cache;
@@ -25,11 +26,7 @@ public abstract class CacheManager {
 		cache.remove(key);
 	}
 
-	public void put(Node node) {
-		cache.put(node.getPath(), node);
-	}
-	
-	public void put(Object key, Object value) {
+	public void put(String key, Object value) {
 		cache.put(key, value);
 	}
 
@@ -37,7 +34,7 @@ public abstract class CacheManager {
 		return cache.get(key);
 	}
 
-	public abstract List<Node> like(String path);
+	public abstract List<Object[]> like(String path);
 	
 	public void put(Map<Object, Node> mapa) {
 		cache.putAll(mapa);

@@ -36,7 +36,7 @@ public final class CacheManagerHotRod extends CacheManager {
 		}
 		*/
 	}
-	public List<Node> like(String path) {
+	public List<Object[]> like(String path) {
 		/*
 		final Query query = Search.getQueryFactory(cache).from(Node.class)
 				.having("path").like("%" + path + "%").toBuilder().build();
@@ -57,7 +57,7 @@ public final class CacheManagerHotRod extends CacheManager {
 
 		return query.list();
 		 */
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	class NodeMarshaller implements MessageMarshaller<Node> {
@@ -80,7 +80,8 @@ public final class CacheManagerHotRod extends CacheManager {
 
 		public Node readFrom(ProtoStreamReader reader)
 				throws IOException {
-			return new Node(reader.readString("subscript"), reader.readString("path"), reader.readString("value"));
+			throw new UnsupportedOperationException();
+			//return new Node(reader.readString("subscript"), reader.readString("path"), reader.readString("value"));
 		}
 	}
 

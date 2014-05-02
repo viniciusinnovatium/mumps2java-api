@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import br.com.innovatium.mumps2java.datastructure.Node;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class CacheManagerJDBC extends CacheManager {
@@ -19,22 +18,24 @@ public class CacheManagerJDBC extends CacheManager {
 	}
 
 	@Override
-	public List<Node> like(String path) {
-		final List<Node> l = new ArrayList<Node>();
+	public List<Object[]> like(String path) {
+		final List<Object[]> l = new ArrayList<Object[]>();
 		if (path == null) {
 			return l;
 		}
 		Connection con = null;
 		try {
 			con = openConnection();
-			
-			String like = "select key, value from \""+path.split("~")[0].replace("^", "")+"\" where key like ? order by key asc;";
-			
+
+			String like = "select key_, value_ from \""
+					+ path.split("~")[0].replace("^", "")
+					+ "\" where key_ like ? order by key_ asc;";
+
 			PreparedStatement select = con.prepareStatement(like);
 			select.setString(1, path + "%");
 			ResultSet result = select.executeQuery();
 			while (result.next()) {
-				l.add(new Node(null, result.getString(1), result.getString(2)));
+				l.add(new Object[] { result.getString(1), result.getString(2) });
 			}
 
 		} catch (SQLException e) {
@@ -82,29 +83,35 @@ public class CacheManagerJDBC extends CacheManager {
 		}
 	}
 
+	/*
+	 * We have to study a better way to do inserts and create string to make
+	 * queries.
+	 */
+	@TODO
 	@Override
-	public void put(Node node) {
+	public void put(String key, Object value) {
 		Connection con = null;
 		try {
 			con = openConnection();
-			String selectOne = "select key, value from \""
-					+ node.getVariableName() + "\" where key = ?;";
+			final String variableName = key.split("~")[0];
+			String selectOne = "select key_, value_ from \"" + variableName
+					+ "\" where key_ =  ?;";
 			PreparedStatement select = con.prepareStatement(selectOne);
-			select.setObject(1, node.getPath());
+			select.setObject(1, key);
 			ResultSet result = select.executeQuery();
 			PreparedStatement insert = null;
 			if (!result.next()) {
-				String insertQuery = "insert into " + node.getVariableName()
+				String insertQuery = "insert into " + variableName
 						+ " values (?, ?) ;";
 				insert = con.prepareStatement(insertQuery);
-				insert.setObject(1, node.getPath());
-				insert.setObject(2, node.getValue());
+				insert.setObject(1, key);
+				insert.setObject(2, value);
 			} else {
-				String updateQuery = "update \"" + node.getVariableName()
-						+ "\" set value = ? where key = ?;";
+				String updateQuery = "update \"" + variableName
+						+ "\" set value_ = ? where key_ =  ?;";
 				insert = con.prepareStatement(updateQuery);
-				insert.setObject(1, node.getValue());
-				insert.setObject(2, node.getPath());
+				insert.setObject(1, value);
+				insert.setObject(2, key);
 			}
 
 			insert.execute();
@@ -125,42 +132,13 @@ public class CacheManagerJDBC extends CacheManager {
 
 	}
 
-	/*
-	 * We have to study a better way to do inserts and create string to make
-	 * queries.
-	 */
-	@TODO
-	@Override
-	public void put(Object key, Object value) {
-		/*
-		 * Connection con = null; try { con = openConnection();
-		 * 
-		 * PreparedStatement select = con.prepareStatement(SELECT_ONE);
-		 * select.setObject(1, key); ResultSet result = select.executeQuery();
-		 * PreparedStatement insert = null; if (!result.next()) { insert =
-		 * con.prepareStatement(INSERT); insert.setObject(1, key);
-		 * insert.setObject(2, value); } else { insert =
-		 * con.prepareStatement(UPDATE); insert.setObject(1, value);
-		 * insert.setObject(2, key); }
-		 * 
-		 * insert.execute();
-		 * 
-		 * } catch (SQLException e) { throw new IllegalStateException(
-		 * "Fail on opening a new connection to insert data", e); } finally { if
-		 * (con != null) { try { con.close(); } catch (SQLException e) { throw
-		 * new IllegalStateException(
-		 * "Fail on close connection after insert data", e); } } }
-		 */
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public Object get(String key) {
 		Connection con = null;
 		try {
 			con = openConnection();
-			String selectOne = "select key, value from \""
-					+ key.split("~")[0].replace("^", "") + "\" where key = ?;";
+			String selectOne = "select key_, value_ from \""
+					+ key.split("~")[0].replace("^", "") + "\" where key_ =  ?;";
 			PreparedStatement ps = con.prepareStatement(selectOne);
 			ps.setString(1, key);
 			ResultSet result = ps.executeQuery();
@@ -190,7 +168,7 @@ public class CacheManagerJDBC extends CacheManager {
 		try {
 			con = openConnection();
 			String delete = "delete from \""
-					+ key.split("~")[0].replace("^", "") + "\" where key = ?;";
+					+ key.split("~")[0].replace("^", "") + "\" where key_ =  ?;";
 			PreparedStatement ps = con.prepareStatement(delete);
 			ps.setString(1, key);
 			ps.execute();

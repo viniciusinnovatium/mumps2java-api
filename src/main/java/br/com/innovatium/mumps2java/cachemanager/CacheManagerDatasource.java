@@ -35,15 +35,14 @@ public final class CacheManagerDatasource extends CacheManager {
 		}
 	}
 
-
 	@Override
-	public void put(Node node) {
+	public void put(String key, Object value) {
 		PreparedStatement st = null;
 		try {
 			Connection con = ds.getConnection();
 			st = con.prepareStatement(INSERT);
-			st.setObject(1, node.getPath());
-			st.setObject(2, node.getValue());
+			st.setObject(1, key);
+			st.setObject(2, value);
 			st.executeUpdate();
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail on starting conection", e);
@@ -63,11 +62,9 @@ public final class CacheManagerDatasource extends CacheManager {
 		return null;
 	}
 
-
 	@Override
-	public List<Node> like(String path) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Object[]> like(String path) {
+		throw new UnsupportedOperationException();
 	}
 
 }

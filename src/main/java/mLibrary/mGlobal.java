@@ -77,7 +77,7 @@ public class mGlobal extends mData {
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {
-				tree.set(entry.getKey(), entry.getValue());
+				tree.set(tree.generateSubs(entry.getKey()), entry.getValue());
 			}
 		}
 	}

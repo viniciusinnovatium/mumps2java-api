@@ -1,60 +1,213 @@
 package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import br.com.innovatium.mumps2java.todo.TODO;
+public class Node implements Comparable<Node> {
 
-/**
- * 
- * @author vinicius
- */
-public class Node {
+	private final Object[] subs;
+	private final String key;
+	private final Object susbcript;
+	final boolean isInteger;
 	private Integer stackLevel;
-	private final boolean isTree;
 
-	private Object subscript;
-	private Object path;
-	private Object[] subs;
 	private Object value;
-	private List<Node> subnodes;
+
 	private Node parent;
+	private Node subnode;
+	private Node next;
+	private Node previous;
 
-	/*
-	 * Variable dedicated to node search algorithm.
-	 */
-	private Node found = null; 
-	
-	public Node(Object subscript) {
-		this(subscript, null);
+	public Node(Object[] subs, String key) {
+		this(subs, null, key);
 	}
 
-	public Node(Object subscript, Object path) {
-		this(subscript, path, null);
-	}
-
-	public Node(Object subscript, Object path, Object value) {
-		this(new Object[]{subscript}, path, value, false);
-	}
-
-	public Node(Object[] subscript, Object path, Object value, boolean isTree) {
-		if(subscript != null && subscript.length > 0) {
-			this.subscript= subscript[subscript.length - 1];
+	public Node(Object[] subs, Object value, String key) {
+		if (subs == null) {
+			throw new IllegalArgumentException(
+					"The subs array must not be null");
 		}
-		this.subs = subscript;
-		this.path = path;
+		this.subs = subs;
 		this.value = value;
-		this.isTree = isTree;
+		this.key = key;
+		final int index = subs.length == 1 ? 0 : subs.length - 1;
+		Object temp = subs[index];
+		if ((temp = toInt(temp.toString())) != null) {
+			susbcript = temp;
+			isInteger = true;
+		} else {
+			susbcript = subs[index].toString();
+			isInteger = false;
+		}
+
+		if (susbcript == null) {
+			throw new IllegalArgumentException(
+					"The subscripts must not be null");
+		}
 	}
 
-	public Object getVariableName() {
-		if (subs != null) {
-			return subs[0];
-		}
-		return null;
+	public Node getParent() {
+		return parent;
 	}
-	
+
+	public Node getSubnode() {
+		return subnode;
+	}
+
+	public Object[] getSubs() {
+		return subs;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public Object getSusbcript() {
+		return susbcript;
+	}
+
+	public Object getSusbcriptAsString() {
+		return susbcript.toString();
+	}
+
+	public Node getNext() {
+		return next;
+	}
+
+	public Node getPrevious() {
+		return previous;
+	}
+
+	public void addSubnode(Node newSubnode) {
+		if (subnode == null) {
+			subnode = newSubnode;
+		} else {
+			Node previous = findPrevious(subnode, newSubnode);
+			// When previous node is the first sub node into the hierarchy we
+			// have to switch its positions to maintain the order mechanism.
+			if (previous.isFirstSubnode() && previous.isAfter(newSubnode)) {
+				subnode = newSubnode;
+				subnode.next = previous;
+				previous.previous = subnode;
+			} else {
+				newSubnode.next = previous.next;
+				previous.next = newSubnode;
+				newSubnode.previous = previous;
+			}
+
+		}
+		newSubnode.parent = this;
+	}
+
+	public Node findPrevious() {
+		return findPrevious(parent.subnode, this);
+	}
+
+	public Node findPrevious(Node previous, Node subnode) {
+		if (previous.compareTo(subnode) > 0) {
+			return previous;
+		} else if (previous.hasNext()) {
+			return findPrevious(previous.next, subnode);
+		} else {
+			return previous;
+		}
+
+	}
+
+	public boolean isFirstSubnode() {
+		return this.parent.getSubnode().equals(this);
+	}
+
+	public boolean isAfter(Node node) {
+		return this.compareTo(node) > 0;
+	}
+
+	public boolean hasNext() {
+		return this.next != null;
+	}
+
+	public boolean isRoot() {
+		return parent == null;
+	}
+
+	public boolean hasSubnodes() {
+		return subnode != null;
+	}
+
+	public boolean isLeaf() {
+		return !isRoot() && !hasSubnodes();
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+	public void kill() {
+		if (isFirstSubnode()) {
+			parent.subnode = this.next;
+		} else {
+			this.previous = this.next;
+		}
+		// Canceling all references that node does.
+		this.parent = null;
+		this.next = null;
+		this.previous = null;
+	}
+
+	public int compareTo(Node o) {
+		if (isInteger) {
+			try {
+				return ((Integer) susbcript).compareTo((Integer) o.susbcript);
+			} catch (ClassCastException e) {
+				throw new IllegalArgumentException(
+						"There is some inconsistence when was setted the nodes "
+								+ this + " and " + o
+								+ ". Fail to compare subscript: "
+								+ this.susbcript + " and this subscript: "
+								+ ((Node) o).susbcript
+								+ ". They must have to be the same type.", e);
+			}
+		}
+		return this.susbcript.toString().compareTo(o.susbcript.toString());
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder string = new StringBuilder();
+		string.append("(").append(key != null ? key : "").append(", ")
+				.append(value != null ? value.toString() : "").append(")");
+
+		return string.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof Node && this.key.equals(((Node) o).key);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.key.hashCode();
+	}
+
+	public List<Node> getSubnodes() {
+
+		if (this == null || !this.hasSubnodes()) {
+			return null;
+		}
+
+		final List<Node> list = new ArrayList<Node>(30);
+		Node next = this.getSubnode();
+		do {
+			list.add(next);
+		} while ((next = next.getNext()) != null);
+		return list;
+	}
+
 	public Integer getStackLevel() {
 		return stackLevel;
 	}
@@ -63,252 +216,11 @@ public class Node {
 		this.stackLevel = stackLevel;
 	}
 
-	public boolean isRoot() {
-		return parent != null && parent.isTree;
-	}
-
-	public boolean isTree() {
-		return parent == null;
-	}
-
-	public Object getSubscript() {
-		return subscript;
-	}
-
-	public byte[] getSubscriptAsBytes() {
-		return subscript == null ? null : subscript.toString().getBytes();
-	}
-
-	public List<Node> getSubnodes() {
-		return subnodes;
-	}
-
-	public void setSubscript(String subscript) {
-		this.subscript = subscript;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public Object getValue() {
-		return value;
-	}
-
-	public String getValueAsString() {
-		if (value == null) {
-			return "";
-		} else if (value instanceof Collection) {
-			Collection<?> lista = (Collection<?>) value;
-			StringBuilder string = new StringBuilder("[");
-			int indice = lista.size() - 1;
-			int i = 0;
-			for (Object object : lista) {
-				string.append(object);
-				if (i++ < indice) {
-					string.append(",");
-				}
-			}
-			string.append("]");
-			return string.toString();
-		}
-		return value.toString();
-	}
-
-	public Node next(int direction) {
-		return direction >= 1 ? right() : left();
-	}
-
-	public Node first() {
-		if (parent == null || !parent.hasSubnodes()) {
-			return null;
-		}
-		List<Node> brothers = parent.subnodes;
-		return brothers.get(0);
-	}
-
-	public Node firstChild() {
-		if (!hasSubnodes()) {
-			return null;
-		}
-		return subnodes.get(0);
-	}
-
-	public Node lastChild() {
-		if (!hasSubnodes()) {
-			return null;
-		}
-		return subnodes.get(subnodes.size() - 1);
-	}
-
-	public Node last() {
-		if (parent == null || !parent.hasSubnodes()) {
-			return null;
-		}
-		List<Node> brothers = parent.subnodes;
-		return brothers.get(brothers.size() - 1);
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
-	}
-
-	public void clear() {
-		subnodes.clear();
-	}
-
-	public void kill() {
-		if (parent != null) {
-			parent.subnodes.remove(this);
-		}
-	}
-
-	void addSubnode(Node node) {
-		if (subnodes == null) {
-			subnodes = new ArrayList<Node>(20);
-		}
-		node.parent = this;
-		subnodes.add(node);
-	}
-
-	public Node left() {
-		if (!parent.hasSubnodes()) {
-			return null;
-		}
-		List<Node> brothers = parent.subnodes;
+	private Integer toInt(String string) {
 		try {
-			return brothers.get(brothers.indexOf(this) - 1);
-		} catch (IndexOutOfBoundsException e) {
-			// retornando o extremo a direita
-			return null;
-		}
-	}
-
-	public Node right() {
-		if (parent == null || !parent.hasSubnodes()) {
-			return null;
-		}
-		List<Node> brothers = parent.subnodes;
-		try {
-			return brothers.get(brothers.indexOf(this) + 1);
-		} catch (IndexOutOfBoundsException e) {
-			// retornando o extremo a esquerda
-			return null;
-		}
-	}
-
-	public Node up() {
-		return parent;
-	}
-
-	public List<Node> down() {
-		return subnodes;
-	}
-
-	public Node subnode(int index) {
-		if (!hasSubnodes()) {
-			return null;
-		}
-		try {
-			return subnodes.get(index);
+			return Integer.valueOf(string);
 		} catch (Exception e) {
 			return null;
 		}
 	}
-
-	@Override
-	public String toString() {
-		StringBuilder string = new StringBuilder();
-		string.append("(").append(path != null ? path : "").append(", ")
-				.append(value != null ? value.toString() : "").append(")");
-
-		return string.toString();
-	}
-
-	public Object getPath() {
-		return path;
-	}
-
-	public String dump() {
-		StringBuilder dump = new StringBuilder();
-		dump(this, dump);
-		return dump.toString();
-	}
-
-	public Node searchSubnode(String subs) {
-		if (subs == null) {
-			return null;
-		}
-		found = null;
-		searchSubnode(this, subs);
-		return found;
-	}
-
-	public boolean hasSubnodes() {
-		return subnodes != null && subnodes.size() > 0;
-	}
-
-	public boolean isLeaf() {
-		return !isRoot() && !hasSubnodes();
-	}
-
-	public boolean hasSubnodePopulated() {
-		return hasSubnodePopulated(this);
-	}
-
-	private boolean hasSubnodePopulated(Node node) {
-
-		if (node.isLeaf() && node.getValue() != null) {
-			return true;
-		}
-
-		boolean isPreenchido = false;
-		if (node.hasSubnodes()) {
-			for (Node subnode : node.subnodes) {
-				if (subnode.getValue() != null) {
-					isPreenchido = true;
-					break;
-				}
-
-				isPreenchido = hasSubnodePopulated(subnode);
-				if (isPreenchido) {
-					return true;
-				}
-			}
-		}
-
-		return isPreenchido;
-	}
-
-	private void dump(Node node, StringBuilder dump) {
-		dump.append(node.toString()).append("\n");
-		if (node.hasSubnodes()) {
-			for (Node subnode : node.subnodes) {
-				dump(subnode, dump);
-			}
-		}
-	}
-
-	/*
-	 * This method should be enhanced soon. We can replace search nodes by path
-	 * to search by subscripts array, so that manner if we do not find the node
-	 * parent we can postulate the hierarchy does not exist, and then, return
-	 * null indicating inexistent node.
-	 */
-	@TODO
-	private void searchSubnode(Node parent, String pathTarget) {
-		
-		if (parent != null && parent.hasSubnodes()) {
-			for (Node subnode : parent.getSubnodes()) {
-				if (pathTarget.equals(subnode.getPath())) {
-					found = subnode;
-					break;
-				} else {
-					searchSubnode(subnode, pathTarget);
-				}
-			}
-		}
-	}
 }
-
-

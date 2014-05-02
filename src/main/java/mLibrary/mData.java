@@ -52,9 +52,9 @@ public abstract class mData {
 		if (firstExecutionOrder) {
 			firstExecutionOrder = false;
 			orderSubs = Arrays.copyOfRange(tempSubs, 0, tempSubs.length);
-			return orderSubs[orderSubs.length - 1] = tree.order(direction, tempSubs);
+			return orderSubs[orderSubs.length - 1] = tree.order(tempSubs, direction);
 		} else {
-			return orderSubs[orderSubs.length - 1] = tree.order(direction, orderSubs);
+			return orderSubs[orderSubs.length - 1] = tree.order(orderSubs, direction);
 		}
 	}
 
