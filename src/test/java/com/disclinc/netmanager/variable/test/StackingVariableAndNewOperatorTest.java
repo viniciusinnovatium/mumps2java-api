@@ -36,7 +36,7 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
-				null, m$.var("eletronico").get());
+				"92", m$.var("eletronico").get());
 
 		assertEquals(
 				"This variable was not removed from the tree, therefore, its value must be the same",
@@ -44,7 +44,7 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"This variable was not removed from the tree, therefore, its value must be the same",
-				"cod1", m$.var("contrato").get());
+				null, m$.var("contrato").get());
 
 	}
 
@@ -57,7 +57,11 @@ public class StackingVariableAndNewOperatorTest {
 	}
 
 	private void stackingMultipleVariables() {
-		m$.newVar(m$.var("pedido"), m$.var("item"), m$.var("eletronico"));
+		System.out.println("antes>>>>>>>>");
+		System.out.println(m$.dump());
+		m$.newVar(m$.var("pedido"), m$.var("item"), m$.var("contrato"));
+		System.out.println("depois>>>>>>>>");
+		System.out.println(m$.dump());
 	}
 
 	private void stackingVariables() {
@@ -210,9 +214,8 @@ public class StackingVariableAndNewOperatorTest {
 
 	@Test
 	public void testStackingVariableThroughNewOperator() {
-
 		stackingVariables();
-
+		
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido").get());

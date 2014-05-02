@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import br.com.innovatium.mumps2java.todo.REMOVE;
 
 public class mContext {
 	private mData mData;
@@ -18,7 +19,7 @@ public class mContext {
 
 	private mRequest mReq;
 	private mSession mSes;
-	
+
 	public mContext() {
 	}
 
@@ -26,26 +27,32 @@ public class mContext {
 		this.mData = mData;
 	}
 
+	public String dump() {
+		return mData.dump();
+	}
+
 	public Object dispatch(String methodName, Object... parameters) {
-		Method m = getMethod(methodName);		
+		Method m = getMethod(methodName);
 		Object result = null;
 		Object obj = null;
 		try {
-			if(!Modifier.isStatic(m.getModifiers())){
+			if (!Modifier.isStatic(m.getModifiers())) {
 				obj = m.getDeclaringClass().newInstance();
-				if(obj instanceof mClass){
-					((mClass) obj).setContext(this);						
-				}		
+				if (obj instanceof mClass) {
+					((mClass) obj).setContext(this);
+				}
 			}
-			if(m.getParameterTypes()!=null && m.getParameterTypes().length>0 &&  m.getParameterTypes()[0].isArray()){
-				parameters = new Object[]{parameters};
+			if (m.getParameterTypes() != null
+					&& m.getParameterTypes().length > 0
+					&& m.getParameterTypes()[0].isArray()) {
+				parameters = new Object[] { parameters };
 			}
 			if (m.getReturnType().equals(Void.TYPE)) {
-				m.invoke(obj, parameters);					
+				m.invoke(obj, parameters);
 			} else {
-				result = m.invoke(obj, parameters);	
+				result = m.invoke(obj, parameters);
 			}
-			
+
 		} catch (Exception e) {
 			throw new IllegalStateException("Fail to execute method: "
 					+ methodName + " and its parameters: "
@@ -61,7 +68,7 @@ public class mContext {
 			methodMap = new HashMap<String, Method>(20);
 		}
 
-		Method m = methodMap.get(methodName);		
+		Method m = methodMap.get(methodName);
 		if (m == null) {
 			int lastIndex = methodName.lastIndexOf(".");
 			final String clazz = methodName.substring(0, lastIndex);
@@ -69,7 +76,7 @@ public class mContext {
 
 			try {
 				Method[] methods = Class.forName(clazz).getMethods();
-				//Method[] methods = Macros.class.getMethods();
+				// Method[] methods = Macros.class.getMethods();
 				for (Method met : methods) {
 					if (method.equals(met.getName())) {
 						m = met;
@@ -93,23 +100,23 @@ public class mContext {
 		}
 	}
 
-	
-	public mSession getSession(){
+	public mSession getSession() {
 		return mSes;
 	}
-	
-	public mRequest getRequest(){
+
+	public mRequest getRequest() {
 		return mReq;
 	}
-	
-	public void setSession(mSession mSes){
+
+	public void setSession(mSession mSes) {
 		this.mSes = mSes;
 	}
-	
-	public void setRequest(mRequest mReq){
+
+	public void setRequest(mRequest mReq) {
 		this.mReq = mReq;
-	}	
-	
+	}
+
+	@REMOVE
 	public mVar indirect(Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -120,6 +127,7 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
+	@REMOVE
 	public mVar lastvar(int i) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -130,11 +138,13 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
+	@REMOVE	
 	public void newcontext() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
+	@REMOVE
 	public mVar newref(Object object, String string, Object $$$no) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -198,6 +208,7 @@ public class mContext {
 		}
 	}
 
+	@REMOVE
 	public void oldvar() {
 		oldvar(countNewOperator);
 	}
@@ -205,7 +216,7 @@ public class mContext {
 	public mVar pieceVar(mVar var, Object del) {
 		return new mPieceVar(var, del, 1);
 	}
-	
+
 	public mVar pieceVar(mVar var, Object del, Object ipos) {
 		return new mPieceVar(var, del, ipos);
 	}

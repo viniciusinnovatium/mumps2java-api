@@ -54,6 +54,17 @@ public class Node implements Comparable<Node> {
 		return subnode;
 	}
 
+	public void setSubnode(Node subnode) {
+		this.subnode = subnode;
+	}
+
+	public void cancelReferences() {
+		// Canceling all references that node does.
+		this.parent = null;
+		this.next = null;
+		this.previous = null;
+	}
+
 	public Object[] getSubs() {
 		return subs;
 	}
@@ -74,8 +85,20 @@ public class Node implements Comparable<Node> {
 		return next;
 	}
 
+	public void setNext(Node next) {
+		this.next = next;
+	}
+
 	public Node getPrevious() {
 		return previous;
+	}
+
+	public void setParent(Node parent) {
+		this.parent = parent;
+	}
+
+	public void setPrevious(Node previous) {
+		this.previous = previous;
 	}
 
 	public void addSubnode(Node newSubnode) {
@@ -83,6 +106,14 @@ public class Node implements Comparable<Node> {
 			subnode = newSubnode;
 		} else {
 			Node previous = findPrevious(subnode, newSubnode);
+			System.out.println("previos "
+					+ previous.getSusbcript()
+					+ " de "
+					+ newSubnode.getSusbcript()
+					+ " = "
+					+ previous.getSusbcript().toString()
+							.compareTo(newSubnode.getSusbcript().toString()));
+
 			// When previous node is the first sub node into the hierarchy we
 			// have to switch its positions to maintain the order mechanism.
 			if (previous.isFirstSubnode() && previous.isAfter(newSubnode)) {
@@ -105,6 +136,10 @@ public class Node implements Comparable<Node> {
 
 	public Node findPrevious(Node previous, Node subnode) {
 		if (previous.compareTo(subnode) > 0) {
+			if (previous.hasPrevious()
+					&& previous.getPrevious().compareTo(subnode) < 0) {
+				return previous.getPrevious();
+			}
 			return previous;
 		} else if (previous.hasNext()) {
 			return findPrevious(previous.next, subnode);
@@ -112,6 +147,10 @@ public class Node implements Comparable<Node> {
 			return previous;
 		}
 
+	}
+
+	public boolean hasPrevious() {
+		return !isFirstSubnode();
 	}
 
 	public boolean isFirstSubnode() {
@@ -147,18 +186,6 @@ public class Node implements Comparable<Node> {
 
 	public void setValue(Object value) {
 		this.value = value;
-	}
-
-	public void kill() {
-		if (isFirstSubnode()) {
-			parent.subnode = this.next;
-		} else {
-			this.previous = this.next;
-		}
-		// Canceling all references that node does.
-		this.parent = null;
-		this.next = null;
-		this.previous = null;
 	}
 
 	public int compareTo(Node o) {

@@ -32,7 +32,7 @@ public final class Tree extends Node {
 			if (node != null) {
 				node.setStackLevel(currentStackLevel);
 				stack.push(node);
-				kill(subscript);
+				kill(node);
 			}
 		}
 	}
@@ -43,12 +43,13 @@ public final class Tree extends Node {
 		}
 		final List<Node> stackedNodes = stack.pull(currentStackLevel);
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
-			for (Node stacked : stackedNodes) {
-				Node nodeOntheTree = findNode(stacked.getSubs());
-				if (nodeOntheTree != null) {
-					nodeOntheTree.kill();
-				}
-				addSubnode(stacked);
+			for (Node stackedNode : stackedNodes) {
+				// First of all, we have to looking for if there is some node
+				// with the same subscritps of the stacked node, then remove it
+				// from the tree and add the stacked node there.
+				Node nodeOnTheTree = findNode(stackedNode.getSubs());
+				replaceNode(stackedNode, nodeOnTheTree);
+				stackedNode.setStackLevel(0);
 			}
 			currentStackLevel--;
 		}
@@ -64,9 +65,7 @@ public final class Tree extends Node {
 			for (Node node : nodes) {
 				node.setStackLevel(currentStackLevel);
 				stack.push(node);
-				if (node != null) {
-					node.kill();
-				}
+				kill(node);
 			}
 		}
 	}
@@ -107,11 +106,8 @@ public final class Tree extends Node {
 
 	public Node kill(Object... subs) {
 		Node node = findNode(subs);
-		if (node != null) {
-			node.kill();
-			return node;
-		}
-		return null;
+		kill(node);
+		return node;
 	}
 
 	public Object order(Object[] subs, int direction) {
@@ -262,6 +258,39 @@ public final class Tree extends Node {
 		return list;
 	}
 
+	private void replaceNode(Node newNode, Node oldNode) {
+		if (newNode == null) {
+			return;
+		} else if (oldNode == null) {
+			addSubnode(newNode);
+		} else {
+			newNode.setNext(oldNode.getNext());
+			newNode.setPrevious(oldNode.getPrevious());
+			newNode.setParent(oldNode.getParent());
+
+			if (oldNode.hasPrevious()) {
+				oldNode.getPrevious().setNext(newNode);
+			}
+			if (oldNode.hasNext()) {
+				oldNode.getNext().setPrevious(newNode);
+			}
+
+			oldNode.cancelReferences();
+		}
+	}
+
+	private void kill(Node node) {
+		if (node == null) {
+			return;
+		}
+		if (node.isFirstSubnode()) {
+			node.getParent().setSubnode(node.getNext());
+		} else {
+			node.getPrevious().setNext(node.getNext());
+		}
+		node.cancelReferences();
+	}
+
 	private final Node generateNode(Object[] subs) {
 		return generateNode(this, subs, 0);
 	}
@@ -283,6 +312,44 @@ public final class Tree extends Node {
 	}
 
 	public static void main(String[] asd) {
+		teste1();
+
+		Tree tree = new Tree();
+		tree.set(new Object[] { "a1" }, 1);
+		tree.set(new Object[] { "e10" }, 1);
+		tree.set(new Object[] { "e" }, 1);
+		tree.set(new Object[] { "d" }, 1);
+		tree.set(new Object[] { "b" }, 2);
+		tree.set(new Object[] { "c" }, 3);
+
+		tree.set(new Object[] { "a" }, 2);
+
+		System.out.println("antes do stack.....");
+		System.out.println(tree.dump());
+		tree.stacking("b", "a");
+		System.out.println("depois do stack.....");
+		System.out.println(tree.dump());
+
+		tree.set(new Object[] { "b" }, "novo valor para b");
+		System.out.println("recuperando: " + tree.get("a"));
+		System.out.println("recuperando: " + tree.get("b"));
+		System.out.println("recuperando: " + tree.get("c"));
+		System.out.println("unstacking: " + tree.get("a1"));
+		System.out.println("unstacking: " + tree.get("a2"));
+
+		tree.unstacking();
+		System.out.println("depois do unstack.....");
+		System.out.println(tree.dump());
+		System.out.println("unstacking: " + tree.get("a"));
+		System.out.println("unstacking: " + tree.get("b"));
+		System.out.println("unstacking: " + tree.get("c"));
+		System.out.println("unstacking: " + tree.get("a1"));
+		System.out.println("unstacking: " + tree.get("a2"));
+
+		System.out.println("comparando: " + "a2".compareTo("a1"));
+	}
+
+	private static void teste1() {
 		Tree tree = new Tree();
 		tree.set(new Object[] { "x", "10" }, "dec");
 		tree.set(new Object[] { "x", "2" }, "seg");
