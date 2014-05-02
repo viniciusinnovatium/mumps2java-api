@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
@@ -210,16 +211,16 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public static Object $get(Object content) {
 		return $get(content, null);
 	}
-	
+
 	public static Object $get(Object content, Object defaultValue) {
 		if (content == null) {
 			throw new IllegalArgumentException("Content must not be null");
 		}
-		if(content instanceof mVar){
+		if (content instanceof mVar) {
 			content = ((mVar) content).get();
 		}
 		if (content == null && defaultValue != null) {
@@ -242,7 +243,7 @@ public final class mFnc {
 		Double daysMumps = mFncUtil.dateJavaToMumps(cal.getTimeInMillis());
 		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
 
-		return daysMumps.longValue() + "," + sec.longValue();		
+		return daysMumps.longValue() + "," + sec.longValue();
 	}
 
 	public static Object $i(mVar var) {
@@ -251,11 +252,12 @@ public final class mFnc {
 	}
 
 	public static Object $increment(mVar var) {
-		return $increment(var, 1) ;
+		return $increment(var, 1);
 	}
 
 	public static Object $increment(mVar var, Object increment) {
-		var.set(mFncUtil.numberConverter(var.get())+mFncUtil.numberConverter(increment));
+		var.set(mFncUtil.numberConverter(var.get())
+				+ mFncUtil.numberConverter(increment));
 		return var.get();
 	}
 
@@ -293,8 +295,11 @@ public final class mFnc {
 	}
 
 	public static Object $isobject(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		int isObject = 0;
+		if (object != null && object instanceof Object) {
+			isObject = 1;
+		}
+		return isObject;
 	}
 
 	public static Object $isvalidnum(Object object) {
@@ -358,19 +363,13 @@ public final class mFnc {
 		return $listbuild(elements);
 	}
 
-	public static Object $length(Object $$$inaufInvoiceNumber) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $length(Object expression) {
+		return String.valueOf(expression).length();
 	}
 
-	public static Object $length(Object object, Object $$$ParentSeparator) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static Object $length(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $length(Object expression, Object delimiter) {
+		return String.valueOf(expression).split(
+				Pattern.quote(String.valueOf(delimiter))).length;
 	}
 
 	public static ListObject $list(ListObject list, int init, int end) {
@@ -575,9 +574,15 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zconvert(Object object, String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zconvert(Object string, String mode) {
+		String zconverted = String.valueOf(string);
+		if (mode.equalsIgnoreCase("U")) {
+			zconverted = String.valueOf(string).toUpperCase();
+		}
+		if (mode.equalsIgnoreCase("L")) {
+			zconverted = String.valueOf(string).toLowerCase();
+		}
+		return zconverted;
 	}
 
 	public static Object $zconvert(Object object, String string, String string2) {
@@ -687,7 +692,13 @@ public final class mFnc {
 	}
 
 	public static Object $zhorolog() {
-		return 1; 
+		Calendar cal = Calendar.getInstance(new SimpleTimeZone(
+				SimpleTimeZone.UTC_TIME, "UTC"));
+		cal.set(2010, 01, 01);
+		return Double
+				.valueOf(
+						mFncUtil.dateJavaToMumps(cal.getTimeInMillis()) * 24d * 60d * 60d)
+				.longValue();
 	}
 
 	public static Object $zjob() {
@@ -736,8 +747,11 @@ public final class mFnc {
 	}
 
 	public static Object $zutil(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if (i == 5) {
+			return "DEFAULT";
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public static Object $zutil(Object obj1, Object... obj) {
@@ -745,7 +759,8 @@ public final class mFnc {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zutil(Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) {
+	public static Object $zutil(Object obj1, Object obj2, Object obj3,
+			Object obj4, Object obj5) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}

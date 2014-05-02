@@ -126,7 +126,12 @@ public final class mOp {
 	}
 
 	public static boolean Match(Object string, Object regex) {
+		String regexJava = regexConverter(regex);
 		return String.valueOf(string).matches(String.valueOf(regex));
+	}
+
+	private static String regexConverter(Object regex) {
+		return "";
 	}
 
 	public static boolean NotLess(Object object, Object object2) {
