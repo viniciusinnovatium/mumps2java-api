@@ -115,7 +115,10 @@ public class Node implements Comparable<Node> {
 	}
 
 	public boolean isFirstSubnode() {
-		return this.parent.getSubnode().equals(this);
+		if (parent != null && parent.hasSubnodes()) {
+			return parent.getSubnode().equals(this);
+		}
+		return false;
 	}
 
 	public boolean isAfter(Node node) {

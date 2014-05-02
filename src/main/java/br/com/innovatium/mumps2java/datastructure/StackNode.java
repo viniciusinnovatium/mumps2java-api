@@ -19,16 +19,16 @@ final class StackNode {
 			return null;
 		}
 
-		Integer stack = node.getStackLevel();
-		if (stack == null) {
+		Integer level = node.getStackLevel();
+		if (level == null) {
 			throw new IllegalArgumentException(
 					"The inclusion of empty level node is not allowed.");
 		}
-		Deque<Node> queue = mapLevel.get(stack);
+		Deque<Node> queue = mapLevel.get(level);
 
 		if (queue == null) {
 			queue = new ArrayDeque<Node>();
-			mapLevel.put(stack, queue);
+			mapLevel.put(level, queue);
 		}
 		queue.addFirst(node);
 		return node;
