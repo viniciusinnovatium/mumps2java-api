@@ -2,6 +2,12 @@ package com.disclinc.netmanager.variable.test;
 
 import mLibrary.mContext;
 
+/**
+ * This class was created to be employed in dispatch functions test.
+ * 
+ * @author vinicius
+ * 
+ */
 public final class Macros {
 	public static int $$$diasNoMes() {
 		return 30;
@@ -11,8 +17,9 @@ public final class Macros {
 		m$.newVar(m$.var("pedido"));
 		return m$.var("pedido").get();
 	}
-	
-	public static Object $$$recuperarValorInalteradoDepoisDoOperadorNew(mContext m$) {
+
+	public static Object $$$recuperarValorInalteradoDepoisDoOperadorNew(
+			mContext m$) {
 		m$.newVar(m$.var("pedido"));
 		return m$.var("entrega").get();
 	}

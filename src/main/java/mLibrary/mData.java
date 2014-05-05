@@ -166,7 +166,10 @@ public class mData {
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {
-				tree.set(tree.generateSubs(entry.getKey()), entry.getValue());
+				// Here we have to include variable or table name into the key
+				// because this is part of the subscripts.
+				tree.set(tree.generateSubs(tableName, entry.getKey()),
+						entry.getValue());
 			}
 		}
 	}

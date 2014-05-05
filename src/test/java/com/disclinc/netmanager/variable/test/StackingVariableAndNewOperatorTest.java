@@ -57,11 +57,7 @@ public class StackingVariableAndNewOperatorTest {
 	}
 
 	private void stackingMultipleVariables() {
-		System.out.println("antes>>>>>>>>");
-		System.out.println(m$.dump());
 		m$.newVar(m$.var("pedido"), m$.var("item"), m$.var("contrato"));
-		System.out.println("depois>>>>>>>>");
-		System.out.println(m$.dump());
 	}
 
 	private void stackingVariables() {

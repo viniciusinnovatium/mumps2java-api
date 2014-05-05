@@ -33,4 +33,9 @@ public final class DataStructureUtil {
 		}
 		return key.split(DELIMITER);
 	}
+
+	public static Object[] generateSubs(String tableName, String key) {
+		return generateSubs(new StringBuilder("^").append(tableName)
+				.append(DELIMITER).append(key).toString());
+	}
 }

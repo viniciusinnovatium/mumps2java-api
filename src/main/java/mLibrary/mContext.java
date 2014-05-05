@@ -270,18 +270,4 @@ public class mContext {
 			return var;
 		}
 	}
-
-	public static void main(String[] as) {
-		mContext m$ = new mContext(new mData());
-		m$.var("x").set(1);
-
-		System.out.println(m$.var("x").get());
-		
-		mVar var = m$.var("y");
-		var.set(2);
-		
-		System.out.println(m$.var("y").get());
-		System.out.println(m$.var("x").get());
-		System.out.println(var.get());
-	}
 }

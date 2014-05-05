@@ -94,6 +94,10 @@ public final class Tree extends Node {
 		return DataStructureUtil.generateSubs(key);
 	}
 
+	public Object[] generateSubs(String tableName, String key) {
+		return DataStructureUtil.generateSubs(tableName, key);
+	}
+
 	public void set(Object[] subs, Object value) {
 
 		if (subs == null || subs.length == 0) {
@@ -136,7 +140,7 @@ public final class Tree extends Node {
 	public static String generateKey(Object... subs) {
 		return DataStructureUtil.generateKey(subs);
 	}
-	
+
 	public static String generateKey(boolean isDiskAccess, Object... subs) {
 		return DataStructureUtil.generateKey(isDiskAccess, subs);
 	}

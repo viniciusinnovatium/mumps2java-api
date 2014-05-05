@@ -35,10 +35,9 @@ public class MContextUsingInDiscAccessTest {
 	
 	@Test
 	public void testSearchNodeAtSameLevelThroughOrderFunction() {
-		m$.var("^www001", "pai", "filho1", "neto1").set("1");
-		m$.var("^www001", "pai", "filho1", "neto166").set("1");
-		m$.var("^www001", "pai", "filho2", "neto2").set("12");
-		m$.var("^www001", "pai", "filho3", "equipamento1").set("13");
+		m$.var("^www001", "pai", "filho1").set("1");
+		m$.var("^www001", "pai", "filho2").set("12");
+		m$.var("^www001", "pai", "filho3").set("13");
 		
 		mVar filho = m$.var("^www001", "pai", "filho1");
 		assertEquals("Fail to find the next node on the tree through order function", "filho2", filho.order());
