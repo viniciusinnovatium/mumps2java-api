@@ -2,7 +2,7 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
-import mLibrary.mLocal;
+import mLibrary.mData;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ public class StackingVariableAndNewOperatorTest {
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mLocal());
+		m$ = new mContext(new mData());
 		m$.var("pedido").set("11");
 		m$.var("pedido", "item").set("99");
 		m$.var("pedido", "item", "medicamento").set("100");

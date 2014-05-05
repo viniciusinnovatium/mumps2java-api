@@ -1,19 +1,19 @@
 package com.disclinc.netmanager.variable.test;
 
+import static org.junit.Assert.assertEquals;
+import mLibrary.mContext;
+import mLibrary.mData;
+import mLibrary.mVar;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import mLibrary.mContext;
-import mLibrary.mLocal;
-import mLibrary.mVar;
 
 public class MContextUsingInMemoryAccessTest {
 	private mContext m$;
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mLocal());
+		m$ = new mContext(new mData());
 	}
 
 	@Test

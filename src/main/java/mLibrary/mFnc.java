@@ -4,12 +4,11 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.TODO;

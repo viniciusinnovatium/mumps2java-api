@@ -1,6 +1,5 @@
 package mLibrary;
 
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -13,7 +12,7 @@ import br.com.innovatium.mumps2java.todo.REMOVE;
 
 public class mContext {
 	private mData mData;
-	private String[] newVarName;
+	private Object[] newVarName;
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
 
@@ -23,7 +22,7 @@ public class mContext {
 	public mContext() {
 	}
 
-	public mContext(mLibrary.mData mData) {
+	public mContext(mData mData) {
 		this.mData = mData;
 	}
 
@@ -138,7 +137,7 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
-	@REMOVE	
+	@REMOVE
 	public void newcontext() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -227,7 +226,7 @@ public class mContext {
 	}
 
 	public mVar var(Object... subs) {
-		return new mVar(subs, this.mData);
+		return new mVar(subs, mData);
 	}
 
 	public mVar varRef(String name, Object ref) {
@@ -270,5 +269,19 @@ public class mContext {
 			}
 			return var;
 		}
+	}
+
+	public static void main(String[] as) {
+		mContext m$ = new mContext(new mData());
+		m$.var("x").set(1);
+
+		System.out.println(m$.var("x").get());
+		
+		mVar var = m$.var("y");
+		var.set(2);
+		
+		System.out.println(m$.var("y").get());
+		System.out.println(m$.var("x").get());
+		System.out.println(var.get());
 	}
 }

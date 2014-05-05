@@ -3,7 +3,7 @@ package com.disclinc.netmanager.variable.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import mLibrary.mContext;
-import mLibrary.mLocal;
+import mLibrary.mData;
 import mLibrary.mVar;
 
 import org.junit.Before;
@@ -14,7 +14,7 @@ public class VariableThroughReferenceOrValueTest {
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mLocal());
+		m$ = new mContext(new mData());
 		m$.var("pedido").set(55);
 	}
 

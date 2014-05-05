@@ -2,20 +2,18 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
-import mLibrary.mGlobal;
+import mLibrary.mData;
 import mLibrary.mVar;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import br.com.innovatium.mumps2java.cachemanager.CacheType;
 
 public class MContextUsingInDiscAccessTest {
 	private mContext m$;
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mGlobal(CacheType.JDBC));
+		m$ = new mContext(new mData());
 	}
 
 	@Test
@@ -42,9 +40,9 @@ public class MContextUsingInDiscAccessTest {
 		m$.var("^www001", "pai", "filho2", "neto2").set("12");
 		m$.var("^www001", "pai", "filho3", "equipamento1").set("13");
 		
-		mVar item = m$.var("^www001", "pai", "filho1");
-		assertEquals("Fail to find the next node on the tree through order function", "filho2", item.order());
-		assertEquals("Fail to find the next node on the tree through order function", "filho3", item.order());
-		assertEquals("Fail to find the next node on the tree through order function", "", item.order());
+		mVar filho = m$.var("^www001", "pai", "filho1");
+		assertEquals("Fail to find the next node on the tree through order function", "filho2", filho.order());
+		assertEquals("Fail to find the next node on the tree through order function", "filho3", filho.order());
+		assertEquals("Fail to find the next node on the tree through order function", "", filho.order());
 	}
 }

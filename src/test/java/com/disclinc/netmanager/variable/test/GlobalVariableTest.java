@@ -2,15 +2,12 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mData;
-import mLibrary.mGlobal;
 
 import org.junit.Test;
 
-import br.com.innovatium.mumps2java.cachemanager.CacheType;
-
 public class GlobalVariableTest {
 
-	private mData mGlobal = new mGlobal(CacheType.JDBC);
+	private mData mGlobal = new mData();
 
 	public GlobalVariableTest() {
 		mGlobal.kill("carro");

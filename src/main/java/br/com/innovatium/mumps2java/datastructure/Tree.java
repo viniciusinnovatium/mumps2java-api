@@ -16,7 +16,7 @@ public final class Tree extends Node {
 		super(new Object[] { "root" }, null, "root");
 	}
 
-	public void stacking(String... subs) {
+	public void stacking(Object... subs) {
 		if (stack == null) {
 			stack = new StackNode();
 		}
@@ -26,7 +26,7 @@ public final class Tree extends Node {
 		 * Iterating over variable names collection. Here we suppose the
 		 * variable name is the first subscript of the array.
 		 */
-		for (String subscript : subs) {
+		for (Object subscript : subs) {
 			node = findNode(new Object[] { subscript });
 			// Avoid some variables which does not exist into the tree.
 			if (node != null) {
@@ -55,7 +55,7 @@ public final class Tree extends Node {
 		}
 	}
 
-	public void stackingExcept(String... subs) {
+	public void stackingExcept(Object... subs) {
 		if (stack == null) {
 			stack = new StackNode();
 		}
@@ -135,6 +135,10 @@ public final class Tree extends Node {
 
 	public static String generateKey(Object... subs) {
 		return DataStructureUtil.generateKey(subs);
+	}
+	
+	public static String generateKey(boolean isDiskAccess, Object... subs) {
+		return DataStructureUtil.generateKey(isDiskAccess, subs);
 	}
 
 	public boolean hasPopulatedSubnode(Node node) {
@@ -234,7 +238,7 @@ public final class Tree extends Node {
 		}
 	}
 
-	private List<Node> searchSubnodeExcepts(String... subs) {
+	private List<Node> searchSubnodeExcepts(Object... subs) {
 		if (subs == null) {
 			return null;
 		}

@@ -106,14 +106,6 @@ public class Node implements Comparable<Node> {
 			subnode = newSubnode;
 		} else {
 			Node previous = findPrevious(subnode, newSubnode);
-			System.out.println("previos "
-					+ previous.getSusbcript()
-					+ " de "
-					+ newSubnode.getSusbcript()
-					+ " = "
-					+ previous.getSusbcript().toString()
-							.compareTo(newSubnode.getSusbcript().toString()));
-
 			// When previous node is the first sub node into the hierarchy we
 			// have to switch its positions to maintain the order mechanism.
 			if (previous.isFirstSubnode() && previous.isAfter(newSubnode)) {

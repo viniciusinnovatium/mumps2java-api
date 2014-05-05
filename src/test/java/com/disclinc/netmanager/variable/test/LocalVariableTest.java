@@ -1,13 +1,13 @@
 package com.disclinc.netmanager.variable.test;
 
-import static org.junit.Assert.*;
-import mLibrary.mLocal;
+import static org.junit.Assert.assertEquals;
+import mLibrary.mData;
 
 import org.junit.Test;
 
 public class LocalVariableTest {
 
-	private mLocal mLocal = new mLocal();
+	private mData mLocal = new mData();
 	
 	public LocalVariableTest () {
 		mLocal.subs("moto").set(88);

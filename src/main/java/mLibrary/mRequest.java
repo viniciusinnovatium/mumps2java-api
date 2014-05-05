@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class mRequest {
 	
-	private mData data = new mLocal();
+	private mData data = new mData();
 	private Map<String,String[]> cgiEnvs = new HashMap<String,String[]>();
 	
 	public mRequest(Map<String, String[]> map) {

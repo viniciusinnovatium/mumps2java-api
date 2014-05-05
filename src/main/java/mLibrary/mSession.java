@@ -7,7 +7,7 @@ import java.util.Set;
 public class mSession {
 	
 	private String sessionId;
-	private mData mDataSession = new mLocal();
+	private mData mDataSession = new mData();
 	
 	public mSession(Map<String, String[]> map) {
 		populateParameter(map);
@@ -32,7 +32,7 @@ public class mSession {
 	}	
 	
 	public mVar getData(Object... args){
-		return new mVar(args, this.mDataSession);
+		return new mVar(args, mDataSession);
 	}
 	
 	public void setData(Object subs, Object idx, Object value){

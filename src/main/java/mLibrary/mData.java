@@ -1,43 +1,92 @@
 package mLibrary;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import br.com.innovatium.mumps2java.dataaccess.ConnectionType;
+import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
-public abstract class mData {
-	Object[] tempSubs;
+public class mData {
+	Object[] currentSubs;
 	Object[] orderSubs;
 
 	boolean subsChanged;
 	boolean firstExecutionOrder = true;
-
+	private DAO dao;
 	final Tree tree = new Tree();
 
-	public abstract Object get(Object... subs);
+	public Object get(Object... subs) {
+		if (isDiskAccess(subs)) {
+			initDAO();
+			final String tableName = generateTableName(subs);
+			subs = Arrays.copyOfRange(subs, 1, subs.length);
+			return dao.find(tableName, Tree.generateKey(subs));
+		} else {
+			return tree.get(subs);
+		}
 
-	public abstract void set(Object value);
+	}
 
-	abstract void onPopulateTree();
+	public void set(Object value) {
+		if (isDiskAccess(currentSubs)) {
+			if (currentSubs != null) {
+				initDAO();
+				final String tableName = generateTableName(currentSubs);
+				currentSubs = Arrays.copyOfRange(currentSubs, 1,
+						currentSubs.length);
+				dao.insert(tableName, Tree.generateKey(currentSubs), value);
+			}
+		} else {
+			tree.set(currentSubs, value);
+		}
+	}
 
-	abstract void onOrder();
+	public void stacking(Object... subs) {
+		if (!isDiskAccess(subs)) {
+			tree.stacking(subs);
+		} else {
+			throw new UnsupportedOperationException(
+					"Stacking variable is not supported to access data on disk");
+		}
+	}
 
-	abstract void onKill(Object... subs);
+	public void stackingExcept(Object... subs) {
+		if (!isDiskAccess(currentSubs)) {
+			tree.stackingExcept(subs);
+		} else {
+			throw new UnsupportedOperationException(
+					"Stacking exception variable is not supported to access data on disk");
+		}
+	}
 
-	abstract void stacking(String... subs);
+	public void unstacking() {
+		if (!isDiskAccess(currentSubs)) {
+			tree.unstacking();
+		} else {
+			throw new UnsupportedOperationException(
+					"Unstacking variable is not supported to access data on disk");
+		}
+	}
 
-	abstract void stackingExcept(String... subs);
-
-	abstract void unstacking();
-
-	abstract String dump();
+	public String dump() {
+		return tree.dump();
+	}
 
 	public void kill(Object... subs) {
-		tempSubs = null;
-		onKill(subs);
+		currentSubs = null;
+		if (isDiskAccess(subs)) {
+			initDAO();
+			dao.remove(generateTableName(subs), Tree.generateKey(subs));
+		} else {
+			tree.kill(subs);
+		}
 	}
 
 	public int data(Object... subs) {
-		tempSubs = subs;
+		currentSubs = subs;
 		verifySubsChanges(subs);
 		populateTree();
 		return tree.data(subs);
@@ -45,37 +94,44 @@ public abstract class mData {
 
 	public Object order(int direction) {
 		if (subsChanged) {
-			onOrder();
+			if (isDiskAccess(currentSubs)) {
+				initDAO();
+				findDataOnDisk();
+			}
 			firstExecutionOrder = true;
 		}
 
 		if (firstExecutionOrder) {
 			firstExecutionOrder = false;
-			orderSubs = Arrays.copyOfRange(tempSubs, 0, tempSubs.length);
-			return orderSubs[orderSubs.length - 1] = tree.order(tempSubs, direction);
+			orderSubs = Arrays.copyOfRange(currentSubs, 0, currentSubs.length);
+			return orderSubs[orderSubs.length - 1] = tree.order(currentSubs,
+					direction);
 		} else {
-			return orderSubs[orderSubs.length - 1] = tree.order(orderSubs, direction);
+			return orderSubs[orderSubs.length - 1] = tree.order(orderSubs,
+					direction);
 		}
 	}
 
 	public mData subs(Object... subs) {
 		verifySubsChanges(subs);
-		tempSubs = subs;
+		currentSubs = subs;
 		return this;
 	}
 
 	private void populateTree() {
-		if (subsChanged) {
-			onPopulateTree();
+		if (subsChanged && isDiskAccess(currentSubs)) {
+			initDAO();
+			findDataOnDisk();
 		}
 	}
 
 	private void verifySubsChanges(Object... subs) {
 		subsChanged = false;
-		if (tempSubs != null && subs != null) {
-			if (tempSubs.length == subs.length) {
+		if (currentSubs != null && subs != null) {
+			if (currentSubs.length == subs.length) {
 				for (int i = 0; i < subs.length; i++) {
-					if (tempSubs[i] != null && !tempSubs[i].equals(subs[i])) {
+					if (currentSubs[i] != null
+							&& !currentSubs[i].equals(subs[i])) {
 						subsChanged = true;
 						break;
 					}
@@ -86,5 +142,36 @@ public abstract class mData {
 		} else {
 			subsChanged = true;
 		}
+	}
+
+	private boolean isDiskAccess(Object... subs) {
+		return subs[0].toString().charAt(0) == '^';
+	}
+
+	private void initDAO() {
+		if (dao == null) {
+			this.dao = new DAO(ConnectionType.JDBC);
+		}
+	}
+
+	private void findDataOnDisk() {
+
+		Object[] brothers = Arrays.copyOfRange(currentSubs, 0,
+				currentSubs.length - 1);
+
+		final String tableName = generateTableName(currentSubs);
+
+		Map<String, String> map = dao.like(tableName,
+				Tree.generateKey(true, brothers));
+		if (map != null) {
+			Set<Entry<String, String>> result = map.entrySet();
+			for (Entry<String, String> entry : result) {
+				tree.set(tree.generateSubs(entry.getKey()), entry.getValue());
+			}
+		}
+	}
+
+	private String generateTableName(Object... subs) {
+		return subs[0].toString().replace("^", "");
 	}
 }

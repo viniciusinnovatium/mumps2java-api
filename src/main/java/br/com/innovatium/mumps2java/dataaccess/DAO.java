@@ -10,14 +10,14 @@ import java.util.Map;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class DAO {
-	private ConnectionType connectionType;
+	private ConnectionType type;
 
 	public DAO() {
 		this(ConnectionType.JDBC);
 	}
 
 	public DAO(ConnectionType connectionType) {
-		this.connectionType = connectionType;
+		this.type = connectionType;
 	}
 
 	// Check another return type different from the map.
@@ -30,7 +30,7 @@ public class DAO {
 		Connection con = null;
 		Map<String, String> map = null;
 		try {
-			con = ConnectionFactory.getConnection(connectionType);
+			con = ConnectionFactory.getConnection(type);
 			String like = "select key_, value_ from \"" + tableName
 					+ "\" where key_ like ? order by key_ asc;";
 
@@ -58,12 +58,38 @@ public class DAO {
 		return map;
 	}
 
+	public void remove(String tableName, String key) {
+		Connection con = null;
+		try {
+			con = ConnectionFactory.getConnection(type);
+
+			String string = "delete from \"" + tableName
+					+ "\" where key_ like ?;";
+			PreparedStatement delete = con.prepareStatement(string);
+			delete.setString(1, key + "%");
+			delete.execute();
+
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail on opening a new connection to kill some data", e);
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					throw new IllegalStateException(
+							"Fail on close connection after kill some data", e);
+				}
+			}
+		}
+	}
+
 	// Remove table name treatment.
 	@TODO
 	public void insert(String tableName, Object key, Object value) {
 		Connection con = null;
 		try {
-			con = ConnectionFactory.getConnection(connectionType);
+			con = ConnectionFactory.getConnection(type);
 			String selectOne = "select key_, value_ from \"" + tableName
 					+ "\" where key_ = ?;";
 			PreparedStatement select = con.prepareStatement(selectOne);
@@ -106,7 +132,7 @@ public class DAO {
 	public Object find(String tableName, String key) {
 		Connection con = null;
 		try {
-			con = ConnectionFactory.getConnection(connectionType);
+			con = ConnectionFactory.getConnection(type);
 			String selectOne = "select key_, value_ from \"" + tableName
 					+ "\" where key_ = ?;";
 			PreparedStatement ps = con.prepareStatement(selectOne);
