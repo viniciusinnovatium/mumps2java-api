@@ -26,11 +26,16 @@ public class DAO {
 		if (key == null) {
 			return null;
 		}
-
 		Connection con = null;
-		Map<String, String> map = null;
 		try {
 			con = ConnectionFactory.getConnection(type);
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to insert data", e);
+		}
+		Map<String, String> map = null;
+		try {
+
 			String like = "select key_, value_ from \"" + tableName
 					+ "\" where key_ like ? order by key_ asc;";
 
@@ -44,7 +49,7 @@ public class DAO {
 
 		} catch (SQLException e) {
 			throw new IllegalStateException(
-					"Fail on opening a new connection to insert data", e);
+					"Fail to find data thought like clause", e);
 		} finally {
 			if (con != null) {
 				try {
@@ -62,7 +67,11 @@ public class DAO {
 		Connection con = null;
 		try {
 			con = ConnectionFactory.getConnection(type);
-
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to remove data", e);
+		}
+		try {
 			String string = "delete from \"" + tableName
 					+ "\" where key_ like ?;";
 			PreparedStatement delete = con.prepareStatement(string);
@@ -70,8 +79,8 @@ public class DAO {
 			delete.execute();
 
 		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail on opening a new connection to kill some data", e);
+			throw new IllegalStateException("Fail to remove data from table "
+					+ tableName, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -90,6 +99,13 @@ public class DAO {
 		Connection con = null;
 		try {
 			con = ConnectionFactory.getConnection(type);
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to insert data", e);
+		}
+
+		try {
+
 			String selectOne = "select key_, value_ from \"" + tableName
 					+ "\" where key_ = ?;";
 			PreparedStatement select = con.prepareStatement(selectOne);
@@ -113,8 +129,8 @@ public class DAO {
 			insert.execute();
 
 		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail on opening a new connection to insert data", e);
+			throw new IllegalStateException("Fail to insert data into table "
+					+ tableName, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -133,6 +149,12 @@ public class DAO {
 		Connection con = null;
 		try {
 			con = ConnectionFactory.getConnection(type);
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to insert data", e);
+		}
+		
+		try {
 			String selectOne = "select key_, value_ from \"" + tableName
 					+ "\" where key_ = ?;";
 			PreparedStatement ps = con.prepareStatement(selectOne);
