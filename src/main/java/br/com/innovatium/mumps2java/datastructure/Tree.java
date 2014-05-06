@@ -121,17 +121,26 @@ public final class Tree extends Node {
 		final boolean isEmptyLastSubs = lastSubscript == null
 				|| lastSubscript.toString().length() == 0;
 
+		final boolean isFoward = direction >= 1;
 		// Condition to return to first element on list of subnodes.
 		if (isEmptyLastSubs) {
 			subs = Arrays.copyOf(subs, subs.length - 1);
 		}
 
 		final Node node = findNode(subs);
-		if (isEmptyLastSubs && node != null) {
+		if (isEmptyLastSubs && isFoward && node != null) {
 			subscript = node.hasSubnodes() ? node.getSubnode().getSusbcript()
 					: "";
-		} else if (node != null) {
+		} else if (isEmptyLastSubs && node != null) {
+			if (node.hasSubnodes()) {
+				Node lastSubnode = findLastNode(node.getSubnode());
+				subscript = lastSubnode.getSusbcript();
+			}
+		} else if (isFoward && node != null) {
 			subscript = node.hasNext() ? node.getNext().getSusbcript() : "";
+		} else if (node != null) {
+			subscript = node.hasPrevious() ? node.getPrevious().getSusbcript()
+					: "";
 		}
 
 		return subscript;
@@ -299,6 +308,13 @@ public final class Tree extends Node {
 		node.cancelReferences();
 	}
 
+	private Node findLastNode(Node node) {
+		while (node.hasNext()) {
+			node = node.getNext();
+		}
+		return node;
+	}
+
 	private final Node generateNode(Object[] subs) {
 		return generateNode(this, subs, 0);
 	}
@@ -322,39 +338,6 @@ public final class Tree extends Node {
 	public static void main(String[] asd) {
 		teste1();
 
-		Tree tree = new Tree();
-		tree.set(new Object[] { "a1" }, 1);
-		tree.set(new Object[] { "e10" }, 1);
-		tree.set(new Object[] { "e" }, 1);
-		tree.set(new Object[] { "d" }, 1);
-		tree.set(new Object[] { "b" }, 2);
-		tree.set(new Object[] { "c" }, 3);
-
-		tree.set(new Object[] { "a" }, 2);
-
-		System.out.println("antes do stack.....");
-		System.out.println(tree.dump());
-		tree.stacking("b", "a");
-		System.out.println("depois do stack.....");
-		System.out.println(tree.dump());
-
-		tree.set(new Object[] { "b" }, "novo valor para b");
-		System.out.println("recuperando: " + tree.get("a"));
-		System.out.println("recuperando: " + tree.get("b"));
-		System.out.println("recuperando: " + tree.get("c"));
-		System.out.println("unstacking: " + tree.get("a1"));
-		System.out.println("unstacking: " + tree.get("a2"));
-
-		tree.unstacking();
-		System.out.println("depois do unstack.....");
-		System.out.println(tree.dump());
-		System.out.println("unstacking: " + tree.get("a"));
-		System.out.println("unstacking: " + tree.get("b"));
-		System.out.println("unstacking: " + tree.get("c"));
-		System.out.println("unstacking: " + tree.get("a1"));
-		System.out.println("unstacking: " + tree.get("a2"));
-
-		System.out.println("comparando: " + "a2".compareTo("a1"));
 	}
 
 	private static void teste1() {
@@ -365,10 +348,16 @@ public final class Tree extends Node {
 
 		Object order = "1";
 		int i = 0;
+		System.out.println("ordering----------");
 		while (++i < 10) {
 			order = tree.order(new Object[] { "x", order }, 1);
-			System.out.println("subscritp: " + order + " value: "
-					+ tree.get(new Object[] { "x", order }));
+			System.out.println("forward: " + order);
+		}
+		i = 0;
+		System.out.println("ordering----------");
+		while (++i < 10) {
+			order = tree.order(new Object[] { "x", order }, 0);
+			System.out.println("backward: " + order);
 		}
 
 		tree.set(new Object[] { "y", "elemento2" }, "e1");
@@ -425,5 +414,42 @@ public final class Tree extends Node {
 				.println("Funcao data deve ser igual a 11 valor: true subnodes: true => "
 						+ tree.data(new Object[] { "1" }));
 
+	}
+
+	private static void teste2() {
+
+		Tree tree = new Tree();
+		tree.set(new Object[] { "a1" }, 1);
+		tree.set(new Object[] { "e10" }, 1);
+		tree.set(new Object[] { "e" }, 1);
+		tree.set(new Object[] { "d" }, 1);
+		tree.set(new Object[] { "b" }, 2);
+		tree.set(new Object[] { "c" }, 3);
+
+		tree.set(new Object[] { "a" }, 2);
+
+		System.out.println("antes do stack.....");
+		System.out.println(tree.dump());
+		tree.stacking("b", "a");
+		System.out.println("depois do stack.....");
+		System.out.println(tree.dump());
+
+		tree.set(new Object[] { "b" }, "novo valor para b");
+		System.out.println("recuperando: " + tree.get("a"));
+		System.out.println("recuperando: " + tree.get("b"));
+		System.out.println("recuperando: " + tree.get("c"));
+		System.out.println("unstacking: " + tree.get("a1"));
+		System.out.println("unstacking: " + tree.get("a2"));
+
+		tree.unstacking();
+		System.out.println("depois do unstack.....");
+		System.out.println(tree.dump());
+		System.out.println("unstacking: " + tree.get("a"));
+		System.out.println("unstacking: " + tree.get("b"));
+		System.out.println("unstacking: " + tree.get("c"));
+		System.out.println("unstacking: " + tree.get("a1"));
+		System.out.println("unstacking: " + tree.get("a2"));
+
+		System.out.println("comparando: " + "a2".compareTo("a1"));
 	}
 }
