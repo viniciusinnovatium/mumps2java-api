@@ -8,13 +8,20 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.SimpleTimeZone;
 import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc {
-
+	/**
+	 * Converts a character to a numeric code.
+	 * @param expression
+	 * <br>expression	The character to be converted.
+	 * <br>position	Optional — The position of a character within a character string, counting from 1. The default is 1.
+	 * @return returns the character code value for a single character specified in expression.
+	 */
 	public static Object $ascii(Object expression) {
 		return $ascii(expression, 1);
 	}
@@ -89,7 +96,13 @@ public final class mFnc {
 		}
 		return returnObj;
 	}
-
+	
+	/**
+	 * Converts the integer value of an expression to the corresponding ASCII or Unicode character.
+	 * @param codes 
+	 * <br>expression	The integer value to be converted.
+	 * @return returns the character that corresponds to the decimal (base-10) integer value specified by expression.
+	 */
 	public static Object $char(Object... codes) {
 		if (codes == null || codes.length == 0) {
 			return null;
@@ -107,19 +120,6 @@ public final class mFnc {
 
 	public static int $data(mVar mVar) {
 		return mVar.data();
-	}
-
-	public static String $e(Object string) {
-		return $extract(string);
-	}
-
-	public static String $e(Object value, Object index) {
-		return $extract(value, index);
-	}
-
-	public static String $e(Object string, Object from, Object to) {
-		return $extract(mFncUtil.castString(string), mFncUtil.castInt(from),
-				mFncUtil.castInt(to));
 	}
 
 	public static String $extract(Object string) {
@@ -206,11 +206,6 @@ public final class mFnc {
 		return formatedString;
 	}
 
-	public static Object $g(mVar pstrClass) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public static Object $get(Object content) {
 		return $get(content, null);
 	}
@@ -231,11 +226,6 @@ public final class mFnc {
 		}
 	}
 
-	public static Object $h() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public static Object $horolog() {
 		Calendar cal = Calendar.getInstance(new SimpleTimeZone(
 				SimpleTimeZone.UTC_TIME, "UTC"));
@@ -243,11 +233,6 @@ public final class mFnc {
 		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
 
 		return daysMumps.longValue() + "," + sec.longValue();
-	}
-
-	public static Object $i(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
 	}
 
 	public static Object $increment(mVar var) {
@@ -261,8 +246,7 @@ public final class mFnc {
 	}
 
 	public static Object $io() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return 1;
 	}
 
 	public static boolean $isNumber(Object numStr) {
@@ -347,15 +331,6 @@ public final class mFnc {
 
 	public static Object $justify(String expression, int width) {
 		return $justify(expression, width, null);
-	}
-
-	public static ListObject $l(ListObject list, int init, int end) {
-		return $list(list, init, end);
-	}
-
-	public static Object $l(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
 	}
 
 	public static ListObject $lb(Object... elements) {
@@ -447,10 +422,14 @@ public final class mFnc {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
-	public static Object $random(Object multiply) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	/**
+	 * Returns a pseudo-random integer value in the specified range.
+	 * @param range
+	 * <br/>range	A nonzero positive integer used to calculate the random number.
+	 * @return returns a pseudo-random integer value between 0 and range-1 (inclusive).
+	 */
+	public static Object $random(Object range) {
+		return new Random().nextInt(mFncUtil.numberConverter(range).intValue());
 	}
 
 	public static Object $replace(Object object, String oldSubstring,

@@ -9,6 +9,7 @@ public class mRequest {
 	
 	private mData data = new mData();
 	private Map<String,String[]> cgiEnvs = new HashMap<String,String[]>();
+	private mContent content;
 	
 	public mRequest(Map<String, String[]> map) {
 		populateParameter(map);
@@ -68,5 +69,20 @@ public class mRequest {
 	public void setCgiEnvs(String string, Object object) {
 		throw new UnsupportedOperationException();
 		
+	}
+
+	public mVar getCgiEnvs(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mVar getCgiEnvs(Object object, Object idx) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public mContent getContent() {
+		// TODO Auto-generated method stub
+		return content;
 	}	
 }

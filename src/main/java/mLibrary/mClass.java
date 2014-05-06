@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,15 +12,15 @@ public class mClass {
 		this.m$ = context;
 	}
 
+	public mContext getContext() {
+		return m$;
+	}
+	
 	public void cmd$Do(String methodName, Object... parameters) {
 		methodName = defineMethodName(methodName);
 		m$.dispatch(methodName, parameters);
 	}
-
-	public mContext getContext() {
-		return m$;
-	}
-
+	
 	public void cmd$Do(String methodName) {
 		cmd$Do(methodName, (Object[]) null);
 	}
@@ -32,7 +33,11 @@ public class mClass {
 	public void cmd$Write(Object... string) {
 		try {
 			for (Object str : string) {
-				System.out.print(String.valueOf(str));
+				if(str instanceof Double ){
+					System.out.print(BigDecimal.valueOf((Double)str));
+				}else{
+					System.out.print(String.valueOf(str));
+				}
 			}
 		} catch (NullPointerException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
@@ -168,4 +173,25 @@ public class mClass {
 		}
 		return methodName;
 	}
+
+	public void cmd$Use(Object $$$OprLog) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public void cmd$Close(Object $$$OprLog) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public void cmd$Open(Object $$$OprLog) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public void cmd$Open(Object object, String string, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
