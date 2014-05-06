@@ -31,4 +31,9 @@ public class License {
 		return null;
 	}
 
+	public static void DeferUserIdentification(Object fnc$) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 }

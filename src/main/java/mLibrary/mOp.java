@@ -76,8 +76,8 @@ public final class mOp {
 	}
 
 	public static Object Subtract(Object num1, Object num2) {
-		double d1 = Double.valueOf(String.valueOf(num1));
-		double d2 = Double.valueOf(String.valueOf(num2));
+		double d1 = mFncUtil.numberConverter(num1);
+		double d2 = mFncUtil.numberConverter(num2);
 		return (d1 - d2);
 	}
 

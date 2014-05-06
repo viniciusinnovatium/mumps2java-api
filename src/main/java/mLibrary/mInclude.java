@@ -26,6 +26,11 @@ public abstract class mInclude {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+	
+	public static void cmd$Do(mContext m$, String string, Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 
 	public static void cmd$Do(String string, int i, int j) {
 		// TODO Auto-generated method stub
