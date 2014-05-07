@@ -236,6 +236,10 @@ public final class mFncUtil {
 	}
 
 	public static Double numberConverter(Object obj) {
+		if(obj == null) {
+			return 0d;
+		}
+		
 		Double dbl = null;
 		try {
 			dbl = Double.valueOf(String.valueOf(obj));

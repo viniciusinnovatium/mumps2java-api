@@ -37,7 +37,7 @@ public class DAO {
 		try {
 
 			String like = "select key_, value_ from \"" + tableName
-					+ "\" where key_ like ? order by key_ asc;";
+					+ "\" where key_ like ? order by key_ asc";
 
 			PreparedStatement select = con.prepareStatement(like);
 			select.setString(1, key + "%");
@@ -49,7 +49,8 @@ public class DAO {
 
 		} catch (SQLException e) {
 			throw new IllegalStateException(
-					"Fail to find data thought like clause", e);
+					"Fail to find data thought like clause from table "
+							+ tableName + " and key " + key, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -73,14 +74,14 @@ public class DAO {
 		}
 		try {
 			String string = "delete from \"" + tableName
-					+ "\" where key_ like ?;";
+					+ "\" where key_ like ?";
 			PreparedStatement delete = con.prepareStatement(string);
 			delete.setString(1, key + "%");
 			delete.execute();
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to remove data from table "
-					+ tableName, e);
+					+ tableName + " and key " + key, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -107,20 +108,20 @@ public class DAO {
 		try {
 
 			String selectOne = "select key_, value_ from \"" + tableName
-					+ "\" where key_ = ?;";
+					+ "\" where key_ = ?";
 			PreparedStatement select = con.prepareStatement(selectOne);
 			select.setObject(1, key);
 			ResultSet result = select.executeQuery();
 			PreparedStatement insert = null;
 			if (!result.next()) {
 				String insertQuery = "insert into " + tableName
-						+ " values (?, ?) ;";
+						+ " values (?, ?)";
 				insert = con.prepareStatement(insertQuery);
 				insert.setObject(1, key);
 				insert.setObject(2, value);
 			} else {
 				String updateQuery = "update \"" + tableName
-						+ "\" set value_ = ? where key_ = ?;";
+						+ "\" set value_ = ? where key_ = ?";
 				insert = con.prepareStatement(updateQuery);
 				insert.setObject(1, value);
 				insert.setObject(2, key);
@@ -130,7 +131,7 @@ public class DAO {
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to insert data into table "
-					+ tableName, e);
+					+ tableName + " and key " + key, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -153,11 +154,12 @@ public class DAO {
 			throw new IllegalStateException(
 					"Fail to open connection to insert data", e);
 		}
-		
+
 		try {
-			String selectOne = "select key_, value_ from \"" + tableName
-					+ "\" where key_ = ?;";
-			PreparedStatement ps = con.prepareStatement(selectOne);
+			final StringBuilder selectOne = new StringBuilder(
+					"select key_, value_ from \"").append(tableName).append(
+					"\" where key_ = ?");
+			PreparedStatement ps = con.prepareStatement(selectOne.toString());
 			ps.setString(1, key);
 			ResultSet result = ps.executeQuery();
 
@@ -165,7 +167,8 @@ public class DAO {
 
 		} catch (SQLException e) {
 			throw new IllegalStateException(
-					"Fail on opening a new connection to select data", e);
+					"Fail to select data from the table " + tableName
+							+ " and key " + key, e);
 		} finally {
 			if (con != null) {
 				try {

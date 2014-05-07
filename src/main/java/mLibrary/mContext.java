@@ -88,6 +88,10 @@ public class mContext {
 			}
 			methodMap.put(methodName, m);
 		}
+		
+		if(m == null) {
+			throw new IllegalArgumentException("The method "+methodName+" does not exist");
+		}
 		return m;
 	}
 
