@@ -71,6 +71,9 @@ public class mCmd extends mParent{
 
 	public void Merge(mVar target, mVar source) {
 		// TODO Auto-generated method stub
+		Object obj1 = m$.Fnc.$order(target);
+		Object obj2 = source.order();
+		
 		throw new UnsupportedOperationException();
 	}
 

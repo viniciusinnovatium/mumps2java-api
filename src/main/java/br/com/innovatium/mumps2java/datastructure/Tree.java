@@ -239,7 +239,7 @@ public final class Tree extends Node {
 				// Here the looked up subscripts is coming as string, so we have
 				// to compare strings always, on other way, we never find the
 				// nodes.
-				if (subnode.getSusbcriptAsString().equals(
+				if (subs[index]!=null && subnode.getSusbcriptAsString().equals(
 						subs[index].toString())) {
 					if (index == subs.length - 1) {
 						lookedUp = subnode;
