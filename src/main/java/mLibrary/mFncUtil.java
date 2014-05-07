@@ -319,8 +319,8 @@ public final class mFncUtil {
 			return null;
 		}
 
-		final String[] array = Arrays.copyOfRange(string.split(delimiter),
-				from - 1, to);
+		final String[] array = (String[])Arrays.asList(string.split(delimiter)).subList(
+				from - 1, to).toArray();
 
 		return generateString(array, delimiter);
 	}

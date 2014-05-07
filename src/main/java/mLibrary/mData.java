@@ -151,7 +151,7 @@ public class mData {
 	private boolean isDiskAccess(Object... subs) {
 		boolean bool = false;
 		if(subs!=null && subs.length>0 && subs[0]!=null && !subs[0].toString().isEmpty()){
-			bool = subs[0].toString().charAt(0) == '�';
+			bool = subs[0].toString().charAt(0) == '*';
 		}
 		return bool;
 	}
