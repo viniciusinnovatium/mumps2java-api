@@ -44,6 +44,10 @@ public class mData {
 		}
 	}
 
+	public void merge(Object[] dest, Object[] orig) {
+		tree.merge(dest, orig);
+	}
+	
 	public void stacking(Object... subs) {
 		if (!isDiskAccess(subs)) {
 			tree.stacking(subs);
@@ -147,7 +151,7 @@ public class mData {
 	private boolean isDiskAccess(Object... subs) {
 		boolean bool = false;
 		if(subs!=null && subs.length>0 && subs[0]!=null && !subs[0].toString().isEmpty()){
-			bool = subs[0].toString().charAt(0) == '¨';
+			bool = subs[0].toString().charAt(0) == 'ï¿½';
 		}
 		return bool;
 	}

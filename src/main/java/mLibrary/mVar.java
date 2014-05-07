@@ -1,5 +1,7 @@
 package mLibrary;
 
+import java.util.Arrays;
+
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mVar {
@@ -48,29 +50,17 @@ public class mVar {
 	}
 
 	public mVar var(Object... subs) {
-		return new mVar(concat(subs), mData);
+		return new mVar(mFncUtil.concat(this.subs, subs), mData);
 	}
 
-	/*
-	 * This method should remove toString call from subscripts array element.
-	 */
-	@TODO
 	public String getName() {
 		return subs[0].toString();
 	}
 
-	private Object[] concat(Object[] subs) {
-		Object[] copy = new Object[this.subs.length + subs.length];
-		for (int i = 0; i < this.subs.length; i++) {
-			copy[i] = this.subs[i];
-		}
-
-		for (int i = 0; i < subs.length; i++) {
-			copy[i + this.subs.length] = subs[i];
-		}
-		return copy;
+	public Object[] getParameters() {
+		return Arrays.copyOfRange(subs, 1, subs.length);
 	}
-
+	
 	public Object[] getSubs() {
 		return subs;
 	}

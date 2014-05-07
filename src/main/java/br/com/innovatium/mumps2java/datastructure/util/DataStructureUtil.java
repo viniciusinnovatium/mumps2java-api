@@ -5,6 +5,22 @@ public final class DataStructureUtil {
 
 	private DataStructureUtil() {
 	}
+	
+	public static Object[] concat(Object[] dest, Object[] orig) {
+		Object[] copy = new Object[dest.length + orig.length];
+		for (int i = 0; i < dest.length; i++) {
+			copy[i] = dest[i];
+		}
+
+		for (int i = 0; i < orig.length; i++) {
+			copy[i + dest.length] = orig[i];
+		}
+		return copy;
+	}
+	
+	public static Object[] concat(Object[] dest, Object orig) {
+		return concat(dest, new Object[]{orig});
+	}
 
 	public static String generateKey(Object... subs) {
 		return generateKey(false, subs);

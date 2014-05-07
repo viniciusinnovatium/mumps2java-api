@@ -5,37 +5,39 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class mCmd extends mParent{
-
+public class mCmd extends mParent {
 
 	public mCmd(mContext m$) {
 		super(m$);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void Close(Object $$$OprLog) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	/*
-	public void Do(Object objClass, String methodName, Object... parameters) {
-		methodName = m$.defineMethodName(null, methodName);
-		m$.dispatch(null, methodName, parameters);
-		
+
+	public void Do(mClass objClass, String methodName, Object... parameters) {
+		methodName = m$.defineMethodName(objClass, methodName);
+		m$.dispatch(objClass, methodName, parameters);
 	}
-	
+
 	public void Do(String methodName) {
-		Do(methodName, (Object[]) null);
+		if (isIndirectionExecution(methodName)) {
+			mVar var = m$.indirectVar(methodName);
+			methodName = var.getName();
+			
+			if (isMethodExecution(methodName)) {
+				Do(defineMethodName(methodName), var.getParameters());
+			} else {
+				Do(methodName, var.getParameters());
+			}
+		}
 	}
-	
+
 	public void Do(String methodName, Object... parameters) {
 		Do(null, methodName, parameters);
 	}
-*/
-	public void Do(Object... args) {
-		m$.fnc$(args);
-	}
-	
+
 	public void Goto(String label) {
 		throw new UnsupportedOperationException();
 	}
@@ -70,11 +72,8 @@ public class mCmd extends mParent{
 	}
 
 	public void Merge(mVar target, mVar source) {
+		m$.merge(target, source);
 		// TODO Auto-generated method stub
-		Object obj1 = m$.Fnc.$order(target);
-		Object obj2 = source.order();
-		
-		throw new UnsupportedOperationException();
 	}
 
 	public void Open(Object $$$OprLog) {
@@ -84,7 +83,7 @@ public class mCmd extends mParent{
 
 	public void Open(Object object, String string, int i) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void Open(Object object, String string, Object concat, int i) {
@@ -143,9 +142,9 @@ public class mCmd extends mParent{
 	public void Write(Object... string) {
 		try {
 			for (Object str : string) {
-				if(str instanceof Double ){
-					System.out.print(BigDecimal.valueOf((Double)str));
-				}else{
+				if (str instanceof Double) {
+					System.out.print(BigDecimal.valueOf((Double) str));
+				} else {
 					System.out.print(String.valueOf(str));
 				}
 			}
@@ -185,4 +184,31 @@ public class mCmd extends mParent{
 		}
 	}
 
+	public boolean isIndirectionExecution(String content) {
+		if (content == null) {
+			return false;
+		}
+		return content.indexOf("(") != -1;
+	}
+
+	public boolean isMethodExecution(String content) {
+		if (content == null) {
+			return false;
+		}
+		return content.indexOf("^") != -1;
+	}
+
+	public String defineMethodName(String methodName) {
+		if (methodName == null) {
+			return null;
+		}
+		final String[] method = methodName.split("^");
+		if (method.length > 1) {
+			return method[1] + "." + method[0];
+		} else if (method.length == 1) {
+			return method[0] + ".main";
+		} else {
+			return null;
+		}
+	}
 }

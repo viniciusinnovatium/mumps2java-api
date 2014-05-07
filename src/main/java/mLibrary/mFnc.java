@@ -220,8 +220,13 @@ public final class mFnc extends mParent {
 			throw new IllegalArgumentException("Content must not be null");
 		}
 		if (content instanceof mVar) {
-			content = ((mVar) content).get();
+			try {
+				content = ((mVar) content).get();	
+			} catch (Exception e) {
+				content = null;
+			}
 		}
+		
 		if (content == null && defaultValue != null) {
 			return defaultValue;
 		} else if (content == null && defaultValue == null) {

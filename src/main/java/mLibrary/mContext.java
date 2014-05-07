@@ -2,16 +2,17 @@ package mLibrary;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import mSystem.mSystem;
 import br.com.innovatium.mumps2java.todo.REMOVE;
+import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
 	private mData mData;
@@ -25,40 +26,40 @@ public class mContext {
 	public mCmd Cmd;
 	private mSystem system;
 
-	
 	public mContext() {
 		super();
 		initContext();
 	}
-	
+
 	public mSystem getSystem() {
 		// TODO Auto-generated method stub
 		return system;
-	}	
+	}
 
 	public mContext(mData mData) {
 		this.mData = mData;
 		initContext();
 	}
 
-	private void initContext(){
+	private void initContext() {
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
-		this.system = new mSystem(this);		
+		this.system = new mSystem(this);
 	}
-	
+
 	public String dump() {
 		return mData.dump();
 	}
 
-	public Object dispatch(mClass objClass, String methodName, Object... parameters) {
+	public Object dispatch(mClass objClass, String methodName,
+			Object... parameters) {
 		Method m = getMethod(methodName);
 		Object result = null;
 		Object obj = null;
 		try {
-			if(objClass!=null){
+			if (objClass != null) {
 				obj = objClass;
-			}else if (!Modifier.isStatic(m.getModifiers())) {
+			} else if (!Modifier.isStatic(m.getModifiers())) {
 				obj = m.getDeclaringClass().newInstance();
 				if (obj instanceof mClass) {
 					((mClass) obj).setContext(this);
@@ -111,62 +112,76 @@ public class mContext {
 			}
 			methodMap.put(methodName, m);
 		}
+
+		if (m == null) {
+			throw new IllegalArgumentException("The method " + methodName
+					+ " does not exist");
+		}
 		return m;
 	}
-	
+
 	public Object fnc$(Object... args) {
 		Object[] parameters = null;
 		String methodName = "";
-		mClass objClassArg = null;	
-		if(args!=null && args.length>0){
+		mClass objClassArg = null;
+		if (args != null && args.length > 0) {
 			int initParam = 1;
-			if(args[0] instanceof String){
-				methodName = (String)args[0];
-			}else
-			if(args[0] instanceof mClass){
-				objClassArg = (mClass)args[0];
-				methodName = (String)args[1];
+			if (args[0] instanceof String) {
+				methodName = (String) args[0];
+			} else if (args[0] instanceof mClass) {
+				objClassArg = (mClass) args[0];
+				methodName = (String) args[1];
 				initParam = 2;
 			}
-			if(args.length>1){
+			if (args.length > 1) {
 				parameters = Arrays.copyOfRange(args, initParam, args.length);
 			}
 		}
-		
+
 		methodName = defineMethodName(objClassArg, methodName);
 		return dispatch(objClassArg, methodName, parameters);
 	}
-	
+
+	/*
+	 * Estudar uma estrategia para executar o metodo quando nao temos declarado
+	 * o nome da classe a qual ele pertence, por exmplo: 1) Com nome definido:
+	 * WWWConsys.main 2) Sem nome definido: calcular. Nesse caso estamos supondo
+	 * que esse metodo pertence ao ultimo mClass em execucao na pilha.
+	 */
+	@TODO
 	public String defineMethodName(mClass objClass, String methodName) {
 		if (methodName != null && !methodName.contains(".")) {
-			if(objClass!=null){
+			if (objClass != null) {
 				methodName = objClass.getClass().getName().concat(".")
-						.concat(methodName);				
-			}else{
-			      Throwable thr = new Throwable();  
-			        thr.fillInStackTrace ();  
-			        StackTraceElement[] ste = thr.getStackTrace(); 
-			        String className = null;
-			        for (int i = 0; i < ste.length; i++) {
-			        	className =  ste [i].getClassName(); 	
-			        	try {
-							if(mClass.class.isAssignableFrom(Class.forName(className))){
-								methodName = className.concat(".")
-										.concat(methodName);
-								break;
-							}
-						} catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						.concat(methodName);
+			} else {
+				Throwable thr = new Throwable();
+				thr.fillInStackTrace();
+				StackTraceElement[] ste = thr.getStackTrace();
+				String className = null;
+				for (int i = 0; i < ste.length; i++) {
+					className = ste[i].getClassName();
+					try {
+						if (mClass.class.isAssignableFrom(Class
+								.forName(className))) {
+							methodName = className.concat(".").concat(
+									methodName);
+							break;
 						}
+					} catch (ClassNotFoundException e) {
+						throw new IllegalArgumentException(
+								"Can not execute the method "
+										+ methodName
+										+ " because there is no one classe implementing it.",
+								e);
 					}
-			        			
-				
+				}
+
 			}
 		}
 		return methodName;
 	}
-	
+
 	public void populateParameter(Map<String, String[]> map) {
 		Set<Entry<String, String[]>> results = map.entrySet();
 		for (Entry<String, String[]> result : results) {
@@ -191,15 +206,8 @@ public class mContext {
 		this.mReq = mReq;
 	}
 
-	@REMOVE
-	public mVar indirect(Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public mVar indirectVar(Object val) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return var(parseVarSubs(val.toString()));
 	}
 
 	@REMOVE
@@ -213,6 +221,10 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
+	public void merge(mVar dest, mVar orig) {
+		mData.merge(dest.getSubs(), orig.getSubs());
+	}
+	
 	@REMOVE
 	public void newcontext() {
 		// TODO Auto-generated method stub
@@ -352,4 +364,58 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
+	private Object[] parseVarSubs(String _content) {
+		final List<Object> _result = new ArrayList<Object>();
+		int _level = 0, y = 0;
+		boolean _isstring = false;
+		for (int x = 0; x < _content.length(); x++) {
+			if (_content.charAt(x) == '"') {
+				_isstring = (_isstring) ? false : true;
+			}
+
+			if (_isstring) {
+				continue;
+			}
+
+			if (_content.charAt(x) == '(') {
+				if (_level == 0) {
+					_result.add(_content.substring(y, x));
+					y = x + 1;
+				}
+				_level++;
+			}
+
+			else if (_content.charAt(x) == ')') {
+				_level--;
+				if (_level == 0) {
+					_result.add(parseVarValue(_content.substring(y, x)));
+					y = x + 1;
+				}
+			} else if (_content.charAt(x) == ',') {
+				if (_level == 1) {
+					_result.add(parseVarValue(_content.substring(y, x)));
+					y = x + 1;
+				}
+			}
+		}
+		return _result.toArray();
+	}
+
+	private Object parseVarValue(String _content) {
+		Object _result;
+		System.out.println(_content);
+		if (_content == null) {
+			_result = "";
+		} else if (_content.length() == 0) {
+			_result = _content;
+		} else if (_content.charAt(0) == '"') {
+			_result = _content.replaceAll("\"(.*)\"", "$1").replaceAll("\"\"",
+					"\"");
+		} else if (_content.matches("[\\+\\-]?[\\d\\.]+(.*)")) {
+			_result = _content.replaceAll("([\\+\\-]?[\\d\\.]+)(.*)", "$1");
+		} else {
+			_result = var(parseVarSubs(_content)).get();
+		}
+		return _result;
+	}
 }

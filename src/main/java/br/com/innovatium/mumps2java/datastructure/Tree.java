@@ -2,15 +2,19 @@ package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
+import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
 	private Node lookedUp;
 	private StackNode stack;
+	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 
 	public Tree() {
 		super(new Object[] { "root" }, null, "root");
@@ -106,6 +110,7 @@ public final class Tree extends Node {
 
 		Node node = generateNode(subs);
 		node.setValue(value);
+		keyValue.put(node.getKey(), node);
 	}
 
 	public Node kill(Object... subs) {
@@ -198,7 +203,8 @@ public final class Tree extends Node {
 	}
 
 	public Object get(Object... subs) {
-		Node node = findSubnode(this, subs);
+		// Node node = findSubnode(this, subs);
+		Node node = keyValue.get(generateKey(subs));
 		if (node != null) {
 			return node.getValue();
 		}
@@ -209,6 +215,34 @@ public final class Tree extends Node {
 		StringBuilder string = new StringBuilder();
 		dump(this, string);
 		return string.toString();
+	}
+
+	public void merge(final Object[] dest, final Object[] orig) {
+		Node nodeOrigin = findNode(orig);
+		if (nodeOrigin != null) {
+			merge(dest, nodeOrigin);
+		}
+
+	}
+
+	private void merge(final Object[] dest, Node node) {
+		Object[] subs = null;
+		Object subscript = null;
+		while (node != null && node.hasSubnodes()) {
+			node = node.getSubnode();
+			subscript = node.getSusbcript();
+			do {
+				subs = DataStructureUtil.concat(dest, subscript);
+				set(subs, node.getValue());
+			} while (!"".equals(subscript = order(node.getSubs())));
+
+			merge(dest, node.getSubnode());
+		}
+
+	}
+
+	public Object order(Object[]... subs) {
+		return order(subs, 1);
 	}
 
 	private void dump(Node node, final StringBuilder string) {
@@ -223,12 +257,20 @@ public final class Tree extends Node {
 		}
 	}
 
+	/*
+	 * Substituir pela estrategia de recuperar o node pelo MAP
+	 */
+	@REMOVE
 	private Node findSubnode(Node node, Object[] subs) {
 		lookedUp = null;
 		findSubnode(node, subs, node.isRoot() ? 0 : 1);
 		return lookedUp;
 	}
 
+	/*
+	 * Substituir pela estrategia de recuperar o node pelo MAP
+	 */
+	@REMOVE
 	private void findSubnode(Node node, Object[] subs, int index) {
 		if (index >= subs.length) {
 			return;
@@ -336,8 +378,18 @@ public final class Tree extends Node {
 	}
 
 	public static void main(String[] asd) {
-		teste1();
+		// teste1();
+		teste3();
+	}
 
+	private static void teste3() {
+		Tree tree = new Tree();
+		tree.set(new Object[] { "x", "a" }, "teste");
+		tree.set(new Object[] { "y", "b", "1" }, "1");
+		tree.set(new Object[] { "y", "b", "2" }, "2");
+
+		tree.merge(new Object[] { "x", "a" }, new Object[] { "y", "b" });
+		System.out.println(tree.dump());
 	}
 
 	private static void teste1() {

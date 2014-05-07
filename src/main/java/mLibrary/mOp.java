@@ -16,6 +16,10 @@ public final class mOp {
 	}
 
 	public static Object Positive(Object num) {
+		if(num == null) {
+			return null;
+		}
+		
 		double d1 = mFncUtil.numberConverter(num);
 		if (d1 <= 0) {
 			d1 = d1 * -1;
