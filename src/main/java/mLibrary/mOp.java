@@ -1,5 +1,7 @@
 package mLibrary;
 
+import java.math.BigDecimal;
+
 
 public final class mOp {
 	private mOp() {
@@ -50,6 +52,10 @@ public final class mOp {
 	}
 
 	public static Object Concat(Object string1, Object string2) {
+		if (string2 instanceof Double) {
+			Double dbl = (Double) string2;
+			string2 = BigDecimal.valueOf(dbl).setScale(dbl > Math.floor(dbl) ? 2 : 0);
+		}
 		return String.valueOf(string1).concat(String.valueOf(string2));
 	}
 

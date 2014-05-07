@@ -1,6 +1,14 @@
 package mSystem;
 
-public class License {
+import mLibrary.mContext;
+import mLibrary.mParent;
+
+public class License extends mParent {
+
+	public License(mContext m$) {
+		super(m$);
+		// TODO Auto-generated constructor stub
+	}
 
 	public static Object LUConsumed() {
 		throw new UnsupportedOperationException();

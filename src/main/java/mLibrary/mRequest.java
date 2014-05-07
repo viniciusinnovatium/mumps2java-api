@@ -24,13 +24,13 @@ public class mRequest {
 		}
 	}	
 	
-	public mVar getCgiEnvs(String key){			
-		mVar var = varData(key,1);
+	public mVar getCgiEnvs(Object key){			
+		mVar var = varData(String.valueOf(key),1);
 		return var;
 	}
 	
-	public mVar getCgiEnvs(String key, int idx){			
-		mVar var = varData(key,idx);
+	public mVar getCgiEnvs(Object key, int idx){			
+		mVar var = varData(String.valueOf(key),idx);
 		return var;
 	}
 		
@@ -69,11 +69,6 @@ public class mRequest {
 	public void setCgiEnvs(String string, Object object) {
 		throw new UnsupportedOperationException();
 		
-	}
-
-	public mVar getCgiEnvs(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
 	}
 
 	public mVar getCgiEnvs(Object object, Object idx) {
