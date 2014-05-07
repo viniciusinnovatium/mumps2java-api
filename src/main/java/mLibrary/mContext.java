@@ -221,6 +221,10 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
+	public void merge(mVar dest, mVar orig) {
+		mData.merge(dest.getSubs(), orig.getSubs());
+	}
+	
 	@REMOVE
 	public void newcontext() {
 		// TODO Auto-generated method stub

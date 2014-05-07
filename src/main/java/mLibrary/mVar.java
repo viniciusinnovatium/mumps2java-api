@@ -50,7 +50,7 @@ public class mVar {
 	}
 
 	public mVar var(Object... subs) {
-		return new mVar(concat(subs), mData);
+		return new mVar(mFncUtil.concat(this.subs, subs), mData);
 	}
 
 	public String getName() {
@@ -60,19 +60,7 @@ public class mVar {
 	public Object[] getParameters() {
 		return Arrays.copyOfRange(subs, 1, subs.length);
 	}
-
-	private Object[] concat(Object[] subs) {
-		Object[] copy = new Object[this.subs.length + subs.length];
-		for (int i = 0; i < this.subs.length; i++) {
-			copy[i] = this.subs[i];
-		}
-
-		for (int i = 0; i < subs.length; i++) {
-			copy[i + this.subs.length] = subs[i];
-		}
-		return copy;
-	}
-
+	
 	public Object[] getSubs() {
 		return subs;
 	}

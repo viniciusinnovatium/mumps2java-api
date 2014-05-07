@@ -3,8 +3,15 @@ package mLibrary;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
+
 public final class mFncUtil {
 
+	public static Object[] concat(Object[] dest, Object[] orig) {
+		return DataStructureUtil.concat(dest, orig);
+	}
+
+	
 	public static Boolean booleanConverter(Object obj) {
 		Boolean bool = false;
 		if (obj instanceof Boolean) {

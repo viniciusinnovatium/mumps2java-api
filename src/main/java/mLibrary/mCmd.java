@@ -72,8 +72,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Merge(mVar target, mVar source) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		m$.merge(target, source);
 	}
 
 	public void Open(Object $$$OprLog) {
