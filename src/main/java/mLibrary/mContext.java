@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import mSystem.mSystem;
 import br.com.innovatium.mumps2java.todo.REMOVE;
 
 public class mContext {
@@ -18,24 +21,44 @@ public class mContext {
 
 	private mRequest mReq;
 	private mSession mSes;
+	public mFnc Fnc;
+	public mCmd Cmd;
+	private mSystem system;
 
+	
 	public mContext() {
+		super();
+		initContext();
 	}
+	
+	public mSystem getSystem() {
+		// TODO Auto-generated method stub
+		return system;
+	}	
 
 	public mContext(mData mData) {
 		this.mData = mData;
+		initContext();
 	}
 
+	private void initContext(){
+		this.Fnc = new mFnc(this);
+		this.Cmd = new mCmd(this);
+		this.system = new mSystem(this);		
+	}
+	
 	public String dump() {
 		return mData.dump();
 	}
 
-	public Object dispatch(String methodName, Object... parameters) {
+	public Object dispatch(mClass objClass, String methodName, Object... parameters) {
 		Method m = getMethod(methodName);
 		Object result = null;
 		Object obj = null;
 		try {
-			if (!Modifier.isStatic(m.getModifiers())) {
+			if(objClass!=null){
+				obj = objClass;
+			}else if (!Modifier.isStatic(m.getModifiers())) {
 				obj = m.getDeclaringClass().newInstance();
 				if (obj instanceof mClass) {
 					((mClass) obj).setContext(this);
@@ -90,7 +113,60 @@ public class mContext {
 		}
 		return m;
 	}
-
+	
+	public Object fnc$(Object... args) {
+		Object[] parameters = null;
+		String methodName = "";
+		mClass objClassArg = null;	
+		if(args!=null && args.length>0){
+			int initParam = 1;
+			if(args[0] instanceof String){
+				methodName = (String)args[0];
+			}else
+			if(args[0] instanceof mClass){
+				objClassArg = (mClass)args[0];
+				methodName = (String)args[1];
+				initParam = 2;
+			}
+			if(args.length>1){
+				parameters = Arrays.copyOfRange(args, initParam, args.length);
+			}
+		}
+		
+		methodName = defineMethodName(objClassArg, methodName);
+		return dispatch(objClassArg, methodName, parameters);
+	}
+	
+	public String defineMethodName(mClass objClass, String methodName) {
+		if (methodName != null && !methodName.contains(".")) {
+			if(objClass!=null){
+				methodName = objClass.getClass().getName().concat(".")
+						.concat(methodName);				
+			}else{
+			      Throwable thr = new Throwable();  
+			        thr.fillInStackTrace ();  
+			        StackTraceElement[] ste = thr.getStackTrace(); 
+			        String className = null;
+			        for (int i = 0; i < ste.length; i++) {
+			        	className =  ste [i].getClassName(); 	
+			        	try {
+							if(mClass.class.isAssignableFrom(Class.forName(className))){
+								methodName = className.concat(".")
+										.concat(methodName);
+								break;
+							}
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+			        			
+				
+			}
+		}
+		return methodName;
+	}
+	
 	public void populateParameter(Map<String, String[]> map) {
 		Set<Entry<String, String[]>> results = map.entrySet();
 		for (Entry<String, String[]> result : results) {
@@ -270,4 +346,10 @@ public class mContext {
 			return var;
 		}
 	}
+
+	public mVar prop(Object object, String string) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 }

@@ -14,7 +14,12 @@ import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
-public final class mFnc {
+public final class mFnc extends mParent {
+	public mFnc(mContext m$) {
+		super(m$);
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Converts a character to a numeric code.
 	 * @param expression
@@ -1067,9 +1072,6 @@ public final class mFnc {
 			string = string.toUpperCase();
 		}
 		return string;
-	}
-
-	private mFnc() {
 	}
 
 	public Object $order(mData mData) {

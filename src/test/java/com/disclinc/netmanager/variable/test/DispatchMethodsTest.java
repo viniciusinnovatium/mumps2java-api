@@ -21,7 +21,7 @@ public class DispatchMethodsTest {
 	@Test
 	public void testMethodWithReturnAndNoCallingNewOperator() {
 		// Executing some function which makes no one new operator calling
-		assertEquals(30, m$.dispatch(
+		assertEquals(30, m$.dispatch(null,
 				"com.disclinc.netmanager.variable.test.Macros.$$$diasNoMes",
 				(Object[]) null));
 
@@ -33,7 +33,7 @@ public class DispatchMethodsTest {
 	@Test
 	public void testMethodCallingNewOperatorAndGetVariableUnchanged() {
 		// Executing some function which makes no one new operator calling
-		assertEquals(57, m$.dispatch(
+		assertEquals(57, m$.dispatch(null,
 				"com.disclinc.netmanager.variable.test.Macros.$$$recuperarValorInalteradoDepoisDoOperadorNew",
 				m$));
 
@@ -45,7 +45,7 @@ public class DispatchMethodsTest {
 	@Test
 	public void test() {
 		// Executing some function which makes new operator calling
-		assertEquals("Fail to recover value of the variable after", null, m$.dispatch(
+		assertEquals("Fail to recover value of the variable after", null, m$.dispatch(null,
 				"com.disclinc.netmanager.variable.test.Macros.$$$recuperarValorNuloDepoisDoOperadorNew",
 				m$));
 
@@ -57,7 +57,7 @@ public class DispatchMethodsTest {
 	@Test
 	public void testRecuperarValorNovoDepois3ChamadasDoOperadorNew() {
 		// Executing some function which makes new operator calling
-		assertEquals("Fail to recover value of the variable after", "chamada3", m$.dispatch(
+		assertEquals("Fail to recover value of the variable after", "chamada3", m$.dispatch(null,
 				"com.disclinc.netmanager.variable.test.Macros.$$$recuperarValorNovoDepois3ChamadasDoOperadorNew",
 				m$));
 
