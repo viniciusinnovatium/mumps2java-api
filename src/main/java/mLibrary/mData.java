@@ -11,7 +11,6 @@ import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class mData {
 	Object[] currentSubs;
-	Object[] orderSubs;
 
 	boolean subsChanged;
 	boolean firstExecutionOrder = true;
@@ -47,7 +46,7 @@ public class mData {
 	public void merge(Object[] dest, Object[] orig) {
 		tree.merge(dest, orig);
 	}
-	
+
 	public void stacking(Object... subs) {
 		if (!isDiskAccess(subs)) {
 			tree.stacking(subs);
@@ -96,24 +95,26 @@ public class mData {
 		return tree.data(subs);
 	}
 
-	public Object order(int direction) {
+	/*
+	 * public Object order(int direction) { if (subsChanged) { if
+	 * (isDiskAccess(currentSubs)) { initDAO(); findDataOnDisk(); }
+	 * firstExecutionOrder = true; }
+	 * 
+	 * if (firstExecutionOrder) { firstExecutionOrder = false; orderSubs =
+	 * Arrays.copyOfRange(currentSubs, 0, currentSubs.length); return
+	 * orderSubs[orderSubs.length - 1] = tree.order(currentSubs, direction); }
+	 * else { return orderSubs[orderSubs.length - 1] = tree.order(orderSubs,
+	 * direction); } }
+	 */
+	public Object order(Object[] subs, int direction) {
 		if (subsChanged) {
-			if (isDiskAccess(currentSubs)) {
+			if (isDiskAccess(subs)) {
 				initDAO();
 				findDataOnDisk();
 			}
 			firstExecutionOrder = true;
 		}
-
-		if (firstExecutionOrder) {
-			firstExecutionOrder = false;
-			orderSubs = Arrays.copyOfRange(currentSubs, 0, currentSubs.length);
-			return orderSubs[orderSubs.length - 1] = tree.order(currentSubs,
-					direction);
-		} else {
-			return orderSubs[orderSubs.length - 1] = tree.order(orderSubs,
-					direction);
-		}
+		return tree.order(subs, direction);
 	}
 
 	public mData subs(Object... subs) {
@@ -150,7 +151,8 @@ public class mData {
 
 	private boolean isDiskAccess(Object... subs) {
 		boolean bool = false;
-		if(subs!=null && subs.length>0 && subs[0]!=null && !subs[0].toString().isEmpty()){
+		if (subs != null && subs.length > 0 && subs[0] != null
+				&& !subs[0].toString().isEmpty()) {
 			bool = subs[0].toString().charAt(0) == '*';
 		}
 		return bool;

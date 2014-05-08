@@ -230,10 +230,10 @@ public final class Tree extends Node {
 		Object[] concatSubs = null;
 		boolean hasSubnodes = node.hasSubnodes();
 		boolean hasNext = node.hasNext();
-		
+
 		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
 		set(concatSubs, node.getValue());
-		
+
 		if (hasSubnodes) {
 			node = node.getSubnode();
 		} else if (hasNext) {
@@ -243,7 +243,7 @@ public final class Tree extends Node {
 		if (!hasSubnodes && !hasNext) {
 			return;
 		}
-		
+
 		merge(dest, orig, node);
 	}
 
@@ -350,8 +350,8 @@ public final class Tree extends Node {
 	}
 
 	public static void main(String[] asd) {
-		// teste1();
-		teste3();
+		teste1();
+		// teste3();
 	}
 
 	private static void teste3() {
@@ -371,6 +371,8 @@ public final class Tree extends Node {
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
 
+		System.out.println("First subnode: "+tree.order(new Object[]{"x", ""}));
+		
 		Object order = "1";
 		int i = 0;
 		System.out.println("ordering----------");
