@@ -31,12 +31,14 @@ public class LocalVariableTest {
 
 	@Test
 	public void testOrderFirstLevel() {
-		assertEquals("Fail on first navegation through the first level", "passeio", mLocal.subs("carro", "esportivo").order(1));
-		assertEquals("Fail on second navegation through the first level", "", mLocal.subs("carro", "passeio").order(1));
+		assertEquals("Fail on first navegation through the first level", "esportivo", mLocal.order("carro", ""));
+		assertEquals("Fail on first navegation through the first level", "passeio", mLocal.order("carro", "esportivo"));
+		assertEquals("Fail on first navegation through the first level", "passeio", mLocal.order("carro", "esportivo"));
+		assertEquals("Fail on second navegation through the first level", "", mLocal.order("carro", "passeio"));
 		
-		assertEquals("Fail on first navegation through the first level", "azul", mLocal.subs("carro", "esportivo", "amarelo").order(1));
-		assertEquals("Fail on first navegation through the first level", "branco", mLocal.subs("carro", "esportivo", "azul").order(1));
-		assertEquals("Fail on first navegation through the first level", "preto", mLocal.subs("carro", "esportivo", "branco").order(1));
-		assertEquals("Fail on first navegation through the first level", "", mLocal.subs("carro", "esportivo", "preto").order(1));
+		assertEquals("Fail on first navegation through the first level", "azul", mLocal.order("carro", "esportivo", "amarelo"));
+		assertEquals("Fail on first navegation through the first level", "branco", mLocal.order("carro", "esportivo", "azul"));
+		assertEquals("Fail on first navegation through the first level", "preto", mLocal.order("carro", "esportivo", "branco"));
+		assertEquals("Fail on first navegation through the first level", "", mLocal.order("carro", "esportivo", "preto"));
 	}
 }

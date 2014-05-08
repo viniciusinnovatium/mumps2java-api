@@ -6,7 +6,7 @@ import mLibrary.mData;
 import org.junit.Test;
 
 public class GlobalVariableTest {
-
+/*
 	private mData mGlobal = new mData();
 private final String TABLE_NAME = "^www001";
 	public GlobalVariableTest() {
@@ -54,5 +54,5 @@ private final String TABLE_NAME = "^www001";
 		assertEquals("Fail on remove data. This data was removed and should not be that", "6", mGlobal.get("metal"));
 		
 		
-	}
+	}*/
 }

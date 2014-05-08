@@ -117,6 +117,10 @@ public class mData {
 		return tree.order(subs, direction);
 	}
 
+	public Object order(Object... subs) {
+		return tree.order(subs, 1);
+	}
+
 	public mData subs(Object... subs) {
 		verifySubsChanges(subs);
 		currentSubs = subs;
