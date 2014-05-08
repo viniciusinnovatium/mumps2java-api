@@ -305,7 +305,7 @@ public final class mFncUtil {
 		if(splitStr.length>index && index>0){
 			return splitStr[index - 1];			
 		}else{
-			return splitStr[0];		
+			return "";		
 		}
 	}
 

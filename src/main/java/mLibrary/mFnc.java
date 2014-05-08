@@ -397,7 +397,7 @@ public final class mFnc extends mParent {
 		return var.order();
 	}
 
-	public static Object $order(mVar var, Object dir) {
+	public Object $order(mVar var, Object dir) {
 		return var.order(mFncUtil.numberConverter(dir).intValue());
 	}
 
@@ -708,7 +708,16 @@ public final class mFnc extends mParent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	/**
+	 * Removes types of characters and individual characters from a specified string.
+	 * @param object
+	 * @param string
+	 * @return 
+	 * <BR>string ->    The string to be stripped.
+	 * <BR>action -> 	What to strip from string. A string consisting of an action code followed by one or more mask codes. Specified as a quoted string.
+	 * <BR>remchar -> 	Optional — A string of specific character values to remove. Generally, these are additional characters not covered by the action parameter’s mask code.
+	 * <BR>keepchar -> 	Optional — A string of specific character values to not remove that are designated for removal by the action parameter’s mask code.
+	 */
 	public static Object $zstrip(Object object, Object string) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -967,7 +976,7 @@ public final class mFnc extends mParent {
 		return dbl;
 	}
 
-	public static String pieceImpl(String string, String delimiter) {
+	public String pieceImpl(String string, String delimiter) {
 		return $piece(string, delimiter, 1);
 	}
 
@@ -1123,6 +1132,21 @@ public final class mFnc extends mParent {
 	public static Object $znspace() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
+	}
+
+	public Object $view(Object $zutil, Object negative, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Determines if an expression is a list.
+	 * @param object
+	 * @return $LISTVALID determines whether exp is a list, and returns a Boolean value: If exp is a list, $LISTVALID returns 1; if exp is not a list, $LISTVALID returns 0.
+	 * <br>exp	Any valid expression.
+	 */
+	public Object $listvalid(Object object) {
+		return true;//TODO REVISAR
 	}
 
 }
