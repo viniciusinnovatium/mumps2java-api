@@ -1001,7 +1001,7 @@ public final class mFnc extends mParent {
 		Object[] array = string == null ? new Object[position] : string
 				.toString().split(delimiter);
 		if (position > array.length) {
-			array = Arrays.copyOfRange(array, 0, position);
+			array = Arrays.copyOfRange(array,0, position);
 		}
 		if (value == null) {
 			value = "";

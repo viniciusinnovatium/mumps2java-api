@@ -16,9 +16,28 @@ public class mCmd extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
+	public String defineMethodName(String methodName) {
+		if (methodName == null) {
+			return null;
+		}
+		final String[] method = methodName.split("^");
+		if (method.length > 1) {
+			return method[1] + "." + method[0];
+		} else if (method.length == 1) {
+			return method[0] + ".main";
+		} else {
+			return null;
+		}
+	}
+
 	public void Do(mClass objClass, String methodName, Object... parameters) {
 		methodName = m$.defineMethodName(objClass, methodName);
 		m$.dispatch(objClass, methodName, parameters);
+	}
+
+	public void Do(Object object, String methodName, Object object2) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void Do(String methodName) {
@@ -31,6 +50,8 @@ public class mCmd extends mParent {
 			} else {
 				Do(methodName, var.getParameters());
 			}
+		}else{
+			m$.fnc$(methodName);
 		}
 	}
 
@@ -56,6 +77,20 @@ public class mCmd extends mParent {
 
 	}
 
+	public boolean isIndirectionExecution(String content) {
+		if (content == null) {
+			return false;
+		}
+		return content.indexOf("(") != -1;
+	}
+
+	public boolean isMethodExecution(String content) {
+		if (content == null) {
+			return false;
+		}
+		return content.indexOf("^") != -1;
+	}
+
 	public void Job(String string, String string2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -73,6 +108,7 @@ public class mCmd extends mParent {
 
 	public void Merge(mVar target, mVar source) {
 		m$.merge(target, source);
+		// TODO Auto-generated method stub
 	}
 
 	public void Open(Object $$$OprLog) {
@@ -180,34 +216,6 @@ public class mCmd extends mParent {
 			Do(methodName);
 		} else {
 			throw new UnsupportedOperationException();
-		}
-	}
-
-	public boolean isIndirectionExecution(String content) {
-		if (content == null) {
-			return false;
-		}
-		return content.indexOf("(") != -1;
-	}
-
-	public boolean isMethodExecution(String content) {
-		if (content == null) {
-			return false;
-		}
-		return content.indexOf("^") != -1;
-	}
-
-	public String defineMethodName(String methodName) {
-		if (methodName == null) {
-			return null;
-		}
-		final String[] method = methodName.split("^");
-		if (method.length > 1) {
-			return method[1] + "." + method[0];
-		} else if (method.length == 1) {
-			return method[0] + ".main";
-		} else {
-			return null;
 		}
 	}
 }

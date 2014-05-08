@@ -58,7 +58,7 @@ public class mVar {
 	}
 
 	public Object[] getParameters() {
-		return Arrays.copyOfRange(subs, 1, subs.length);
+		return Arrays.asList(subs).subList(1, subs.length).toArray();
 	}
 	
 	public Object[] getSubs() {
@@ -67,6 +67,15 @@ public class mVar {
 
 	public mData getmData() {
 		return mData;
+	}
+	
+	public mClass getORef(){
+		Object objRef = get();
+		if(objRef instanceof mClass){
+			return (mClass)objRef;			
+		}else{
+			return null;
+		}
 	}
 
 }

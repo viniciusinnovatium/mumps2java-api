@@ -156,7 +156,7 @@ public final class mOp {
 		return bool1 || bool2;
 	}
 
-	public static boolean NotContains(Object str1, String str2) {
+	public static boolean NotContains(Object str1, Object str2) {
 		return !Contains(str1, str2);
 	}
 

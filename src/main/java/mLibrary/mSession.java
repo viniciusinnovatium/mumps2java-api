@@ -3,6 +3,7 @@ package mLibrary;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 public class mSession {
 	
@@ -11,6 +12,7 @@ public class mSession {
 	
 	public mSession(Map<String, String[]> map) {
 		populateParameter(map);
+		setSessionId(UUID.randomUUID().toString());
 	}
 
 	public Object getSessionId(){

@@ -11,7 +11,6 @@ import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
-	private Node lookedUp;
 	private StackNode stack;
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 
@@ -263,27 +262,6 @@ public final class Tree extends Node {
 			} while ((next = next.getNext()) != null);
 		}
 	}
-
-	/*
-	 * Substituir pela estrategia de recuperar o node pelo MAP
-	 * 
-	 * @REMOVE private Node findSubnode(Node node, Object[] subs) { lookedUp =
-	 * null; findSubnode(node, subs, node.isRoot() ? 0 : 1); return lookedUp; }
-	 */
-
-	/*
-	 * Substituir pela estrategia de recuperar o node pelo MAP
-	 * 
-	 * @REMOVE private void findSubnode(Node node, Object[] subs, int index) {
-	 * if (index >= subs.length) { return; } if (node.hasSubnodes()) { Node
-	 * subnode = node.getSubnode(); do { // Here the looked up subscripts is
-	 * coming as string, so we have // to compare strings always, on other way,
-	 * we never find the // nodes. if
-	 * (subnode.getSubscriptAsString().equals(subs[index].toString())) { if
-	 * (index == subs.length - 1) { lookedUp = subnode; break; }
-	 * findSubnode(subnode, subs, index + 1); } } while ((subnode =
-	 * subnode.getNext()) != null); } }
-	 */
 
 	private List<Node> findSubnodeExcepts(Object... subs) {
 		if (subs == null) {
