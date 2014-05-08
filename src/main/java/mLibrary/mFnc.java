@@ -406,7 +406,7 @@ public final class mFnc extends mParent {
 		return $order(var, 1);
 	}
 
-	public Object $order(mVar var, Object dir) {
+	public static Object $order(mVar var, Object dir) {
 		return var.order(mFncUtil.numberConverter(dir).intValue());
 	}
 

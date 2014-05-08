@@ -109,6 +109,10 @@ public class Node implements Comparable<Node> {
 	public void setPrevious(Node previous) {
 		this.previous = previous;
 	}
+	
+	public boolean hasParent() {
+		return this.parent != null;
+	}
 
 	public void addSubnode(Node newSubnode) {
 		if (subnode == null) {

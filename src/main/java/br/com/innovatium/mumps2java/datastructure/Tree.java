@@ -251,6 +251,10 @@ public final class Tree extends Node {
 		return order(subs, 1);
 	}
 
+	private boolean isNotPresentOnTree(Node node){
+		return node == null || node.hasParent();
+	} 
+	
 	private void dump(Node node, final StringBuilder string) {
 		if (node != null) {
 			Node next = node;
@@ -288,7 +292,7 @@ public final class Tree extends Node {
 	}
 
 	private void replaceNode(Node newNode, Node oldNode) {
-		if (newNode == null) {
+		if (isNotPresentOnTree(newNode)) {
 			return;
 		} else if (oldNode == null) {
 			addSubnode(newNode);
@@ -305,11 +309,12 @@ public final class Tree extends Node {
 			}
 
 			oldNode.cancelReferences();
+			keyValue.put(newNode.getKey(), newNode);
 		}
 	}
 
 	private void kill(Node node) {
-		if (node == null) {
+		if (isNotPresentOnTree(node)) {
 			return;
 		}
 		if (node.isFirstSubnode()) {
@@ -318,6 +323,7 @@ public final class Tree extends Node {
 			node.getPrevious().setNext(node.getNext());
 		}
 		node.cancelReferences();
+		keyValue.remove(node.getKey());
 	}
 
 	private Node findLastNode(Node node) {
@@ -346,6 +352,10 @@ public final class Tree extends Node {
 		if (index < subs.length) {
 			nodefound = generateNode(nodefound, subs, index);
 		}
+		
+		if(nodefound.getParent() == null){
+			throw new IllegalStateException("Ferrou..."+nodefound);
+		}
 		return nodefound;
 	}
 
@@ -371,8 +381,9 @@ public final class Tree extends Node {
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
 
-		System.out.println("First subnode: "+tree.order(new Object[]{"x", ""}));
-		
+		System.out.println("First subnode: "
+				+ tree.order(new Object[] { "x", "" }));
+
 		Object order = "1";
 		int i = 0;
 		System.out.println("ordering----------");
