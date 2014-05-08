@@ -40,5 +40,13 @@ public class LocalVariableTest {
 		assertEquals("Fail on first navegation through the first level", "branco", mLocal.order("carro", "esportivo", "azul"));
 		assertEquals("Fail on first navegation through the first level", "preto", mLocal.order("carro", "esportivo", "branco"));
 		assertEquals("Fail on first navegation through the first level", "", mLocal.order("carro", "esportivo", "preto"));
+		
+	}
+	
+	@Test
+	public void testOrderFirstLevelInverse() {
+		assertEquals("Fail on first navegation through the first level", "passeio", mLocal.order(new Object[]{"carro", ""}, -1));
+		assertEquals("Fail on first navegation through the first level", "esportivo", mLocal.order(new Object[]{"carro", "passeio"}, -1));
+		assertEquals("Fail on first navegation through the first level", "", mLocal.order(new Object[]{"carro", "esportivo"}, -1));
 	}
 }
