@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.SimpleTimeZone;
 import java.util.regex.Pattern;
 
+import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
@@ -22,10 +23,14 @@ public final class mFnc extends mParent {
 
 	/**
 	 * Converts a character to a numeric code.
+	 * 
 	 * @param expression
-	 * <br>expression	The character to be converted.
-	 * <br>position	Optional — The position of a character within a character string, counting from 1. The default is 1.
-	 * @return returns the character code value for a single character specified in expression.
+	 * <br>
+	 *            expression The character to be converted. <br>
+	 *            position Optional — The position of a character within a
+	 *            character string, counting from 1. The default is 1.
+	 * @return returns the character code value for a single character specified
+	 *         in expression.
 	 */
 	public static Object $ascii(Object expression) {
 		return $ascii(expression, 1);
@@ -101,12 +106,16 @@ public final class mFnc extends mParent {
 		}
 		return returnObj;
 	}
-	
+
 	/**
-	 * Converts the integer value of an expression to the corresponding ASCII or Unicode character.
-	 * @param codes 
-	 * <br>expression	The integer value to be converted.
-	 * @return returns the character that corresponds to the decimal (base-10) integer value specified by expression.
+	 * Converts the integer value of an expression to the corresponding ASCII or
+	 * Unicode character.
+	 * 
+	 * @param codes
+	 * <br>
+	 *            expression The integer value to be converted.
+	 * @return returns the character that corresponds to the decimal (base-10)
+	 *         integer value specified by expression.
 	 */
 	public static Object $char(Object... codes) {
 		if (codes == null || codes.length == 0) {
@@ -221,12 +230,12 @@ public final class mFnc extends mParent {
 		}
 		if (content instanceof mVar) {
 			try {
-				content = ((mVar) content).get();	
+				content = ((mVar) content).get();
 			} catch (Exception e) {
 				content = null;
 			}
 		}
-		
+
 		if (content == null && defaultValue != null) {
 			return defaultValue;
 		} else if (content == null && defaultValue == null) {
@@ -394,7 +403,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $order(mVar var) {
-		return var.order();
+		return $order(var, 1);
 	}
 
 	public Object $order(mVar var, Object dir) {
@@ -432,11 +441,16 @@ public final class mFnc extends mParent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
 	/**
 	 * Returns a pseudo-random integer value in the specified range.
+	 * 
 	 * @param range
-	 * <br/>range	A nonzero positive integer used to calculate the random number.
-	 * @return returns a pseudo-random integer value between 0 and range-1 (inclusive).
+	 * <br/>
+	 *            range A nonzero positive integer used to calculate the random
+	 *            number.
+	 * @return returns a pseudo-random integer value between 0 and range-1
+	 *         (inclusive).
 	 */
 	public static Object $random(Object range) {
 		return new Random().nextInt(mFncUtil.numberConverter(range).intValue());
@@ -1010,7 +1024,7 @@ public final class mFnc extends mParent {
 		Object[] array = string == null ? new Object[position] : string
 				.toString().split(delimiter);
 		if (position > array.length) {
-			array = Arrays.copyOfRange(array,0, position);
+			array = Arrays.copyOfRange(array, 0, position);
 		}
 		if (value == null) {
 			value = "";
@@ -1086,14 +1100,6 @@ public final class mFnc extends mParent {
 			string = string.toUpperCase();
 		}
 		return string;
-	}
-
-	public Object $order(mData mData) {
-		return $order(mData, 1);
-	}
-
-	public Object $order(mData mData, int direction) {
-		return mData.order(direction);
 	}
 
 	public Object length(Object string) {

@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
-import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
-	private Node lookedUp;
 	private StackNode stack;
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 
@@ -64,7 +62,7 @@ public final class Tree extends Node {
 			stack = new StackNode();
 		}
 		currentStackLevel++;
-		List<Node> nodes = searchSubnodeExcepts(subs);
+		List<Node> nodes = findSubnodeExcepts(subs);
 		if (nodes != null) {
 			for (Node node : nodes) {
 				node.setStackLevel(currentStackLevel);
@@ -108,9 +106,11 @@ public final class Tree extends Node {
 			return;
 		}
 
-		Node node = generateNode(subs);
+		Node node = findNode(subs);
+		if (node == null) {
+			node = generateNode(subs);
+		}
 		node.setValue(value);
-		keyValue.put(node.getKey(), node);
 	}
 
 	public Node kill(Object... subs) {
@@ -134,17 +134,17 @@ public final class Tree extends Node {
 
 		final Node node = findNode(subs);
 		if (isEmptyLastSubs && isFoward && node != null) {
-			subscript = node.hasSubnodes() ? node.getSubnode().getSusbcript()
+			subscript = node.hasSubnodes() ? node.getSubnode().getSubscript()
 					: "";
 		} else if (isEmptyLastSubs && node != null) {
 			if (node.hasSubnodes()) {
 				Node lastSubnode = findLastNode(node.getSubnode());
-				subscript = lastSubnode.getSusbcript();
+				subscript = lastSubnode.getSubscript();
 			}
 		} else if (isFoward && node != null) {
-			subscript = node.hasNext() ? node.getNext().getSusbcript() : "";
+			subscript = node.hasNext() ? node.getNext().getSubscript() : "";
 		} else if (node != null) {
-			subscript = node.hasPrevious() ? node.getPrevious().getSusbcript()
+			subscript = node.hasPrevious() ? node.getPrevious().getSubscript()
 					: "";
 		}
 
@@ -199,7 +199,8 @@ public final class Tree extends Node {
 	}
 
 	public Node findNode(Object[] subs) {
-		return findSubnode(this, subs);
+		// return findSubnode(this, subs);
+		return keyValue.get(generateKey(subs));
 	}
 
 	public Object get(Object... subs) {
@@ -217,28 +218,33 @@ public final class Tree extends Node {
 		return string.toString();
 	}
 
-	public void merge(final Object[] dest, final Object[] orig) {
-		Node nodeOrigin = findNode(orig);
-		if (nodeOrigin != null) {
-			merge(dest, nodeOrigin);
+	public void merge(final Object[] destSubs, final Object[] origSubs) {
+		Node origNode = findNode(origSubs);
+		if (origNode != null && origNode.hasSubnodes()) {
+			merge(destSubs, origSubs, origNode.getSubnode());
 		}
-
 	}
 
-	private void merge(final Object[] dest, Node node) {
-		Object[] subs = null;
-		Object subscript = null;
-		while (node != null && node.hasSubnodes()) {
-			node = node.getSubnode();
-			subscript = node.getSusbcript();
-			do {
-				subs = DataStructureUtil.concat(dest, subscript);
-				set(subs, node.getValue());
-			} while (!"".equals(subscript = order(node.getSubs())));
+	private void merge(final Object[] dest, final Object[] orig, Node node) {
 
-			merge(dest, node.getSubnode());
+		Object[] concatSubs = null;
+		boolean hasSubnodes = node.hasSubnodes();
+		boolean hasNext = node.hasNext();
+
+		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
+		set(concatSubs, node.getValue());
+
+		if (hasSubnodes) {
+			node = node.getSubnode();
+		} else if (hasNext) {
+			node = node.getNext();
 		}
 
+		if (!hasSubnodes && !hasNext) {
+			return;
+		}
+
+		merge(dest, orig, node);
 	}
 
 	public Object order(Object[]... subs) {
@@ -257,43 +263,7 @@ public final class Tree extends Node {
 		}
 	}
 
-	/*
-	 * Substituir pela estrategia de recuperar o node pelo MAP
-	 */
-	@REMOVE
-	private Node findSubnode(Node node, Object[] subs) {
-		lookedUp = null;
-		findSubnode(node, subs, node.isRoot() ? 0 : 1);
-		return lookedUp;
-	}
-
-	/*
-	 * Substituir pela estrategia de recuperar o node pelo MAP
-	 */
-	@REMOVE
-	private void findSubnode(Node node, Object[] subs, int index) {
-		if (index >= subs.length) {
-			return;
-		}
-		if (node.hasSubnodes()) {
-			Node subnode = node.getSubnode();
-			do {
-				// Here the looked up subscripts is coming as string, so we have
-				// to compare strings always, on other way, we never find the
-				// nodes.
-				if (subs[index]!=null && subnode.getSusbcriptAsString().equals(
-						subs[index].toString())) {
-					if (index == subs.length - 1) {
-						lookedUp = subnode;
-						break;
-					}
-					findSubnode(subnode, subs, index + 1);
-				}
-			} while ((subnode = subnode.getNext()) != null);
-		}
-	}
-
-	private List<Node> searchSubnodeExcepts(Object... subs) {
+	private List<Node> findSubnodeExcepts(Object... subs) {
 		if (subs == null) {
 			return null;
 		}
@@ -304,7 +274,7 @@ public final class Tree extends Node {
 		subnodes: for (Node node : variables) {
 			for (int i = 0; i < subs.length; i++) {
 				if (subs[i] != null
-						&& subs[i].equals(node.getSusbcriptAsString())) {
+						&& subs[i].equals(node.getSubscriptAsString())) {
 					continue subnodes;
 				}
 			}
@@ -362,24 +332,26 @@ public final class Tree extends Node {
 	}
 
 	private Node generateNode(final Node parent, final Object[] subs, int index) {
-		final Object[] subnodeArray = Arrays.copyOf(subs, index + 1);
-		Node nodefound = findSubnode(parent, subnodeArray);
+		index = index + 1;
+		final Object[] subnodeArray = Arrays.copyOf(subs, index);
+		// Node nodefound = findSubnode(parent, subnodeArray);
+		Node nodefound = findNode(subnodeArray);
 		boolean exist = nodefound != null;
-
 		if (!exist) {
 			nodefound = new Node(subnodeArray, generateKey(subnodeArray));
 			parent.addSubnode(nodefound);
+			keyValue.put(nodefound.getKey(), nodefound);
 		}
 
-		if (++index < subs.length) {
+		if (index < subs.length) {
 			nodefound = generateNode(nodefound, subs, index);
 		}
 		return nodefound;
 	}
 
 	public static void main(String[] asd) {
-		// teste1();
-		teste3();
+		teste1();
+		// teste3();
 	}
 
 	private static void teste3() {
@@ -387,9 +359,10 @@ public final class Tree extends Node {
 		tree.set(new Object[] { "x", "a" }, "teste");
 		tree.set(new Object[] { "y", "b", "1" }, "1");
 		tree.set(new Object[] { "y", "b", "2" }, "2");
-
+		tree.set(new Object[] { "y", "b", "2", "22" }, "22");
+		tree.set(new Object[] { "y", "b", "2", "23" }, "23");
 		tree.merge(new Object[] { "x", "a" }, new Object[] { "y", "b" });
-		System.out.println(tree.dump());
+		System.out.println("depois:\n" + tree.dump());
 	}
 
 	private static void teste1() {
@@ -398,6 +371,8 @@ public final class Tree extends Node {
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
 
+		System.out.println("First subnode: "+tree.order(new Object[]{"x", ""}));
+		
 		Object order = "1";
 		int i = 0;
 		System.out.println("ordering----------");

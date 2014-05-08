@@ -21,8 +21,7 @@ public class mVar {
 	}
 
 	public Object order(int direction) {
-		mData.subs(subs);
-		return mData.order(direction);
+		return mData.order(subs, direction);
 	}
 
 	public Object order() {
@@ -60,7 +59,7 @@ public class mVar {
 	public Object[] getParameters() {
 		return Arrays.asList(subs).subList(1, subs.length).toArray();
 	}
-	
+
 	public Object[] getSubs() {
 		return subs;
 	}
@@ -68,12 +67,12 @@ public class mVar {
 	public mData getmData() {
 		return mData;
 	}
-	
-	public mClass getORef(){
+
+	public mClass getORef() {
 		Object objRef = get();
-		if(objRef instanceof mClass){
-			return (mClass)objRef;			
-		}else{
+		if (objRef instanceof mClass) {
+			return (mClass) objRef;
+		} else {
 			return null;
 		}
 	}

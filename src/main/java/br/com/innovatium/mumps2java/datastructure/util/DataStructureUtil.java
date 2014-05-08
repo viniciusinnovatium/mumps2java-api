@@ -1,19 +1,20 @@
 package br.com.innovatium.mumps2java.datastructure.util;
 
+
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
 
 	private DataStructureUtil() {
 	}
 	
-	public static Object[] concat(Object[] dest, Object[] orig) {
-		Object[] copy = new Object[dest.length + orig.length];
-		for (int i = 0; i < dest.length; i++) {
-			copy[i] = dest[i];
+	public static Object[] concat(Object[] first, Object[] second) {
+		Object[] copy = new Object[first.length + second.length];
+		for (int i = 0; i < first.length; i++) {
+			copy[i] = first[i];
 		}
 
-		for (int i = 0; i < orig.length; i++) {
-			copy[i + dest.length] = orig[i];
+		for (int i = 0; i < second.length; i++) {
+			copy[i + first.length] = second[i];
 		}
 		return copy;
 	}

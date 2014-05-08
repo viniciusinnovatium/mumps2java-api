@@ -1,13 +1,14 @@
 package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Node implements Comparable<Node> {
 
 	private final Object[] subs;
 	private final String key;
-	private final Object susbcript;
+	private final Object susbscript;
 	final boolean isInteger;
 	private Integer stackLevel;
 
@@ -33,14 +34,14 @@ public class Node implements Comparable<Node> {
 		final int index = subs.length == 1 ? 0 : subs.length - 1;
 		Object temp = subs[index];
 		if ((temp = toInt(temp.toString())) != null) {
-			susbcript = temp;
+			susbscript = temp;
 			isInteger = true;
 		} else {
-			susbcript = subs[index].toString();
+			susbscript = subs[index].toString();
 			isInteger = false;
 		}
 
-		if (susbcript == null) {
+		if (susbscript == null) {
 			throw new IllegalArgumentException(
 					"The subscripts must not be null");
 		}
@@ -58,6 +59,10 @@ public class Node implements Comparable<Node> {
 		this.subnode = subnode;
 	}
 
+	public Object[] getSubs(int start) {
+		return Arrays.copyOfRange(subs, start, subs.length);
+	}
+
 	public void cancelReferences() {
 		// Canceling all references that node does.
 		this.parent = null;
@@ -73,12 +78,16 @@ public class Node implements Comparable<Node> {
 		return key;
 	}
 
-	public Object getSusbcript() {
-		return susbcript;
+	public Object[] getSubsExceptFirst() {
+		return Arrays.copyOfRange(subs, 1, subs.length);
 	}
 
-	public Object getSusbcriptAsString() {
-		return susbcript.toString();
+	public Object getSubscript() {
+		return susbscript;
+	}
+
+	public Object getSubscriptAsString() {
+		return susbscript.toString();
 	}
 
 	public Node getNext() {
@@ -183,18 +192,18 @@ public class Node implements Comparable<Node> {
 	public int compareTo(Node o) {
 		if (isInteger) {
 			try {
-				return ((Integer) susbcript).compareTo((Integer) o.susbcript);
+				return ((Integer) susbscript).compareTo((Integer) o.susbscript);
 			} catch (ClassCastException e) {
 				throw new IllegalArgumentException(
 						"There is some inconsistence when was setted the nodes "
 								+ this + " and " + o
 								+ ". Fail to compare subscript: "
-								+ this.susbcript + " and this subscript: "
-								+ ((Node) o).susbcript
+								+ this.susbscript + " and this subscript: "
+								+ ((Node) o).susbscript
 								+ ". They must have to be the same type.", e);
 			}
 		}
-		return this.susbcript.toString().compareTo(o.susbcript.toString());
+		return this.susbscript.toString().compareTo(o.susbscript.toString());
 	}
 
 	@Override
