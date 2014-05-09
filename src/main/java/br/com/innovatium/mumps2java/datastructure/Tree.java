@@ -247,7 +247,7 @@ public final class Tree extends Node {
 		merge(dest, orig, node);
 	}
 
-	public Object order(Object[]... subs) {
+	public Object order(Object... subs) {
 		return order(subs, 1);
 	}
 
@@ -381,10 +381,7 @@ public final class Tree extends Node {
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
 
-		System.out.println("First subnode: "
-				+ tree.order(new Object[] { "x", "" }));
-
-		Object order = "1";
+				Object order = "1";
 		int i = 0;
 		System.out.println("ordering----------");
 		while (++i < 10) {

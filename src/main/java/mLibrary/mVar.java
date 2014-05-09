@@ -12,9 +12,6 @@ public class mVar {
 	private Object[] subs;
 	private mData mData;
 
-	public mVar() {
-	}
-
 	public mVar(Object[] subs, mLibrary.mData mData) {
 		this.subs = subs;
 		this.mData = mData;
