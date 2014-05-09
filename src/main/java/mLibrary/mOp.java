@@ -16,22 +16,19 @@ public final class mOp {
 	}
 
 	public static Object Positive(Object num) {
-		if(num == null) {
+		if (num == null) {
 			return null;
 		}
-		
 		double d1 = mFncUtil.numberConverter(num);
-		if (d1 <= 0) {
-			d1 = d1 * -1;
-		}
 		return d1;
 	}
 
 	public static Object Negative(Object num) {
-		double d1 = mFncUtil.numberConverter(num);
-		if (d1 >= 0) {
-			d1 = d1 * -1;
+		if (num == null) {
+			return null;
 		}
+		double d1 = mFncUtil.numberConverter(num);
+		d1 = d1 * -1;
 		return d1;
 	}
 
@@ -40,6 +37,12 @@ public final class mOp {
 	}
 
 	public static boolean Equal(Object x, Object y) {
+		if(x instanceof Double && (((Double) x)%1 == 0)){
+			x =  ((Double)x).longValue();
+		}
+		if(y instanceof Double && (((Double) y)%1 == 0)){
+			y = ((Double)y).longValue();
+		}
 		if (String.valueOf(x).equals(String.valueOf(y))) {
 			return true;
 		} else {

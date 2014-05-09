@@ -1,6 +1,9 @@
 package mLibrary;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -46,19 +49,24 @@ public class mRequest {
 
 	public mVar varData(Object... args){
 		mVar var = null;
+		
+		List<Object> list = new ArrayList<Object>();
+		list.add("data");
+		list.addAll(Arrays.asList(args));
+		args = list.toArray();
 		if(args!=null && args.length>0){
+			var = new mVar(args, this.data);
 		}
-		var = new mVar(args, this.data);
 		return var;
 	}
 	
 	public Object getData(Object... args){
-		return varData(args).get();
+		return varData("data", args).get();
 	}
 	
 	
 	public void setData(Object subs, Object idx, Object value){
-		data.subs(subs, idx).set(value);			
+		data.subs("data", subs, idx).set(value);			
 	}
 
 	public void killData(Object object, int i) {

@@ -57,8 +57,8 @@ public final class mFncUtil {
 
 	public static String castString(Object obj) {
 		try {
-			return (String) obj;
-		} catch (ClassCastException e) {
+			return obj.toString();
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -302,7 +302,7 @@ public final class mFncUtil {
 			return null;
 		}
 		String[] splitStr = string.split(delimiter);
-		if(splitStr.length>index && index>0){
+		if(splitStr.length>=index && index>0){
 			return splitStr[index - 1];			
 		}else{
 			return "";		
