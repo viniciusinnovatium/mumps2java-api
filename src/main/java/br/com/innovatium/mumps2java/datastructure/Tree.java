@@ -434,6 +434,7 @@ public final class Tree extends Node {
 	}
 
 	private static void teste1() {
+		
 		Tree tree = new Tree();
 		tree.set(new Object[] { "x", "10" }, "dec");
 		tree.set(new Object[] { "x", "2" }, "seg");

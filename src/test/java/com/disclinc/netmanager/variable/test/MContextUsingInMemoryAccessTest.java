@@ -29,4 +29,22 @@ public class MContextUsingInMemoryAccessTest {
 		m$.var("carro", "esportivo").set(66);
 		assertEquals(66, m$.var("carro", "esportivo").get());
 	}
+	
+	@Test
+	public void testLocalVariableAccess() {
+		m$.var("x").set("local");
+		assertEquals("local", m$.var("x").get());
+	}
+	
+	@Test
+	public void testPublicVariableAccess() {
+		m$.var("%x").set("publica");
+		assertEquals("publica", m$.var("%x").get());
+	}
+	
+	@Test
+	public void testGlobalVariableAccess() {
+		m$.var("^x").set("grupo");
+		assertEquals("grupo", m$.var("^x").get());
+	}
 }

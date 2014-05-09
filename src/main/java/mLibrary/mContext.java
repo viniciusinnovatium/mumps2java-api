@@ -15,7 +15,9 @@ import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
-	private mData mData;
+	private mData mDataPublic;
+	private mData mDataGlobal;
+	private mData mDataLocal;
 	private Object[] newVarName;
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
@@ -27,7 +29,9 @@ public class mContext {
 	private mSystem system;
 
 	public mContext() {
-		this.mData = new mData();
+		this.mDataPublic = new mData();
+		this.mDataGlobal = new mData();
+		this.mDataLocal = new mData();
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
 		this.system = new mSystem(this);
@@ -39,7 +43,7 @@ public class mContext {
 	}
 
 	public String dump() {
-		return mData.dump();
+		return mDataPublic.dump();
 	}
 
 	public Object dispatch(mClass objClass, String methodName,
@@ -176,7 +180,7 @@ public class mContext {
 	public void populateParameter(Map<String, String[]> map) {
 		Set<Entry<String, String[]>> results = map.entrySet();
 		for (Entry<String, String[]> result : results) {
-			mData.subs("%request.Data", result.getKey()).set(
+			mDataPublic.subs("%request.Data", result.getKey()).set(
 					result.getValue()[0]);
 		}
 	}
@@ -213,9 +217,9 @@ public class mContext {
 	}
 
 	public void merge(mVar dest, mVar orig) {
-		mData.merge(dest.getSubs(), orig.getSubs());
+		mDataPublic.merge(dest.getSubs(), orig.getSubs());
 	}
-	
+
 	@REMOVE
 	public void newcontext() {
 		// TODO Auto-generated method stub
@@ -233,7 +237,7 @@ public class mContext {
 		for (int i = 0; i < vars.length; i++) {
 			newVarName[i] = vars[i].getName();
 		}
-		mData.stacking(newVarName);
+		mDataPublic.stacking(newVarName);
 		newVarName = null;
 		countNewOperator++;
 	}
@@ -243,7 +247,7 @@ public class mContext {
 		for (int i = 0; i < vars.length; i++) {
 			newVarName[i] = vars[i].getName();
 		}
-		mData.stackingExcept(newVarName);
+		mDataPublic.stackingExcept(newVarName);
 		newVarName = null;
 		countNewOperator++;
 	}
@@ -282,7 +286,7 @@ public class mContext {
 			return;
 		}
 		while (totalLevel-- > 0) {
-			mData.unstacking();
+			mDataPublic.unstacking();
 		}
 	}
 
@@ -305,7 +309,20 @@ public class mContext {
 	}
 
 	public mVar var(Object... subs) {
-		return new mVar(subs, mData);
+		final boolean isEmpty = subs.length >= 1 && "".equals(subs[0]);
+		if(isEmpty){
+			return new mVar(subs, mDataLocal);
+		}
+		
+		final String varName = mFncUtil.castString(subs[0]);
+		final char type = varName.charAt(0);
+		if (type == '%') {
+			return new mVar(subs, mDataPublic);
+		} else if (type == '^') {
+			return new mVar(subs, mDataGlobal);
+		} else {
+			return new mVar(subs, mDataLocal);
+		}
 	}
 
 	public mVar varRef(String name, Object ref) {
