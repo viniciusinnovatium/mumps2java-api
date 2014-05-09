@@ -40,6 +40,10 @@ public class mCmd extends mParent {
 		
 	}
 
+	public void Do(Object methodName) {
+		Do(mFncUtil.castString(methodName));
+	}
+	
 	public void Do(String methodName) {
 		if (isIndirectionExecution(methodName)) {
 			mVar var = m$.indirectVar(methodName);

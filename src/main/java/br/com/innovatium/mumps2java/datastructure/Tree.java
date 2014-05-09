@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
+import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
 	private StackNode stack;
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
+	private KillOperationOverNodes killOperation = new KillOperationOverNodes();
 
 	public Tree() {
 		super(new Object[] { "root" }, null, "root");
@@ -120,6 +122,13 @@ public final class Tree extends Node {
 	}
 
 	public Object order(Object[] subs, int direction) {
+		// Here we are treating the case when we order function is called with
+		// empty subscript. At this moment we have to return the first tree
+		// subnode.
+		if (subs.length == 1 && "".equals(subs[0])) {
+			return this.hasSubnodes() ? this.getSubnode().getSubscript() : "";
+		}
+
 		Object lastSubscript = subs[subs.length - 1];
 		Object subscript = "";
 
@@ -136,11 +145,9 @@ public final class Tree extends Node {
 		if (isEmptyLastSubs && isFoward && node != null) {
 			subscript = node.hasSubnodes() ? node.getSubnode().getSubscript()
 					: "";
-		} else if (isEmptyLastSubs && node != null) {
-			if (node.hasSubnodes()) {
-				Node lastSubnode = findLastNode(node.getSubnode());
-				subscript = lastSubnode.getSubscript();
-			}
+		} else if (isEmptyLastSubs && !isFoward && node != null) {
+			subscript = node.hasSubnodes() ? findLastNode(node.getSubnode())
+					.getSubscript() : "";
 		} else if (isFoward && node != null) {
 			subscript = node.hasNext() ? node.getNext().getSubscript() : "";
 		} else if (node != null) {
@@ -214,7 +221,7 @@ public final class Tree extends Node {
 
 	public String dump() {
 		StringBuilder string = new StringBuilder();
-		dump(this, string);
+		operateOverSubnodes(this, new DumpOperationOverNodes(string));
 		return string.toString();
 	}
 
@@ -225,6 +232,12 @@ public final class Tree extends Node {
 		}
 	}
 
+	@REMOVE
+	/*
+	 * private List<Node> findSubnodes(Node node) { final List<Node> subnodeList
+	 * = new ArrayList<Node>(100); fillSubnodeList(node, subnodeList); return
+	 * subnodeList; }
+	 */
 	private void merge(final Object[] dest, final Object[] orig, Node node) {
 
 		Object[] concatSubs = null;
@@ -251,20 +264,27 @@ public final class Tree extends Node {
 		return order(subs, 1);
 	}
 
-	private boolean isNotPresentOnTree(Node node){
-		return node == null || node.hasParent();
-	} 
-	
-	private void dump(Node node, final StringBuilder string) {
+	/*
+	 * Generic method which be reused by anothers when search subnodes is need.
+	 * This may occur when we are dumping the tree and kill all subnodes of some
+	 * node, for instance.
+	 */
+	private void operateOverSubnodes(Node node, OperationOverNodes operation) {
 		if (node != null) {
 			Node next = node;
 			do {
-				string.append(next).append("\n");
+				operation.operate(node);
+
 				if (next.hasSubnodes()) {
-					dump(next.getSubnode(), string);
+					operateOverSubnodes(next.getSubnode(), operation);
 				}
+
 			} while ((next = next.getNext()) != null);
 		}
+	}
+
+	private boolean isNotPresentOnTree(Node node) {
+		return node == null || !node.hasParent();
 	}
 
 	private List<Node> findSubnodeExcepts(Object... subs) {
@@ -323,7 +343,13 @@ public final class Tree extends Node {
 			node.getPrevious().setNext(node.getNext());
 		}
 		node.cancelReferences();
-		keyValue.remove(node.getKey());
+		// We have to remove from the map all subnodes references, other wise,
+		// some another routine can recover them throught get(subs) method.
+		killAllSubnodes(node);
+	}
+
+	private void killAllSubnodes(Node node) {
+		operateOverSubnodes(node, killOperation);
 	}
 
 	private Node findLastNode(Node node) {
@@ -352,11 +378,43 @@ public final class Tree extends Node {
 		if (index < subs.length) {
 			nodefound = generateNode(nodefound, subs, index);
 		}
-		
-		if(nodefound.getParent() == null){
-			throw new IllegalStateException("Ferrou..."+nodefound);
+
+		if (nodefound.getParent() == null) {
+			throw new IllegalStateException("Ferrou..." + nodefound);
 		}
 		return nodefound;
+	}
+
+	/**
+	 * This class was created to reuse subnodes searching method. Dumping the
+	 * tree and kill subnodes methods have the same implementation.
+	 * 
+	 * @author vinicius
+	 * 
+	 */
+	private interface OperationOverNodes {
+		void operate(Node node);
+	}
+
+	private final class KillOperationOverNodes implements OperationOverNodes {
+
+		public void operate(Node node) {
+			keyValue.remove(node.getKey());
+		}
+
+	}
+
+	private final class DumpOperationOverNodes implements OperationOverNodes {
+		private StringBuilder dump;
+
+		public DumpOperationOverNodes(StringBuilder dump) {
+			this.dump = dump;
+		}
+
+		public void operate(Node node) {
+			dump.append(node).append("\n");
+		}
+
 	}
 
 	public static void main(String[] asd) {
@@ -381,7 +439,11 @@ public final class Tree extends Node {
 		tree.set(new Object[] { "x", "2" }, "seg");
 		tree.set(new Object[] { "x", "1" }, "pri");
 
-				Object order = "1";
+		System.out.println("first node of the tree: " + tree.order(""));
+		System.out.println("first node of the tree: "
+				+ tree.order(new Object[] { "" }, -1));
+
+		Object order = "1";
 		int i = 0;
 		System.out.println("ordering----------");
 		while (++i < 10) {

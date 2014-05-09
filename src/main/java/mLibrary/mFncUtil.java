@@ -56,11 +56,10 @@ public final class mFncUtil {
 	}
 
 	public static String castString(Object obj) {
-		try {
-			return obj.toString();
-		} catch (NullPointerException e) {
-			return null;
+		if(obj == null) {
+			return "";
 		}
+		return obj.toString(); 
 	}
 
 	public static String characterImpl(Integer... codes) {

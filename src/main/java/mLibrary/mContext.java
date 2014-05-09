@@ -27,24 +27,15 @@ public class mContext {
 	private mSystem system;
 
 	public mContext() {
-		super();
-		initContext();
+		this.mData = new mData();
+		this.Fnc = new mFnc(this);
+		this.Cmd = new mCmd(this);
+		this.system = new mSystem(this);
 	}
 
 	public mSystem getSystem() {
 		// TODO Auto-generated method stub
 		return system;
-	}
-
-	public mContext(mData mData) {
-		this.mData = mData;
-		initContext();
-	}
-
-	private void initContext() {
-		this.Fnc = new mFnc(this);
-		this.Cmd = new mCmd(this);
-		this.system = new mSystem(this);
 	}
 
 	public String dump() {

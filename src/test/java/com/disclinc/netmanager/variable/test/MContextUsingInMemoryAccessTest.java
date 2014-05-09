@@ -2,7 +2,6 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
-import mLibrary.mData;
 import mLibrary.mVar;
 
 import org.junit.Before;
@@ -13,7 +12,7 @@ public class MContextUsingInMemoryAccessTest {
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mData());
+		m$ = new mContext();
 	}
 
 	@Test

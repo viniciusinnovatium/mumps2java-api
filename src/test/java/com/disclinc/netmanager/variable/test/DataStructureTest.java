@@ -2,19 +2,22 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class DataStructureTest {
-	private final Tree tree;
+	private Tree tree;
 
-	public DataStructureTest() {
+	@Before
+	public void init() {
 		tree = new Tree();
 		tree.set(new Object[] { "carro" }, 65);
 		tree.set(new Object[] { "carro", "esportivo" }, 99);
 		tree.set(new Object[] { "carro", "esportivo", "amarelo" }, 76);
 		tree.set(new Object[] { "contrato", "transporte", "publico" }, 88);
+
 	}
 
 	@Test
