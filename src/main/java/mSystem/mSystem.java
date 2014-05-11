@@ -9,6 +9,7 @@ public class mSystem extends mParent {
 	private Encryption encryption;
 	private Process process;
 	private Version version;
+	private OBJ obj;
 	
 	public mSystem(mContext m$) {
 		super(m$);
@@ -49,6 +50,10 @@ public class mSystem extends mParent {
 	}
 	public void setVersion(Version version) {
 		this.version = version;
+	}
+
+	public OBJ getOBJ() {
+		return obj;
 	}
 	
 	

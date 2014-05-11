@@ -66,12 +66,12 @@ public class mData {
 	}
 
 	public void unstacking() {
-		if (!isDiskAccess(currentSubs)) {
+		//if (!isDiskAccess(currentSubs)) {
 			tree.unstacking();
-		} else {
-			throw new UnsupportedOperationException(
-					"Unstacking variable is not supported to access data on disk");
-		}
+		//} else {
+		//	throw new UnsupportedOperationException(
+		//			"Unstacking variable is not supported to access data on disk");
+		//}
 	}
 
 	public String dump() {
@@ -89,8 +89,8 @@ public class mData {
 	}
 
 	public int data(Object... subs) {
-		currentSubs = subs;
 		verifySubsChanges(subs);
+		currentSubs = subs;
 		populateTree();
 		return tree.data(subs);
 	}
@@ -110,7 +110,7 @@ public class mData {
 		if (subsChanged) {
 			if (isDiskAccess(subs)) {
 				initDAO();
-				findDataOnDisk();
+				findDataOnDisk();				
 			}
 			firstExecutionOrder = true;
 		}
@@ -157,14 +157,14 @@ public class mData {
 		boolean bool = false;
 		if (subs != null && subs.length > 0 && subs[0] != null
 				&& !subs[0].toString().isEmpty()) {
-			bool = subs[0].toString().charAt(0) == '*';
+			bool = subs[0].toString().charAt(0) == '^';
 		}
 		return bool;
 	}
 
 	private void initDAO() {
 		if (dao == null) {
-			this.dao = new DAO(ConnectionType.DATASOURCE);
+			this.dao = new DAO(ConnectionType.JDBC);
 		}
 	}
 

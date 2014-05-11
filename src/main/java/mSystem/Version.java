@@ -14,6 +14,7 @@ public class Version extends mParent {
 	}
 
 	public static Object GetNumber() {
-		throw new UnsupportedOperationException();
+		//TODO REVISAR CONFIRMAR RETORNO DO MÉTODO
+		return 1;
 	}
 }

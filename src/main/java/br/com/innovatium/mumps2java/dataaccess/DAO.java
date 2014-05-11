@@ -1,8 +1,10 @@
 package br.com.innovatium.mumps2java.dataaccess;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +49,10 @@ public class DAO {
 				map.put(result.getString(1), result.getString(2));
 			}
 
+		} catch (java.sql.SQLSyntaxErrorException e){
+			if(!hasTable(tableName)){
+				return map;
+			}
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to find data thought like clause from table "
@@ -79,6 +85,10 @@ public class DAO {
 			delete.setString(1, key + "%");
 			delete.execute();
 
+		} catch (java.sql.SQLSyntaxErrorException e){
+			if(!hasTable(tableName)){
+
+			}
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to remove data from table "
 					+ tableName + " and key " + key, e);
@@ -129,7 +139,13 @@ public class DAO {
 
 			insert.execute();
 
+		} catch (java.sql.SQLSyntaxErrorException e){
+			if(!hasTable(tableName)){
+				createTable(tableName);				
+				insert(tableName, key, value);
+			}
 		} catch (SQLException e) {
+		
 			throw new IllegalStateException("Fail to insert data into table "
 					+ tableName + " and key " + key, e);
 		} finally {
@@ -143,7 +159,46 @@ public class DAO {
 			}
 		}
 	}
-
+	
+	public boolean hasTable(String tableName){
+		Connection con = null;
+		boolean hasTable = false;
+		try {
+			con = ConnectionFactory.getConnection(type);
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to hasTable data", e);
+		}
+		ResultSet rs = null;
+        try {
+        	DatabaseMetaData metaData = con.getMetaData();  
+        	rs = metaData.getTables(null, null, tableName.toUpperCase(), null);  
+			if (rs.next()) {  
+				hasTable = true;
+				/*
+			    ResultSetMetaData rsMetaData = rs.getMetaData(); 
+	            int columnCount = rsMetaData.getColumnCount();  
+	            for (int i = 1; i <= columnCount; i++) {  
+	            	if(rsMetaData.getTableName(i).equals(tableName)){
+	            		break;
+	            	}	 
+	            }  	
+	            */		    
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			if(rs!=null)
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}  
+		}
+        return hasTable;
+	}
 	// Remove table name treatment.
 	@TODO
 	public Object find(String tableName, String key) {
@@ -165,6 +220,12 @@ public class DAO {
 
 			return result.next() ? result.getString(2) : null;
 
+		} catch (java.sql.SQLSyntaxErrorException e){
+			if(!hasTable(tableName)){	
+				return null;
+			}else{
+				return null;
+			}
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to select data from the table " + tableName
@@ -179,5 +240,38 @@ public class DAO {
 				}
 			}
 		}
+	}
+	
+	public boolean createTable(String tableName){
+		Connection con = null;
+		try {
+			con = ConnectionFactory.getConnection(type);
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to insert data", e);
+		}
+
+		try {
+			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "+tableName.toUpperCase()+
+					   "(	\"KEY_\" VARCHAR2(4000 BYTE) NOT NULL ENABLE,"+ 
+						"\"VALUE_\" VARCHAR2(4000 BYTE))");
+			PreparedStatement ps = con.prepareStatement(selectOne.toString());
+			return ps.execute();
+
+
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to create table " + tableName
+							, e);
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					throw new IllegalStateException(
+							"Fail on close connection after select data", e);
+				}
+			}
+		}		
 	}
 }

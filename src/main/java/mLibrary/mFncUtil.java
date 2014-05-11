@@ -1,7 +1,9 @@
 package mLibrary;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
@@ -27,17 +29,21 @@ public final class mFncUtil {
 
 	public static Double castDouble(Object obj) {
 		try {
-			return (Double) obj;
-		} catch (ClassCastException e) {
-			return 0d;
+			return Double.valueOf(String.valueOf(obj));
+		}catch(java.lang.NumberFormatException e){
+			return null;
+		}catch (ClassCastException e) {		
+			return null;
 		}
 	}
 
 	public static Integer castInt(Object obj) {
 		try {
-			return (Integer) obj;
-		} catch (ClassCastException e) {
-			return 0;
+			return castDouble(obj).intValue();
+		} catch(java.lang.NullPointerException e){
+			return null;
+		}catch (ClassCastException e) {		
+			return null;
 		}
 	}
 
@@ -83,11 +89,17 @@ public final class mFncUtil {
 		return generateString(chars, null, true);
 	}
 
-	public static String extractImpl(String string, int from, int to) {
+	public static String extractImpl(String string, Integer from, Integer to) {
 		if (string == null) {
 			return null;
 		}
 		try {
+			if(to>string.length()){
+				to = string.length();
+			}
+			if(from>string.length()){
+				return "";
+			}
 			return string.substring(from - 1, to);
 		} catch (Exception e) {
 			return null;
@@ -301,7 +313,7 @@ public final class mFncUtil {
 		if (string == null) {
 			return null;
 		}
-		String[] splitStr = string.split(delimiter);
+		String[] splitStr = string.split(Pattern.quote(delimiter));
 		if(splitStr.length>=index && index>0){
 			return splitStr[index - 1];			
 		}else{
@@ -318,9 +330,15 @@ public final class mFncUtil {
 		if (from > to) {
 			return null;
 		}
-
-		final String[] array = (String[])Arrays.asList(string.split(delimiter)).subList(
-				from - 1, to).toArray();
+		
+		if(from>string.length()){
+			return "";
+		}
+		String[] strSplit = string.split(delimiter);
+		if(to>strSplit.length){
+			to = strSplit.length;
+		}
+		final String[] array = Arrays.copyOfRange(strSplit, from - 1, to);
 
 		return generateString(array, delimiter);
 	}
@@ -436,6 +454,16 @@ public final class mFncUtil {
 		}
 
 		return string.split(delimiter).length;
+	}
+
+
+	public static Object toString(Object expression) {
+		String str = String.valueOf(expression);
+		if(expression instanceof Double){
+			Double dbl = (Double)expression;
+			str = BigDecimal.valueOf(dbl).setScale(dbl%1==0?0:2).toString();
+		}
+		return str;
 	}
 
 }

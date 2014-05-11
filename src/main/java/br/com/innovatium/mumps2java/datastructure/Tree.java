@@ -252,7 +252,8 @@ public final class Tree extends Node {
 	}
 
 	private boolean isNotPresentOnTree(Node node){
-		return node == null || node.hasParent();
+		//return node == null || node.hasParent();
+		return node == null || !node.hasParent();
 	} 
 	
 	private void dump(Node node, final StringBuilder string) {
@@ -292,7 +293,7 @@ public final class Tree extends Node {
 	}
 
 	private void replaceNode(Node newNode, Node oldNode) {
-		if (isNotPresentOnTree(newNode)) {
+		if (!isNotPresentOnTree(newNode)) {
 			return;
 		} else if (oldNode == null) {
 			addSubnode(newNode);
@@ -321,6 +322,9 @@ public final class Tree extends Node {
 			node.getParent().setSubnode(node.getNext());
 		} else {
 			node.getPrevious().setNext(node.getNext());
+		}
+		if (node.getNext() != null) {
+			node.getNext().setPrevious(node.getPrevious());
 		}
 		node.cancelReferences();
 		keyValue.remove(node.getKey());
