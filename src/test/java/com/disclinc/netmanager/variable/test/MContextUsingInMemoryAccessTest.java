@@ -2,7 +2,6 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
-import mLibrary.mData;
 import mLibrary.mVar;
 
 import org.junit.Before;
@@ -13,7 +12,7 @@ public class MContextUsingInMemoryAccessTest {
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mData());
+		m$ = new mContext();
 	}
 
 	@Test
@@ -29,5 +28,23 @@ public class MContextUsingInMemoryAccessTest {
 		// Setting value in single step
 		m$.var("carro", "esportivo").set(66);
 		assertEquals(66, m$.var("carro", "esportivo").get());
+	}
+	
+	@Test
+	public void testLocalVariableAccess() {
+		m$.var("x").set("local");
+		assertEquals("local", m$.var("x").get());
+	}
+	
+	@Test
+	public void testPublicVariableAccess() {
+		m$.var("%x").set("publica");
+		assertEquals("publica", m$.var("%x").get());
+	}
+	
+	@Test
+	public void testGlobalVariableAccess() {
+		m$.var("^x").set("grupo");
+		assertEquals("grupo", m$.var("^x").get());
 	}
 }

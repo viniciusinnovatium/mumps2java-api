@@ -2,17 +2,16 @@ package com.disclinc.netmanager.variable.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
-import mLibrary.mData;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class DispatchMethodsTest {
-	private mContext m$ = new mContext(new mData());
+	private mContext m$ = new mContext();
 
 	@Before
 	public void init() {
-		m$ = new mContext(new mData());
+		m$ = new mContext();
 		m$.var("pedido").set(78);
 		m$.var("entrega").set(57);
 		m$.var("cliente").set(6);
