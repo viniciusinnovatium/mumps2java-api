@@ -110,6 +110,7 @@ public class mData {
 		if (subsChanged) {
 			if (isDiskAccess(subs)) {
 				initDAO();
+				this.currentSubs = subs;
 				findDataOnDisk();				
 			}
 			firstExecutionOrder = true;
