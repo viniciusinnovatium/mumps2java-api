@@ -162,7 +162,7 @@ public class Node implements Comparable<Node> {
 	}
 
 	public boolean hasPrevious() {
-		return !isFirstSubnode() && (this.previous != null);
+		return this.previous != null;
 	}
 
 	public boolean isFirstSubnode() {
@@ -236,7 +236,7 @@ public class Node implements Comparable<Node> {
 		return this.key.hashCode();
 	}
 
-	public List<Node> getSubnodes() {
+	public List<Node> getFirstLevelSubnodes() {
 
 		if (this == null || !this.hasSubnodes()) {
 			return null;

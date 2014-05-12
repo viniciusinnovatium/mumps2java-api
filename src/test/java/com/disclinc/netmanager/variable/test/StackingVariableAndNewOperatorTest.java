@@ -24,7 +24,7 @@ public class StackingVariableAndNewOperatorTest {
 		m$.var("eletronico").set("92");
 	}
 
-	private void recoverStackedVariablesValues() {
+	private void testStackedVariablesValuesChanges() {
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido").get());
@@ -91,7 +91,7 @@ public class StackingVariableAndNewOperatorTest {
 	public void testStackingMultipleVariableThroughNewOperatorCalling() {
 
 		stackingMultipleVariables();
-		recoverStackedVariablesValues();
+		testStackedVariablesValuesChanges();
 	}
 
 	@Test
@@ -99,22 +99,21 @@ public class StackingVariableAndNewOperatorTest {
 
 		// Stacking variables first time
 		stackingMultipleVariables();
-		recoverStackedVariablesValues();
+		testStackedVariablesValuesChanges();
 
 		// Inserting new variable values to the first time calling of the new
 		// operator
 		m$.var("pedido").set("pedido1");
 		m$.var("item").set("item1");
-		m$.var("eletronico").set("eletronico1");
 
 		// Stacking variables second time. This code block must be the same as
 		// before.
 		stackingMultipleVariables();
-		recoverStackedVariablesValues();
+		testStackedVariablesValuesChanges();
 
 		m$.var("pedido").set("pedido2");
 		m$.var("item").set("item2");
-		m$.var("eletronico").set("eletronico2");
+		m$.var("contrato").set("cod2");
 
 		// Recovering variables values from the second stack level.
 		assertEquals(
@@ -127,7 +126,7 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
-				"eletronico2", m$.var("eletronico").get());
+				"92", m$.var("eletronico").get());
 
 		assertEquals(
 				"This variable was not removed from the tree, therefore, its value must be the same",
@@ -135,9 +134,9 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"This variable was not removed from the tree, therefore, its value must be the same",
-				"cod1", m$.var("contrato").get());
+				"cod2", m$.var("contrato").get());
 
-		// Recovering variables values from the first stack level.
+		// Recovering variables values from the second stack level.
 		unstackingVariables();
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
@@ -149,7 +148,7 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
-				"eletronico1", m$.var("eletronico").get());
+				"92", m$.var("eletronico").get());
 
 		assertEquals(
 				"This variable was not removed from the tree, therefore, its value must be the same",
@@ -157,9 +156,9 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"This variable was not removed from the tree, therefore, its value must be the same",
-				"cod1", m$.var("contrato").get());
+				"cod2", m$.var("contrato").get());
 
-		// Recovering variables values from the default stack level, so, they
+		// Recovering variables values from the first stack level, so, they
 		// have to provide the first setting value.
 		unstackingVariables();
 		assertEquals(

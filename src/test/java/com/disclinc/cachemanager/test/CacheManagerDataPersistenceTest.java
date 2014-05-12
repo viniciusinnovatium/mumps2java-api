@@ -12,8 +12,8 @@ import br.com.innovatium.mumps2java.cachemanager.CacheType;
 
 public class CacheManagerDataPersistenceTest {
 	private CacheManager cacheManager = CacheManagerFactory.create(CacheType.JDBC);
-
-	@Test
+/*
+ *	@Test
 	public void testJDBCDataPersistence() {
 		String path = "vinicius";
 		cacheManager.put(generateKey("www001", path), 98);
@@ -83,5 +83,7 @@ public class CacheManagerDataPersistenceTest {
 		nodes = cacheManager.like("a/w");
 		assertEquals("Fail on search key/value pair searching data. The result number does not macth.", 2, nodes.size());
 		
-	}
+	} 
+ */
+
 }
