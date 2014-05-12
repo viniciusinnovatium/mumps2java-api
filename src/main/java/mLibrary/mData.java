@@ -57,7 +57,7 @@ public class mData {
 	}
 
 	public void stackingExcept(Object... subs) {
-		if (!isDiskAccess(currentSubs)) {
+		if (!isDiskAccess(subs)) {
 			tree.stackingExcept(subs);
 		} else {
 			throw new UnsupportedOperationException(
