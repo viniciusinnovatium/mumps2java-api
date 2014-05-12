@@ -339,7 +339,7 @@ public final class Tree extends Node {
 
 			currentNode.cancelReferences();
 		}
-		operateOverSubnodes(stackedNode, addSubnodesOperation);
+		addAllSubnodes(stackedNode);
 	}
 
 	private void kill(Node node) {

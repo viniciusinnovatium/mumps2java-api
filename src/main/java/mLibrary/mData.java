@@ -30,16 +30,19 @@ public class mData {
 	}
 
 	public void set(Object value) {
+		
 		if (isDiskAccess(currentSubs)) {
 			if (currentSubs != null) {
 				initDAO();
 				final String tableName = generateTableName(currentSubs);
 				currentSubs = Arrays.copyOfRange(currentSubs, 1,
 						currentSubs.length);
-				dao.insert(tableName, Tree.generateKey(currentSubs), value);
+				// Here we have calling toString method because ListObject should be persisted as string
+				dao.insert(tableName, Tree.generateKey(currentSubs), value != null ? value.toString() : null);
 			}
 		} else {
-			tree.set(currentSubs, value);
+			// Here we have calling toString method because ListObject should be persisted as string 
+			tree.set(currentSubs, value != null ? value.toString() : null);
 		}
 	}
 
