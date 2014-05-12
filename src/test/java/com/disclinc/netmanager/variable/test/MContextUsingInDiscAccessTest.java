@@ -10,7 +10,8 @@ import org.junit.Test;
 public class MContextUsingInDiscAccessTest {
 	private mContext m$;
 
-	@Before
+	/*
+	 *@Before
 	public void init() {
 		m$ = new mContext();
 	}
@@ -42,5 +43,8 @@ public class MContextUsingInDiscAccessTest {
 		assertEquals("Fail to find the next node on the tree through order function", "filho2", filho.order());
 		assertEquals("Fail to find the next node on the tree through order function", "filho3", filho.order());
 		assertEquals("Fail to find the next node on the tree through order function", "", filho.order());
-	}
+	} 
+	 */
+	
+	
 }

@@ -14,7 +14,8 @@ public final class Tree extends Node {
 	private int currentStackLevel = 0;
 	private StackNode stack;
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
-	private KillOperationOverNodes killOperation = new KillOperationOverNodes();
+	private KillOperationOverNodes killSubnodesOperation = new KillOperationOverNodes();
+	private AddOnTreeOperationOverNodes addSubnodesOperation = new AddOnTreeOperationOverNodes();
 
 	public Tree() {
 		super(new Object[] { "root" }, null, "root");
@@ -30,8 +31,8 @@ public final class Tree extends Node {
 		 * Iterating over variable names collection. Here we suppose the
 		 * variable name is the first subscript of the array.
 		 */
-		for (Object subscript : subs) {
-			node = findNode(new Object[] { subscript });
+		for (Object variableName : subs) {
+			node = findNode(variableName.toString());
 			// Avoid some variables which does not exist into the tree.
 			if (node != null) {
 				node.setStackLevel(currentStackLevel);
@@ -48,10 +49,15 @@ public final class Tree extends Node {
 		final List<Node> stackedNodes = stack.pull(currentStackLevel);
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
 			for (Node stackedNode : stackedNodes) {
-				// First of all, we have to looking for if there is some node
-				// with the same subscritps of the stacked node, then remove it
-				// from the tree and add the stacked node there.
-				Node nodeOnTheTree = findNode(stackedNode.getSubs());
+				/*
+				 * First of all, we are to looking for some node with the same
+				 * subscritps of the stacked node, then remove it from the tree
+				 * and add the stacked node there. At second, we suppose that
+				 * each stacked variable has the key as they variable name, for
+				 * instance: subs = [%x] has the name variable as %x, then, it
+				 * is identical to its generated key.
+				 */
+				Node nodeOnTheTree = findNode(stackedNode.getKey());
 				replaceNode(stackedNode, nodeOnTheTree);
 				stackedNode.setStackLevel(0);
 			}
@@ -170,7 +176,7 @@ public final class Tree extends Node {
 
 		boolean isPreenchido = false;
 		if (node.hasSubnodes()) {
-			for (Node subnode : node.getSubnodes()) {
+			for (Node subnode : node.getFirstLevelSubnodes()) {
 				if (subnode.getValue() != null) {
 					isPreenchido = true;
 					break;
@@ -206,12 +212,14 @@ public final class Tree extends Node {
 	}
 
 	public Node findNode(Object[] subs) {
-		// return findSubnode(this, subs);
-		return keyValue.get(generateKey(subs));
+		return findNodeByKey(generateKey(subs));
+	}
+
+	public Node findNode(String variableName) {
+		return findNodeByKey(variableName);
 	}
 
 	public Object get(Object... subs) {
-		// Node node = findSubnode(this, subs);
 		Node node = keyValue.get(generateKey(subs));
 		if (node != null) {
 			return node.getValue();
@@ -284,7 +292,7 @@ public final class Tree extends Node {
 	}
 
 	private boolean isNotPresentOnTree(Node node) {
-		return node == null || !node.hasParent();
+		return !node.hasParent();
 	}
 
 	private List<Node> findSubnodeExcepts(Object... subs) {
@@ -292,9 +300,12 @@ public final class Tree extends Node {
 			return null;
 		}
 
-		List<Node> list = null;
-		List<Node> variables = this.getSubnodes();
+		List<Node> variables = this.getFirstLevelSubnodes();
+		if (variables == null || variables.isEmpty()) {
+			return null;
+		}
 
+		List<Node> list = null;
 		subnodes: for (Node node : variables) {
 			for (int i = 0; i < subs.length; i++) {
 				if (subs[i] != null
@@ -311,26 +322,24 @@ public final class Tree extends Node {
 		return list;
 	}
 
-	private void replaceNode(Node newNode, Node oldNode) {
-		if (isNotPresentOnTree(newNode)) {
-			return;
-		} else if (oldNode == null) {
-			addSubnode(newNode);
+	private void replaceNode(Node stackedNode, Node currentNode) {
+		if (currentNode == null) {
+			addSubnode(stackedNode);
 		} else {
-			newNode.setNext(oldNode.getNext());
-			newNode.setPrevious(oldNode.getPrevious());
-			newNode.setParent(oldNode.getParent());
+			stackedNode.setNext(currentNode.getNext());
+			stackedNode.setPrevious(currentNode.getPrevious());
+			stackedNode.setParent(currentNode.getParent());
 
-			if (oldNode.hasPrevious()) {
-				oldNode.getPrevious().setNext(newNode);
+			if (currentNode.hasPrevious()) {
+				currentNode.getPrevious().setNext(stackedNode);
 			}
-			if (oldNode.hasNext()) {
-				oldNode.getNext().setPrevious(newNode);
+			if (currentNode.hasNext()) {
+				currentNode.getNext().setPrevious(stackedNode);
 			}
 
-			oldNode.cancelReferences();
-			keyValue.put(newNode.getKey(), newNode);
+			currentNode.cancelReferences();
 		}
+		operateOverSubnodes(stackedNode, addSubnodesOperation);
 	}
 
 	private void kill(Node node) {
@@ -349,7 +358,11 @@ public final class Tree extends Node {
 	}
 
 	private void killAllSubnodes(Node node) {
-		operateOverSubnodes(node, killOperation);
+		operateOverSubnodes(node, killSubnodesOperation);
+	}
+
+	private void addAllSubnodes(Node node) {
+		operateOverSubnodes(node, addSubnodesOperation);
 	}
 
 	private Node findLastNode(Node node) {
@@ -404,6 +417,15 @@ public final class Tree extends Node {
 
 	}
 
+	private final class AddOnTreeOperationOverNodes implements
+			OperationOverNodes {
+
+		public void operate(Node node) {
+			keyValue.put(node.getKey(), node);
+		}
+
+	}
+
 	private final class DumpOperationOverNodes implements OperationOverNodes {
 		private StringBuilder dump;
 
@@ -415,6 +437,10 @@ public final class Tree extends Node {
 			dump.append(node).append("\n");
 		}
 
+	}
+
+	private Node findNodeByKey(String key) {
+		return keyValue.get(key);
 	}
 
 	public static void main(String[] asd) {
@@ -434,7 +460,7 @@ public final class Tree extends Node {
 	}
 
 	private static void teste1() {
-		
+
 		Tree tree = new Tree();
 		tree.set(new Object[] { "x", "10" }, "dec");
 		tree.set(new Object[] { "x", "2" }, "seg");

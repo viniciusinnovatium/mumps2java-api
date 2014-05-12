@@ -18,7 +18,6 @@ public class mContext {
 	private mData mDataPublic;
 	private mData mDataGlobal;
 	private mData mDataLocal;
-	private Object[] newVarName;
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
 
@@ -32,6 +31,7 @@ public class mContext {
 		this.mDataPublic = new mData();
 		this.mDataGlobal = new mData();
 		this.mDataLocal = new mData();
+
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
 		this.system = new mSystem(this);
@@ -233,22 +233,21 @@ public class mContext {
 	}
 
 	public void newVar(mVar... vars) {
-		newVarName = new String[vars.length];
-		for (int i = 0; i < vars.length; i++) {
-			newVarName[i] = vars[i].getName();
+		Map<mData, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mData, Object[]>> set = maps.entrySet();
+		for (Entry<mData, Object[]> entry : set) {
+			entry.getKey().stacking(entry.getValue());
 		}
-		mDataPublic.stacking(newVarName);
-		newVarName = null;
+
 		countNewOperator++;
 	}
 
 	public void newVarExcept(mVar... vars) {
-		newVarName = new String[vars.length];
-		for (int i = 0; i < vars.length; i++) {
-			newVarName[i] = vars[i].getName();
+		Map<mData, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mData, Object[]>> set = maps.entrySet();
+		for (Entry<mData, Object[]> entry : set) {
+			entry.getKey().stackingExcept(entry.getValue());
 		}
-		mDataPublic.stackingExcept(newVarName);
-		newVarName = null;
 		countNewOperator++;
 	}
 
@@ -287,6 +286,8 @@ public class mContext {
 		}
 		while (totalLevel-- > 0) {
 			mDataPublic.unstacking();
+			mDataLocal.unstacking();
+			mDataGlobal.unstacking();
 		}
 	}
 
@@ -310,19 +311,12 @@ public class mContext {
 
 	public mVar var(Object... subs) {
 		final boolean isEmpty = subs.length >= 1 && "".equals(subs[0]);
-		if(isEmpty){
+		if (isEmpty) {
 			return new mVar(subs, mDataLocal);
 		}
-		
+
 		final String varName = mFncUtil.castString(subs[0]);
-		final char type = varName.charAt(0);
-		if (type == '%') {
-			return new mVar(subs, mDataPublic);
-		} else if (type == '^') {
-			return new mVar(subs, mDataGlobal);
-		} else {
-			return new mVar(subs, mDataLocal);
-		}
+		return new mVar(subs, generateMData(varName));
 	}
 
 	public mVar varRef(String name, Object ref) {
@@ -425,5 +419,41 @@ public class mContext {
 			_result = var(parseVarSubs(_content)).get();
 		}
 		return _result;
+	}
+
+	private mData generateMData(String variableName) {
+		final char type = variableName.charAt(0);
+		if (type == '%') {
+			return mDataPublic;
+		} else if (type == '^') {
+			return mDataGlobal;
+		} else {
+			return mDataLocal;
+		}
+	}
+
+	private Map<mData, Object[]> filteringVariableTypes(mVar... variables) {
+		Map<mData, Object[]> map = new HashMap<mData, Object[]>();
+		List<String> locals = new ArrayList<String>();
+		List<String> publics = new ArrayList<String>();
+		List<String> globals = new ArrayList<String>();
+
+		String name = null;
+		for (mVar var : variables) {
+			name = var.getName();
+			final char type = name.charAt(0);
+			if (type == '%') {
+				publics.add(name);
+			} else if (type == '^') {
+				globals.add(name);
+			} else {
+				locals.add(name);
+			}
+		}
+
+		map.put(this.mDataLocal, locals.toArray());
+		map.put(this.mDataPublic, publics.toArray());
+		map.put(this.mDataGlobal, globals.toArray());
+		return map;
 	}
 }
