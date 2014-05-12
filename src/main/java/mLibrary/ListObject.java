@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
+
 public final class ListObject {
 	private final List<Object> list = new LinkedList<Object>();
 
@@ -86,4 +88,17 @@ public final class ListObject {
 		return list.size();
 	}
 
+	public String toString() {
+		int lastDelimiter = list.size() - 1;
+		int count = 0;
+		StringBuilder string = new StringBuilder();
+		for (Object o : list) {
+			string.append(o);
+			if (count < lastDelimiter) {
+				string.append(DataStructureUtil.DELIMITER);
+			}
+			count++;
+		}
+		return string.toString();
+	}
 }
