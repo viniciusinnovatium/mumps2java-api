@@ -322,17 +322,9 @@ public final class Tree extends Node {
 		return list;
 	}
 
-<<<<<<< HEAD
 	private void replaceNode(Node stackedNode, Node currentNode) {
 		if (currentNode == null) {
 			addSubnode(stackedNode);
-=======
-	private void replaceNode(Node newNode, Node oldNode) {
-		if (!isNotPresentOnTree(newNode)) {
-			return;
-		} else if (oldNode == null) {
-			addSubnode(newNode);
->>>>>>> ccce53915486cb30c5ab2ac02488834e7809cdc0
 		} else {
 			stackedNode.setNext(currentNode.getNext());
 			stackedNode.setPrevious(currentNode.getPrevious());

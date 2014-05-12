@@ -162,12 +162,7 @@ public class Node implements Comparable<Node> {
 	}
 
 	public boolean hasPrevious() {
-<<<<<<< HEAD
-		//return !isFirstSubnode();
 		return this.previous != null;
-=======
-		return !isFirstSubnode() && (this.previous != null);
->>>>>>> ccce53915486cb30c5ab2ac02488834e7809cdc0
 	}
 
 	public boolean isFirstSubnode() {
