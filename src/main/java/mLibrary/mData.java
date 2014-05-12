@@ -165,7 +165,7 @@ public class mData {
 
 	private void initDAO() {
 		if (dao == null) {
-			this.dao = new DAO(ConnectionType.JDBC);
+			this.dao = new DAO(ConnectionType.DATASOURCE);
 		}
 	}
 

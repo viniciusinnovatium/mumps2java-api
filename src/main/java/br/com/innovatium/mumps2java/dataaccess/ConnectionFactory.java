@@ -58,7 +58,7 @@ public final class ConnectionFactory {
 
 			try {
 				return ((DataSource) ConnectionFactory.context
-						.lookup("java:jboss/datasources/oracle"))
+						.lookup("java:jboss/datasources/postgres"))
 						.getConnection();
 			} catch (NamingException e) {
 				throw new IllegalStateException(

@@ -9,7 +9,7 @@ public class Node implements Comparable<Node> {
 	private final Object[] subs;
 	private final String key;
 	private final Object susbscript;
-	final boolean isInteger;
+	final boolean isNumeric;
 	private Integer stackLevel;
 
 	private Object value;
@@ -33,12 +33,12 @@ public class Node implements Comparable<Node> {
 		this.key = key;
 		final int index = subs.length == 1 ? 0 : subs.length - 1;
 		Object temp = subs[index];
-		if ((temp = toInt(temp.toString())) != null) {
+		if ((temp = isNumber(temp.toString())) != null) {
 			susbscript = temp;
-			isInteger = true;
+			isNumeric = true;
 		} else {
 			susbscript = subs[index].toString();
-			isInteger = false;
+			isNumeric = false;
 		}
 
 		if (susbscript == null) {
@@ -109,7 +109,7 @@ public class Node implements Comparable<Node> {
 	public void setPrevious(Node previous) {
 		this.previous = previous;
 	}
-	
+
 	public boolean hasParent() {
 		return this.parent != null;
 	}
@@ -151,8 +151,9 @@ public class Node implements Comparable<Node> {
 			}
 			return previous;
 		} else if (previous.hasNext()) {
-			if(previous == previous.next){
-				throw new IllegalArgumentException("Previous node is equal the next node");
+			if (previous == previous.next) {
+				throw new IllegalArgumentException(
+						"Previous node is equal the next node");
 			}
 			return findPrevious(previous.next, subnode);
 		} else {
@@ -201,9 +202,10 @@ public class Node implements Comparable<Node> {
 	}
 
 	public int compareTo(Node o) {
-		if (isInteger) {
+		boolean boothNumeric = this.isNumeric && o.isNumeric;
+		if (boothNumeric) {
 			try {
-				return ((Integer) susbscript).compareTo((Integer) o.susbscript);
+				return ((Double) susbscript).compareTo((Double) o.susbscript);
 			} catch (ClassCastException e) {
 				throw new IllegalArgumentException(
 						"There is some inconsistence when was setted the nodes "
@@ -258,9 +260,9 @@ public class Node implements Comparable<Node> {
 		this.stackLevel = stackLevel;
 	}
 
-	private Integer toInt(String string) {
+	private Double isNumber(String string) {
 		try {
-			return Integer.valueOf(string);
+			return Double.parseDouble(string);
 		} catch (Exception e) {
 			return null;
 		}

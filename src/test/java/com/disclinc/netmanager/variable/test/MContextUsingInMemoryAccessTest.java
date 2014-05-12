@@ -41,10 +41,4 @@ public class MContextUsingInMemoryAccessTest {
 		m$.var("%x").set("publica");
 		assertEquals("publica", m$.var("%x").get());
 	}
-	
-	@Test
-	public void testGlobalVariableAccess() {
-		m$.var("^x").set("grupo");
-		assertEquals("grupo", m$.var("^x").get());
-	}
 }
