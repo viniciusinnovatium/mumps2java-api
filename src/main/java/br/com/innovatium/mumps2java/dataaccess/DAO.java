@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +48,8 @@ public class DAO {
 				map.put(result.getString(1), result.getString(2));
 			}
 
-		} catch (java.sql.SQLSyntaxErrorException e){
-			if(!hasTable(tableName)){
+		} catch (java.sql.SQLSyntaxErrorException e) {
+			if (!hasTable(tableName)) {
 				return map;
 			}
 		} catch (SQLException e) {
@@ -85,8 +84,8 @@ public class DAO {
 			delete.setString(1, key + "%");
 			delete.execute();
 
-		} catch (java.sql.SQLSyntaxErrorException e){
-			if(!hasTable(tableName)){
+		} catch (java.sql.SQLSyntaxErrorException e) {
+			if (!hasTable(tableName)) {
 
 			}
 		} catch (SQLException e) {
@@ -139,15 +138,14 @@ public class DAO {
 
 			insert.execute();
 
-		} catch (java.sql.SQLSyntaxErrorException e){
-			if(!hasTable(tableName)){
-				createTable(tableName);				
-				insert(tableName, key, value);
-			}
 		} catch (SQLException e) {
-		
-			throw new IllegalStateException("Fail to insert data into table "
-					+ tableName + " and key " + key, e);
+			if (!hasTable(tableName)) {
+				createTable(tableName);
+				insert(tableName, key, value);
+			} else {
+				throw new IllegalStateException("Fail to insert data into table "
+						+ tableName + " and key " + key, e);	
+			}
 		} finally {
 			if (con != null) {
 				try {
@@ -159,8 +157,8 @@ public class DAO {
 			}
 		}
 	}
-	
-	public boolean hasTable(String tableName){
+
+	public boolean hasTable(String tableName) {
 		Connection con = null;
 		boolean hasTable = false;
 		try {
@@ -170,35 +168,33 @@ public class DAO {
 					"Fail to open connection to hasTable data", e);
 		}
 		ResultSet rs = null;
-        try {
-        	DatabaseMetaData metaData = con.getMetaData();  
-        	rs = metaData.getTables(null, null, tableName.toUpperCase(), null);  
-			if (rs.next()) {  
+		try {
+			DatabaseMetaData metaData = con.getMetaData();
+			rs = metaData.getTables(null, null, tableName.toUpperCase(), null);
+			if (rs.next()) {
 				hasTable = true;
 				/*
-			    ResultSetMetaData rsMetaData = rs.getMetaData(); 
-	            int columnCount = rsMetaData.getColumnCount();  
-	            for (int i = 1; i <= columnCount; i++) {  
-	            	if(rsMetaData.getTableName(i).equals(tableName)){
-	            		break;
-	            	}	 
-	            }  	
-	            */		    
+				 * ResultSetMetaData rsMetaData = rs.getMetaData(); int
+				 * columnCount = rsMetaData.getColumnCount(); for (int i = 1; i
+				 * <= columnCount; i++) {
+				 * if(rsMetaData.getTableName(i).equals(tableName)){ break; } }
+				 */
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
-			if(rs!=null)
+		} finally {
+			if (rs != null)
 				try {
 					rs.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}  
+				}
 		}
-        return hasTable;
+		return hasTable;
 	}
+
 	// Remove table name treatment.
 	@TODO
 	public Object find(String tableName, String key) {
@@ -220,10 +216,10 @@ public class DAO {
 
 			return result.next() ? result.getString(2) : null;
 
-		} catch (java.sql.SQLSyntaxErrorException e){
-			if(!hasTable(tableName)){	
+		} catch (java.sql.SQLSyntaxErrorException e) {
+			if (!hasTable(tableName)) {
 				return null;
-			}else{
+			} else {
 				return null;
 			}
 		} catch (SQLException e) {
@@ -241,8 +237,8 @@ public class DAO {
 			}
 		}
 	}
-	
-	public boolean createTable(String tableName){
+
+	public boolean createTable(String tableName) {
 		Connection con = null;
 		try {
 			con = ConnectionFactory.getConnection(type);
@@ -252,17 +248,16 @@ public class DAO {
 		}
 
 		try {
-			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "+tableName.toUpperCase()+
-					   "(	\"KEY_\" VARCHAR2(4000 BYTE) NOT NULL ENABLE,"+ 
-						"\"VALUE_\" VARCHAR2(4000 BYTE))");
+			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "
+					+ tableName.toUpperCase()
+					+ "(	\"KEY_\" VARCHAR(4000) NOT NULL,"
+					+ "\"VALUE_\" VARCHAR(4000))");
 			PreparedStatement ps = con.prepareStatement(selectOne.toString());
 			return ps.execute();
 
-
 		} catch (SQLException e) {
 			throw new IllegalStateException(
-					"Fail to create table " + tableName
-							, e);
+					"Fail to create table " + tableName, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -272,6 +267,6 @@ public class DAO {
 							"Fail on close connection after select data", e);
 				}
 			}
-		}		
+		}
 	}
 }

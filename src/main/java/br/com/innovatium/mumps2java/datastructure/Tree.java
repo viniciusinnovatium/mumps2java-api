@@ -292,7 +292,7 @@ public final class Tree extends Node {
 	}
 
 	private boolean isNotPresentOnTree(Node node) {
-		return !node.hasParent();
+		return node == null || !node.hasParent();
 	}
 
 	private List<Node> findSubnodeExcepts(Object... subs) {

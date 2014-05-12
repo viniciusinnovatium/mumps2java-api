@@ -223,18 +223,6 @@ public class mContext {
 		mDataPublic.merge(dest.getSubs(), orig.getSubs());
 	}
 
-	@REMOVE
-	public void newcontext() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	@REMOVE
-	public mVar newref(Object object, String string, Object $$$no) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public void newVar(mVar... vars) {
 		Map<mData, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mData, Object[]>> set = maps.entrySet();
