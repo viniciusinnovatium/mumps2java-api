@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 public final class ConnectionFactory {
 	private static Properties properties;
 	private static InitialContext context;
+	private static Connection con;
 
 	static {
 		properties = new Properties();
@@ -48,7 +49,10 @@ public final class ConnectionFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return DriverManager.getConnection("jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser", "metauser");
+			if(con==null || con.isClosed()){
+				con = DriverManager.getConnection("jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser", "metauser");
+			}
+			return con;
 			/*return DriverManager.getConnection(
 					"jdbc:postgresql://localhost:5432/metadata", "postgres",
 					"@postgresql15");*/
