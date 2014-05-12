@@ -42,9 +42,17 @@ public final class ConnectionFactory {
 		}
 
 		if (ConnectionType.JDBC.equals(type)) {
-			return DriverManager.getConnection(
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return DriverManager.getConnection("jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser", "metauser");
+			/*return DriverManager.getConnection(
 					"jdbc:postgresql://localhost:5432/metadata", "postgres",
-					"@postgresql15");
+					"@postgresql15");*/
+			
 
 		} else {
 

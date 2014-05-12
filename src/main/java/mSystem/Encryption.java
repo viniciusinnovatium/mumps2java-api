@@ -10,7 +10,12 @@ public class Encryption extends mParent  {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static Object Base64Decode(Object object) {
+	public Object Base64Decode(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object Base64Encode(Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}

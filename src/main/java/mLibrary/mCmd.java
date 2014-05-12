@@ -101,13 +101,11 @@ public class mCmd extends mParent {
 	}
 
 	public void Lock(String string, String string2, String string3) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO	
 	}
 
 	public void LockInc(mVar var, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO	
 	}
 
 	public void Merge(mVar target, mVar source) {
@@ -159,18 +157,15 @@ public class mCmd extends mParent {
 	}
 
 	public void Unlock(mVar var) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO	
 	}
 
 	public void Unlock(mVar var, String str) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO	
 	}
 
 	public void Unlock(String string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO	
 	}
 
 	public void Use(Object $$$OprLog) {
@@ -221,5 +216,14 @@ public class mCmd extends mParent {
 		} else {
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	public void Lock(mVar var) {
+		// TODO REVISAR IMPLEMENTAÇÃO	
+	}
+
+	public void Job(String string) {
+		throw new UnsupportedOperationException();
+		
 	}
 }

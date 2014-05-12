@@ -123,12 +123,16 @@ public class Node implements Comparable<Node> {
 			// have to switch its positions to maintain the order mechanism.
 			if (previous.isFirstSubnode() && previous.isAfter(newSubnode)) {
 				subnode = newSubnode;
-				subnode.next = previous;
-				previous.previous = subnode;
+				newSubnode.next = previous;
+				newSubnode.previous = null;
+				previous.previous = newSubnode;
 			} else {
 				newSubnode.next = previous.next;
 				previous.next = newSubnode;
 				newSubnode.previous = previous;
+				if (newSubnode.next != null) {
+					newSubnode.next.previous = newSubnode;
+				}
 			}
 
 		}
@@ -147,6 +151,9 @@ public class Node implements Comparable<Node> {
 			}
 			return previous;
 		} else if (previous.hasNext()) {
+			if(previous == previous.next){
+				throw new IllegalArgumentException("Previous node is equal the next node");
+			}
 			return findPrevious(previous.next, subnode);
 		} else {
 			return previous;
@@ -155,8 +162,12 @@ public class Node implements Comparable<Node> {
 	}
 
 	public boolean hasPrevious() {
+<<<<<<< HEAD
 		//return !isFirstSubnode();
 		return this.previous != null;
+=======
+		return !isFirstSubnode() && (this.previous != null);
+>>>>>>> ccce53915486cb30c5ab2ac02488834e7809cdc0
 	}
 
 	public boolean isFirstSubnode() {

@@ -1,5 +1,7 @@
 package mLibrary;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -12,15 +14,9 @@ import java.util.Random;
 import java.util.SimpleTimeZone;
 import java.util.regex.Pattern;
 
-import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
-	public mFnc(mContext m$) {
-		super(m$);
-		// TODO Auto-generated constructor stub
-	}
-
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -304,9 +300,16 @@ public final class mFnc extends mParent {
 		return isObject;
 	}
 
-	public static Object $isvalidnum(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $isvalidnum(Object num) {
+		boolean isNum = false;
+		try {
+			Double.valueOf(String.valueOf(num));
+			isNum = true;
+		} catch (NumberFormatException e) {
+			throw new UnsupportedOperationException();
+		}
+		return isNum;
+
 	}
 
 	public static Object $job() {
@@ -337,6 +340,7 @@ public final class mFnc extends mParent {
 		if (decimal != null) {
 			expression = $fnumber(expression, ",", decimal);
 		}
+		expression = mFncUtil.toString(expression);
 		String strFormated = new String(new char[width
 				- expression.toString().length()]).replace("\0", " ").concat(
 				String.valueOf(expression));
@@ -375,7 +379,12 @@ public final class mFnc extends mParent {
 
 	public static Object $listfind(Object $listbuild, Object object) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		if($listbuild instanceof ListObject){
+			ListObject lo = (ListObject)$listbuild;
+			return lo.find(object);
+		}else{
+			return 0;
+		}
 	}
 
 	public static Object $listget(Object... object) {
@@ -388,13 +397,12 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	public static int $listlength(ListObject list) {
-		return list.length();
-	}
-
-	public static Object $listlength(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $listlength(Object list) {
+		if(Boolean.valueOf(String.valueOf($listvalid(list)))){
+			return ((ListObject)list).length();
+		}else{
+			return null;
+		}
 	}
 
 	public static Object $name(Object object, Object object2) {
@@ -425,6 +433,11 @@ public final class mFnc extends mParent {
 		return mFncUtil.pieceImpl(mFncUtil.castString(string),
 				mFncUtil.castString(delimiter), mFncUtil.castInt(from),
 				mFncUtil.castInt(to));
+	}
+
+	public static Object $principal() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	public static Object $qlength(Object object) {
@@ -475,9 +488,11 @@ public final class mFnc extends mParent {
 		return string.replace(oldSubstring, newSubstring);
 	}
 
-	public static String $reverse(Object $$$inaufInvoiceNumber) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static String $reverse(Object string) {
+		if(string == null){
+			return null;
+		}
+		return new StringBuilder(String.valueOf(string)).reverse().toString();
 	}
 
 	public static Object $select(BooleanObject... conditions) {
@@ -539,8 +554,8 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $stack(Object... objs) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO DA FUNÇÃO
+		return "";
 	}
 
 	public static Object $storage() {
@@ -570,10 +585,13 @@ public final class mFnc extends mParent {
 				mFncUtil.castString(oldCharsequence),
 				mFncUtil.castString(newCharsequence));
 	}
-
-	public static Object $zabs(Object subtract) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	/**
+	 * Absolute value function.
+	 * @param n
+	 * @return returns the absolute value of n.
+	 */
+	public static Object $zabs(Object n) {
+		return Math.abs(mFncUtil.numberConverter(n));
 	}
 
 	public static Object $zconvert(Object string, String mode) {
@@ -588,8 +606,8 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zconvert(Object object, String string, String string2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		//TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO throw new UnsupportedOperationException();
+		return object;
 	}
 
 	public static Object $zcrc(Object object, int i) {
@@ -708,6 +726,11 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
+	public static Object $znspace() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 	public static Object $zorder(Object object) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -722,15 +745,24 @@ public final class mFnc extends mParent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
 	/**
-	 * Removes types of characters and individual characters from a specified string.
+	 * Removes types of characters and individual characters from a specified
+	 * string.
+	 * 
 	 * @param object
 	 * @param string
-	 * @return 
-	 * <BR>string ->    The string to be stripped.
-	 * <BR>action -> 	What to strip from string. A string consisting of an action code followed by one or more mask codes. Specified as a quoted string.
-	 * <BR>remchar -> 	Optional � A string of specific character values to remove. Generally, these are additional characters not covered by the action parameter�s mask code.
-	 * <BR>keepchar -> 	Optional � A string of specific character values to not remove that are designated for removal by the action parameter�s mask code.
+	 * @return <BR>
+	 *         string -> The string to be stripped. <BR>
+	 *         action -> What to strip from string. A string consisting of an
+	 *         action code followed by one or more mask codes. Specified as a
+	 *         quoted string. <BR>
+	 *         remchar -> Optional � A string of specific character values to
+	 *         remove. Generally, these are additional characters not covered by
+	 *         the action parameter�s mask code. <BR>
+	 *         keepchar -> Optional � A string of specific character values to
+	 *         not remove that are designated for removal by the action
+	 *         parameter�s mask code.
 	 */
 	public static Object $zstrip(Object object, Object string) {
 		// TODO Auto-generated method stub
@@ -760,7 +792,17 @@ public final class mFnc extends mParent {
 	public static Object $zutil(int i) {
 		if (i == 5) {
 			return "DEFAULT";
-		} else {
+		} else if(i == 110){
+			InetAddress addr;
+			try {
+				addr = InetAddress.getLocalHost();
+				return addr.getHostName();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		} else{
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -777,8 +819,8 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zversion() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO PROVISÓRIA
+		return "NetManager Java Version 1.0";
 	}
 
 	public static Boolean booleanConverter(Object obj) {
@@ -990,10 +1032,6 @@ public final class mFnc extends mParent {
 		return dbl;
 	}
 
-	public String pieceImpl(String string, String delimiter) {
-		return $piece(string, delimiter, 1);
-	}
-
 	public static String pieceImpl(String string, String delimiter, int index) {
 
 		if (string == null) {
@@ -1102,6 +1140,48 @@ public final class mFnc extends mParent {
 		return string;
 	}
 
+	public mFnc(mContext m$) {
+		super(m$);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * Determines if an expression is a list.
+	 * 
+	 * @param object
+	 * @return $LISTVALID determines whether exp is a list, and returns a
+	 *         Boolean value: If exp is a list, $LISTVALID returns 1; if exp is
+	 *         not a list, $LISTVALID returns 0. <br>
+	 *         exp Any valid expression.
+	 */
+	public static Object $listvalid(Object object) {
+		if(object instanceof ListObject){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+
+	public Object $view(Object $zutil, Object negative, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zbitget(Object concat, int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztrap() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zversion(int i) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 	public Object length(Object string) {
 		return length(castString(string));
 	}
@@ -1130,29 +1210,21 @@ public final class mFnc extends mParent {
 		return string.split(delimiter).length;
 	}
 
-	public static Object $principal() {
-		// TODO Auto-generated method stub
+	public String pieceImpl(String string, String delimiter) {
+		return $piece(string, delimiter, 1);
+	}
+
+	public Object $zobjproperty(Object object, Object object2) {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $znspace() {
-		// TODO Auto-generated method stub
+	public Object $zboolean(Object object, int i, int j) {
 		throw new UnsupportedOperationException();
 	}
 
-	public Object $view(Object $zutil, Object negative, int i) {
+	public Object $zobjclassmethod(Object object, String string, Object object2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
-	}
-	
-	/**
-	 * Determines if an expression is a list.
-	 * @param object
-	 * @return $LISTVALID determines whether exp is a list, and returns a Boolean value: If exp is a list, $LISTVALID returns 1; if exp is not a list, $LISTVALID returns 0.
-	 * <br>exp	Any valid expression.
-	 */
-	public Object $listvalid(Object object) {
-		return true;//TODO REVISAR
 	}
 
 }

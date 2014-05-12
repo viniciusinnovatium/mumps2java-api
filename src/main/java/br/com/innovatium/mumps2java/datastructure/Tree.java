@@ -322,9 +322,17 @@ public final class Tree extends Node {
 		return list;
 	}
 
+<<<<<<< HEAD
 	private void replaceNode(Node stackedNode, Node currentNode) {
 		if (currentNode == null) {
 			addSubnode(stackedNode);
+=======
+	private void replaceNode(Node newNode, Node oldNode) {
+		if (!isNotPresentOnTree(newNode)) {
+			return;
+		} else if (oldNode == null) {
+			addSubnode(newNode);
+>>>>>>> ccce53915486cb30c5ab2ac02488834e7809cdc0
 		} else {
 			stackedNode.setNext(currentNode.getNext());
 			stackedNode.setPrevious(currentNode.getPrevious());
@@ -350,6 +358,9 @@ public final class Tree extends Node {
 			node.getParent().setSubnode(node.getNext());
 		} else {
 			node.getPrevious().setNext(node.getNext());
+		}
+		if (node.getNext() != null) {
+			node.getNext().setPrevious(node.getPrevious());
 		}
 		node.cancelReferences();
 		// We have to remove from the map all subnodes references, other wise,

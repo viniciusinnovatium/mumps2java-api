@@ -51,6 +51,8 @@ public class mContext {
 		Method m = getMethod(methodName);
 		Object result = null;
 		Object obj = null;
+		int countOld = countNewOperator;
+		countNewOperator = 0;
 		try {
 			if (objClass != null) {
 				obj = objClass;
@@ -78,6 +80,7 @@ public class mContext {
 		}
 
 		oldvar();
+		countNewOperator = countOld;
 		return result;
 	}
 

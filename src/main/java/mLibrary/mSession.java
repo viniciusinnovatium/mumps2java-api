@@ -44,5 +44,10 @@ public class mSession {
 	public Object getLogin(Object object, Object object2, int i) {
 		// TODO Auto-generated method stub
 		return 1;
+	}
+
+	public Object getAppTimeout() {
+		//TODO REVISAR TIMEOUT PROVISÓRIO;
+		return 1;
 	}		
 }

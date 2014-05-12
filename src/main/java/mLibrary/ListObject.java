@@ -1,6 +1,7 @@
 package mLibrary;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public final class ListObject {
 		return new ListObject();
 	}
 
-	static ListObject concat(ListObject ... lists) {
+	static ListObject concat(ListObject... lists) {
 		ListObject l = new ListObject();
 		if (lists != null && lists.length > 0) {
 			for (ListObject listObject : lists) {
@@ -24,10 +25,30 @@ public final class ListObject {
 		return l;
 	}
 
-	static ListObject add(Object ... elements) {
+	static ListObject add(Object... elements) {
 		ListObject l = new ListObject();
 		l.list.addAll(Arrays.asList(elements));
 		return l;
+	}
+
+	static int find(Object listObj, Object obj) {
+		if (listObj instanceof ListObject) {
+			List<Object> list = ((ListObject) listObj).list;
+			for (int i = 0; i < list.size(); i++) {
+				Object item = list.get(i);
+				item = mFncUtil.toString(item);
+				obj = mFncUtil.toString(obj);
+				if (item.equals(obj)) {
+					return i;
+				}
+
+			}
+		}
+		return 0;
+	}
+
+	public int find(Object obj) {
+		return find(this, obj);
 	}
 
 	ListObject sublist(int init, int end) {
