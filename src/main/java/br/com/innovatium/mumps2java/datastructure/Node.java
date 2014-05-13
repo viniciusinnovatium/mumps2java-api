@@ -178,7 +178,7 @@ public class Node implements Comparable<Node> {
 	}
 
 	public boolean hasNext() {
-		return this.next != null;
+		return next != null && !next.equals(previous);
 	}
 
 	public boolean isRoot() {

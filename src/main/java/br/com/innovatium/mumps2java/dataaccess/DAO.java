@@ -138,14 +138,15 @@ public class DAO {
 
 			insert.execute();
 
-		} catch (SQLException e) {
+		} catch (java.sql.SQLSyntaxErrorException e) {
 			if (!hasTable(tableName)) {
 				createTable(tableName);
 				insert(tableName, key, value);
-			} else {
-				throw new IllegalStateException("Fail to insert data into table "
-						+ tableName + " and key " + key, e);	
 			}
+		} catch (SQLException e) {
+
+			throw new IllegalStateException("Fail to insert data into table "
+					+ tableName + " and key " + key, e);
 		} finally {
 			if (con != null) {
 				try {
@@ -250,8 +251,8 @@ public class DAO {
 		try {
 			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "
 					+ tableName.toUpperCase()
-					+ "(	\"KEY_\" VARCHAR(4000) NOT NULL,"
-					+ "\"VALUE_\" VARCHAR(4000))");
+					+ "( \"KEY_\" VARCHAR2(4000 BYTE) NOT NULL ENABLE,"
+					+ "\"VALUE_\" VARCHAR2(4000 BYTE))");
 			PreparedStatement ps = con.prepareStatement(selectOne.toString());
 			return ps.execute();
 

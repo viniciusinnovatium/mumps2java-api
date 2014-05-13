@@ -33,6 +33,11 @@ public final class ConnectionFactory {
 
 	public static Connection getConnection(ConnectionType type)
 			throws SQLException {
+
+		if (con != null && !con.isClosed()) {
+			return con;
+		}
+
 		if (context == null) {
 			try {
 				context = new InitialContext();
@@ -49,20 +54,21 @@ public final class ConnectionFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(con==null || con.isClosed()){
-				con = DriverManager.getConnection("jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser", "metauser");
-			}
-			return con;
-			/*return DriverManager.getConnection(
-					"jdbc:postgresql://localhost:5432/metadata", "postgres",
-					"@postgresql15");*/
-			
+			con = DriverManager.getConnection(
+					"jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser",
+					"metauser");
+
+			/*
+			 * return DriverManager.getConnection(
+			 * "jdbc:postgresql://localhost:5432/metadata", "postgres",
+			 * "@postgresql15");
+			 */
 
 		} else {
 
 			try {
-				return ((DataSource) ConnectionFactory.context
-						.lookup("java:jboss/datasources/postgres"))
+				con = ((DataSource) ConnectionFactory.context
+						.lookup("java:jboss/datasources/oracle"))
 						.getConnection();
 			} catch (NamingException e) {
 				throw new IllegalStateException(
@@ -70,5 +76,7 @@ public final class ConnectionFactory {
 						e);
 			}
 		}
+
+		return con;
 	}
 }
