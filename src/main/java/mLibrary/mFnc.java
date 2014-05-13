@@ -331,10 +331,10 @@ public final class mFnc extends mParent {
 	 *         be right-aligned. It can be a positive integer value, the name of
 	 *         an integer variable, or any valid Caché ObjectScript expression
 	 *         that evaluates to a positive integer. <br/>
-	 *         decimal -> Optional — The position at which to place the decimal
-	 *         point within the width. It can be a positive integer value, the
-	 *         name of an integer variable, or any valid Caché ObjectScript
-	 *         expression that evaluates to a positive integer.
+	 *         decimal -> Optional — The position at which to place the
+	 *         decimal point within the width. It can be a positive integer
+	 *         value, the name of an integer variable, or any valid Caché
+	 *         ObjectScript expression that evaluates to a positive integer.
 	 */
 	public static Object $justify(Object expression, int width, Object decimal) {
 		if (decimal != null) {
@@ -379,10 +379,10 @@ public final class mFnc extends mParent {
 
 	public static Object $listfind(Object $listbuild, Object object) {
 		// TODO Auto-generated method stub
-		if($listbuild instanceof ListObject){
-			ListObject lo = (ListObject)$listbuild;
+		if ($listbuild instanceof ListObject) {
+			ListObject lo = (ListObject) $listbuild;
 			return lo.find(object);
-		}else{
+		} else {
 			return 0;
 		}
 	}
@@ -398,9 +398,9 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $listlength(Object list) {
-		if(Boolean.valueOf(String.valueOf($listvalid(list)))){
-			return ((ListObject)list).length();
-		}else{
+		if (Boolean.valueOf(String.valueOf($listvalid(list)))) {
+			return ((ListObject) list).length();
+		} else {
 			return null;
 		}
 	}
@@ -489,7 +489,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static String $reverse(Object string) {
-		if(string == null){
+		if (string == null) {
 			return null;
 		}
 		return new StringBuilder(String.valueOf(string)).reverse().toString();
@@ -585,8 +585,10 @@ public final class mFnc extends mParent {
 				mFncUtil.castString(oldCharsequence),
 				mFncUtil.castString(newCharsequence));
 	}
+
 	/**
 	 * Absolute value function.
+	 * 
 	 * @param n
 	 * @return returns the absolute value of n.
 	 */
@@ -606,7 +608,8 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zconvert(Object object, String string, String string2) {
-		//TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO throw new
+		// UnsupportedOperationException();
 		return object;
 	}
 
@@ -741,11 +744,6 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	/**
 	 * Removes types of characters and individual characters from a specified
 	 * string.
@@ -764,9 +762,18 @@ public final class mFnc extends mParent {
 	 *         not remove that are designated for removal by the action
 	 *         parameter�s mask code.
 	 */
-	public static Object $zstrip(Object object, Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zstrip(Object targetString, Object maskCode) {
+		return $zstrip(targetString, maskCode, "", "");
+	}
+
+	public static Object $zstrip(Object targetString, Object maskCode,
+			Object remChars) {
+		return $zstrip(targetString, maskCode, remChars, "");
+	}
+
+	public static Object $zstrip(Object targetString, Object maskCode,
+			Object remChars, Object keepChars) {
+		return mZStripParser.zstrip(String.valueOf(targetString),String.valueOf(maskCode), String.valueOf(remChars),String.valueOf(keepChars));
 	}
 
 	public static String $ztimestamp() {
@@ -792,7 +799,7 @@ public final class mFnc extends mParent {
 	public static Object $zutil(int i) {
 		if (i == 5) {
 			return "DEFAULT";
-		} else if(i == 110){
+		} else if (i == 110) {
 			InetAddress addr;
 			try {
 				addr = InetAddress.getLocalHost();
@@ -802,7 +809,7 @@ public final class mFnc extends mParent {
 				e.printStackTrace();
 				return null;
 			}
-		} else{
+		} else {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -1155,9 +1162,9 @@ public final class mFnc extends mParent {
 	 *         exp Any valid expression.
 	 */
 	public static Object $listvalid(Object object) {
-		if(object instanceof ListObject){
+		if (object instanceof ListObject) {
 			return 1;
-		}else{
+		} else {
 			return 0;
 		}
 	}
