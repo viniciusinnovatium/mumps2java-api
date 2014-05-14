@@ -341,6 +341,7 @@ public final class mFnc extends mParent {
 			expression = $fnumber(expression, ",", decimal);
 		}
 		expression = mFncUtil.toString(expression);
+		width = width > expression.toString().length() ? width :  expression.toString().length();
 		String strFormated = new String(new char[width
 				- expression.toString().length()]).replace("\0", " ").concat(
 				String.valueOf(expression));
@@ -379,10 +380,10 @@ public final class mFnc extends mParent {
 
 	public static Object $listfind(Object $listbuild, Object object) {
 		// TODO Auto-generated method stub
-		if($listbuild instanceof ListObject){
-			ListObject lo = (ListObject)$listbuild;
+		if ($listbuild instanceof ListObject) {
+			ListObject lo = (ListObject) $listbuild;
 			return lo.find(object);
-		}else{
+		} else {
 			return 0;
 		}
 	}
@@ -398,9 +399,9 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $listlength(Object list) {
-		if(Boolean.valueOf(String.valueOf($listvalid(list)))){
-			return ((ListObject)list).length();
-		}else{
+		if (Boolean.valueOf(String.valueOf($listvalid(list)))) {
+			return ((ListObject) list).length();
+		} else {
 			return null;
 		}
 	}
@@ -489,7 +490,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static String $reverse(Object string) {
-		if(string == null){
+		if (string == null) {
 			return null;
 		}
 		return new StringBuilder(String.valueOf(string)).reverse().toString();
@@ -550,7 +551,7 @@ public final class mFnc extends mParent {
 	public static Object $setpiece(Object string, Object delimiter,
 			Object position, Object value) {
 		return setPieceImpl(castString(string), castString(delimiter),
-				castInt(position), castString(value));
+				castInt(position), value);
 	}
 
 	public static Object $stack(Object... objs) {
@@ -585,8 +586,10 @@ public final class mFnc extends mParent {
 				mFncUtil.castString(oldCharsequence),
 				mFncUtil.castString(newCharsequence));
 	}
+
 	/**
 	 * Absolute value function.
+	 * 
 	 * @param n
 	 * @return returns the absolute value of n.
 	 */
@@ -606,7 +609,8 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zconvert(Object object, String string, String string2) {
-		//TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO throw new
+		// UnsupportedOperationException();
 		return object;
 	}
 
@@ -792,7 +796,7 @@ public final class mFnc extends mParent {
 	public static Object $zutil(int i) {
 		if (i == 5) {
 			return "DEFAULT";
-		} else if(i == 110){
+		} else if (i == 110) {
 			InetAddress addr;
 			try {
 				addr = InetAddress.getLocalHost();
@@ -802,7 +806,7 @@ public final class mFnc extends mParent {
 				e.printStackTrace();
 				return null;
 			}
-		} else{
+		} else {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -1058,7 +1062,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static String setPieceImpl(String string, String delimiter,
-			Integer position, String value) {
+			Integer position, Object value) {
 		Object[] array = string == null ? new Object[position] : string
 				.toString().split(delimiter);
 		if (position > array.length) {
@@ -1068,7 +1072,7 @@ public final class mFnc extends mParent {
 			value = "";
 		}
 
-		array[position - 1] = value;
+		array[position - 1] = value.toString();
 
 		return generateString(array, delimiter);
 	}
@@ -1155,9 +1159,9 @@ public final class mFnc extends mParent {
 	 *         exp Any valid expression.
 	 */
 	public static Object $listvalid(Object object) {
-		if(object instanceof ListObject){
+		if (object instanceof ListObject) {
 			return 1;
-		}else{
+		} else {
 			return 0;
 		}
 	}

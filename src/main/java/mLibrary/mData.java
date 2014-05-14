@@ -41,8 +41,7 @@ public class mData {
 				dao.insert(tableName, Tree.generateKey(currentSubs), value != null ? value.toString() : null);
 			}
 		} else {
-			// Here we have calling toString method because ListObject should be persisted as string 
-			tree.set(currentSubs, value != null ? value.toString() : null);
+			tree.set(currentSubs, value);
 		}
 	}
 
@@ -60,12 +59,7 @@ public class mData {
 	}
 
 	public void stackingExcept(Object... subs) {
-		if (!isDiskAccess(subs)) {
-			tree.stackingExcept(subs);
-		} else {
-			throw new UnsupportedOperationException(
-					"Stacking exception variable is not supported to access data on disk");
-		}
+		tree.stackingExcept(subs);
 	}
 
 	public void unstacking() {

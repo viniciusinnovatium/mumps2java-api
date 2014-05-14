@@ -205,7 +205,7 @@ public class Node implements Comparable<Node> {
 		boolean boothNumeric = this.isNumeric && o.isNumeric;
 		if (boothNumeric) {
 			try {
-				return ((Double) susbscript).compareTo((Double) o.susbscript);
+				return ((Integer) susbscript).compareTo((Integer) o.susbscript);
 			} catch (ClassCastException e) {
 				throw new IllegalArgumentException(
 						"There is some inconsistence when was setted the nodes "
@@ -260,9 +260,9 @@ public class Node implements Comparable<Node> {
 		this.stackLevel = stackLevel;
 	}
 
-	private Double isNumber(String string) {
+	private Integer isNumber(String string) {
 		try {
-			return Double.parseDouble(string);
+			return Integer.parseInt(string);
 		} catch (Exception e) {
 			return null;
 		}

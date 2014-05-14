@@ -61,8 +61,8 @@ public final class Tree extends Node {
 				replaceNode(stackedNode, nodeOnTheTree);
 				stackedNode.setStackLevel(0);
 			}
-			currentStackLevel--;
 		}
+		currentStackLevel--;
 	}
 
 	public void stackingExcept(Object... subs) {

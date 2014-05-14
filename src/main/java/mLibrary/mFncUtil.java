@@ -460,7 +460,7 @@ public final class mFncUtil {
 		String str = String.valueOf(expression);
 		if(expression instanceof Double){
 			Double dbl = (Double)expression;
-			str = BigDecimal.valueOf(dbl).setScale(dbl%1==0?0:2).toString();
+			str = BigDecimal.valueOf(dbl).setScale(dbl%1==0?0:2,BigDecimal.ROUND_HALF_UP).toString();
 		}
 		return str;
 	}

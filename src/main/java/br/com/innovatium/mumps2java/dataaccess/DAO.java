@@ -116,20 +116,20 @@ public class DAO {
 
 		try {
 
-			String selectOne = "select key_, value_ from \"" + tableName
+			String selectOne = "select key_, value_ from \"" + tableName.toUpperCase()
 					+ "\" where key_ = ?";
 			PreparedStatement select = con.prepareStatement(selectOne);
 			select.setObject(1, key);
 			ResultSet result = select.executeQuery();
 			PreparedStatement insert = null;
 			if (!result.next()) {
-				String insertQuery = "insert into " + tableName
+				String insertQuery = "insert into " + tableName.toUpperCase()
 						+ " values (?, ?)";
 				insert = con.prepareStatement(insertQuery);
 				insert.setObject(1, key);
 				insert.setObject(2, value);
 			} else {
-				String updateQuery = "update \"" + tableName
+				String updateQuery = "update \"" + tableName.toUpperCase()
 						+ "\" set value_ = ? where key_ = ?";
 				insert = con.prepareStatement(updateQuery);
 				insert.setObject(1, value);

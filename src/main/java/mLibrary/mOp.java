@@ -163,4 +163,8 @@ public final class mOp {
 		return !Contains(str1, str2);
 	}
 
+	public static boolean And(boolean b, boolean c) {
+		return b && c;
+	}
+
 }

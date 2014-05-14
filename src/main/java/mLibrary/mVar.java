@@ -2,6 +2,7 @@ package mLibrary;
 
 import java.util.Arrays;
 
+import br.com.innovatium.mumps2java.datastructure.Tree;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mVar {
@@ -26,6 +27,9 @@ public class mVar {
 	}
 
 	public void set(Object value) {
+		if(Tree.generateKey(subs).equals("YFORM")){
+			int i = 0;
+		}
 		mData.subs(subs).set(value);
 	}
 

@@ -276,9 +276,8 @@ public class mContext {
 			return;
 		}
 		while (totalLevel-- > 0) {
-			mDataPublic.unstacking();
+			//mDataPublic.unstacking();
 			mDataLocal.unstacking();
-			mDataGlobal.unstacking();
 		}
 	}
 
@@ -307,6 +306,10 @@ public class mContext {
 		}
 
 		final String varName = mFncUtil.castString(subs[0]);
+		if (Character.isDigit(varName.charAt(0))) {
+			return null;
+		}
+		
 		return new mVar(subs, generateMData(varName));
 	}
 
@@ -359,9 +362,9 @@ public class mContext {
 
 	private Object[] parseVarSubs(String _content) {
 		final List<Object> _result = new ArrayList<Object>();
-		int _level = 0, y = 0;
+		int _level = 0, y = 0, x = 0;
 		boolean _isstring = false;
-		for (int x = 0; x < _content.length(); x++) {
+		for (x = 0; x < _content.length(); x++) {
 			if (_content.charAt(x) == '"') {
 				_isstring = (_isstring) ? false : true;
 			}
@@ -384,12 +387,17 @@ public class mContext {
 					_result.add(parseVarValue(_content.substring(y, x)));
 					y = x + 1;
 				}
-			} else if (_content.charAt(x) == ',') {
+			}
+			
+			else if (_content.charAt(x) == ',') {
 				if (_level == 1) {
 					_result.add(parseVarValue(_content.substring(y, x)));
 					y = x + 1;
 				}
 			}
+		}
+		if ((x-1) > y) {
+			_result.add(_content.substring(y, x-1));
 		}
 		return _result.toArray();
 	}
@@ -443,8 +451,8 @@ public class mContext {
 		}
 
 		map.put(this.mDataLocal, locals.toArray());
-		map.put(this.mDataPublic, publics.toArray());
-		map.put(this.mDataGlobal, globals.toArray());
+		//map.put(this.mDataPublic, publics.toArray());
+		//map.put(this.mDataGlobal, globals.toArray());
 		return map;
 	}
 }

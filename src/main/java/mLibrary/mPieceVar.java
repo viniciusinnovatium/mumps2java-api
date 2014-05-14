@@ -21,7 +21,10 @@ public class mPieceVar extends mVar {
 		}
 	}
 
-	public void set(Object value) {
+	public void set(Object value) {		
+		if(value instanceof mVar){
+			value = ((mVar)value).get();
+		}
 		super.set(mFnc.$setpiece(this.get(), delimiter, position, value));
 	}
 }
