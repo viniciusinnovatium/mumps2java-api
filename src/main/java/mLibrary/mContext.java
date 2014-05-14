@@ -38,7 +38,6 @@ public class mContext {
 	}
 
 	public mSystem getSystem() {
-		// TODO Auto-generated method stub
 		return system;
 	}
 

@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 public final class ConnectionFactory {
 	private static Properties properties;
 	private static InitialContext context;
-	private static Connection con;
 
 	static {
 		properties = new Properties();
@@ -34,10 +33,6 @@ public final class ConnectionFactory {
 	public static Connection getConnection(ConnectionType type)
 			throws SQLException {
 
-		if (con != null && !con.isClosed()) {
-			return con;
-		}
-
 		if (context == null) {
 			try {
 				context = new InitialContext();
@@ -54,7 +49,7 @@ public final class ConnectionFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			con = DriverManager.getConnection(
+			return DriverManager.getConnection(
 					"jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser",
 					"metauser");
 
@@ -67,7 +62,7 @@ public final class ConnectionFactory {
 		} else {
 
 			try {
-				con = ((DataSource) ConnectionFactory.context
+				return ((DataSource) ConnectionFactory.context
 						.lookup("java:jboss/datasources/oracle"))
 						.getConnection();
 			} catch (NamingException e) {
@@ -77,6 +72,5 @@ public final class ConnectionFactory {
 			}
 		}
 
-		return con;
 	}
 }

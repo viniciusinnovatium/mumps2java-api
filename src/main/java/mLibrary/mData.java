@@ -14,7 +14,7 @@ public class mData {
 
 	boolean subsChanged;
 	boolean firstExecutionOrder = true;
-	private DAO dao;
+	DAO dao;
 	final Tree tree = new Tree();
 
 	public Object get(Object... subs) {
@@ -30,15 +30,17 @@ public class mData {
 	}
 
 	public void set(Object value) {
-		
+
 		if (isDiskAccess(currentSubs)) {
 			if (currentSubs != null) {
 				initDAO();
 				final String tableName = generateTableName(currentSubs);
 				currentSubs = Arrays.copyOfRange(currentSubs, 1,
 						currentSubs.length);
-				// Here we have calling toString method because ListObject should be persisted as string
-				dao.insert(tableName, Tree.generateKey(currentSubs), value != null ? value.toString() : null);
+				// Here we have calling toString method because ListObject
+				// should be persisted as string
+				dao.insert(tableName, Tree.generateKey(currentSubs),
+						value != null ? value.toString() : null);
 			}
 		} else {
 			tree.set(currentSubs, value);
@@ -49,26 +51,21 @@ public class mData {
 		tree.merge(dest, orig);
 	}
 
-	public void stacking(Object... subs) {
-		if (!isDiskAccess(subs)) {
-			tree.stacking(subs);
+	public void stacking(Object... variables) {
+		if (!isDiskAccess(variables)) {
+			tree.stacking(variables);
 		} else {
 			throw new UnsupportedOperationException(
 					"Stacking variable is not supported to access data on disk");
 		}
 	}
 
-	public void stackingExcept(Object... subs) {
-		tree.stackingExcept(subs);
+	public void stackingExcept(Object... variables) {
+		tree.stackingExcept(variables);
 	}
 
 	public void unstacking() {
-		//if (!isDiskAccess(currentSubs)) {
-			tree.unstacking();
-		//} else {
-		//	throw new UnsupportedOperationException(
-		//			"Unstacking variable is not supported to access data on disk");
-		//}
+		tree.unstacking();
 	}
 
 	public String dump() {
@@ -108,7 +105,7 @@ public class mData {
 			if (isDiskAccess(subs)) {
 				initDAO();
 				this.currentSubs = subs;
-				findDataOnDisk();				
+				findDataOnDisk();
 			}
 			firstExecutionOrder = true;
 		}

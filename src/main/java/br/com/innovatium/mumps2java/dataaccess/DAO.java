@@ -11,14 +11,19 @@ import java.util.Map;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class DAO {
-	private ConnectionType type;
-
+private final Connection con;
 	public DAO() {
-		this(ConnectionType.JDBC);
+		this(ConnectionType.DATASOURCE);
 	}
 
 	public DAO(ConnectionType connectionType) {
-		this.type = connectionType;
+		try {
+			con = ConnectionFactory.getConnection(connectionType);
+		} catch (SQLException e) {
+			throw new IllegalStateException(
+					"Fail to open connection to database access throught "+connectionType+" strategy", e);
+		}
+		
 	}
 
 	// Check another return type different from the map.
@@ -26,13 +31,6 @@ public class DAO {
 	public Map<String, String> like(String tableName, String key) {
 		if (key == null) {
 			return null;
-		}
-		Connection con = null;
-		try {
-			con = ConnectionFactory.getConnection(type);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to insert data", e);
 		}
 		Map<String, String> map = null;
 		try {
@@ -56,27 +54,11 @@ public class DAO {
 			throw new IllegalStateException(
 					"Fail to find data thought like clause from table "
 							+ tableName + " and key " + key, e);
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new IllegalStateException(
-							"Fail on close connection after insert data", e);
-				}
-			}
 		}
 		return map;
 	}
 
 	public void remove(String tableName, String key) {
-		Connection con = null;
-		try {
-			con = ConnectionFactory.getConnection(type);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to remove data", e);
-		}
 		try {
 			String string = "delete from \"" + tableName
 					+ "\" where key_ like ?";
@@ -91,29 +73,12 @@ public class DAO {
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to remove data from table "
 					+ tableName + " and key " + key, e);
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new IllegalStateException(
-							"Fail on close connection after kill some data", e);
-				}
-			}
 		}
 	}
 
 	// Remove table name treatment.
 	@TODO
 	public void insert(String tableName, Object key, Object value) {
-		Connection con = null;
-		try {
-			con = ConnectionFactory.getConnection(type);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to insert data", e);
-		}
-
 		try {
 
 			String selectOne = "select key_, value_ from \"" + tableName.toUpperCase()
@@ -147,27 +112,11 @@ public class DAO {
 
 			throw new IllegalStateException("Fail to insert data into table "
 					+ tableName + " and key " + key, e);
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new IllegalStateException(
-							"Fail on close connection after insert data", e);
-				}
-			}
 		}
 	}
 
 	public boolean hasTable(String tableName) {
-		Connection con = null;
 		boolean hasTable = false;
-		try {
-			con = ConnectionFactory.getConnection(type);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to hasTable data", e);
-		}
 		ResultSet rs = null;
 		try {
 			DatabaseMetaData metaData = con.getMetaData();
@@ -199,14 +148,6 @@ public class DAO {
 	// Remove table name treatment.
 	@TODO
 	public Object find(String tableName, String key) {
-		Connection con = null;
-		try {
-			con = ConnectionFactory.getConnection(type);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to insert data", e);
-		}
-
 		try {
 			final StringBuilder selectOne = new StringBuilder(
 					"select key_, value_ from \"").append(tableName).append(
@@ -227,27 +168,10 @@ public class DAO {
 			throw new IllegalStateException(
 					"Fail to select data from the table " + tableName
 							+ " and key " + key, e);
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new IllegalStateException(
-							"Fail on close connection after select data", e);
-				}
-			}
 		}
 	}
 
 	public boolean createTable(String tableName) {
-		Connection con = null;
-		try {
-			con = ConnectionFactory.getConnection(type);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to insert data", e);
-		}
-
 		try {
 			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "
 					+ tableName.toUpperCase()
@@ -259,15 +183,6 @@ public class DAO {
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to create table " + tableName, e);
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new IllegalStateException(
-							"Fail on close connection after select data", e);
-				}
-			}
 		}
 	}
 }

@@ -15,12 +15,14 @@ public final class Tree extends Node {
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 	private KillOperationOverNodes killSubnodesOperation = new KillOperationOverNodes();
 	private AddOnTreeOperationOverNodes addSubnodesOperation = new AddOnTreeOperationOverNodes();
+	private MergeOperationOverNodes mergeSubnodesOperation = new MergeOperationOverNodes(
+			this);
 
 	public Tree() {
 		super(new Object[] { "root" }, null, "root");
 	}
 
-	public void stacking(Object... subs) {
+	public void stacking(Object... variables) {
 		if (stack == null) {
 			stack = new StackNode();
 		}
@@ -30,7 +32,7 @@ public final class Tree extends Node {
 		 * Iterating over variable names collection. Here we suppose the
 		 * variable name is the first subscript of the array.
 		 */
-		for (Object variableName : subs) {
+		for (Object variableName : variables) {
 			node = findNode(variableName.toString());
 			// Avoid some variables which does not exist into the tree.
 			if (node != null) {
@@ -64,12 +66,12 @@ public final class Tree extends Node {
 		currentStackLevel--;
 	}
 
-	public void stackingExcept(Object... subs) {
+	public void stackingExcept(Object... variables) {
 		if (stack == null) {
 			stack = new StackNode();
 		}
 		currentStackLevel++;
-		List<Node> nodes = findSubnodeExcepts(subs);
+		List<Node> nodes = findSubnodeExcepts(variables);
 		if (nodes != null) {
 			for (Node node : nodes) {
 				node.setStackLevel(currentStackLevel);
@@ -239,38 +241,11 @@ public final class Tree extends Node {
 			destNode.setValue(origNode.getValue());
 		}
 
-		if(origNode.hasSubnodes()) {
-			mergeSubnodes(destSubs, origSubs, origNode.getSubnode());	
-		}
-		
-	}
-	
-	private void mergeSubnodes(final Object[] dest, final Object[] orig, Node node) {
-
-		Object[] concatSubs = null;
-		boolean hasSubnodes = node.hasSubnodes();
-		boolean subnodeHasNext = hasSubnodes && node.getSubnode().hasNext();
-
-		Object subnodeValue = node.getValue();
-		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
-		Node destNode = findNode(concatSubs);
-		if (destNode == null) {
-			set(concatSubs, subnodeValue);
-		} else if (subnodeValue != null) {
-			destNode.setValue(subnodeValue);
-		}
-		
-		if (hasSubnodes) {
-			mergeSubnodes(dest, orig, node.getSubnode());
+		if (origNode.hasSubnodes()) {
+			mergeSubnodesOperation.set(destSubs, origSubs);
+			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
 		}
 
-		if (subnodeHasNext) {
-			mergeSubnodes(dest, orig, node.getSubnode().getNext());
-		}
-		
-		if (node.hasNext()) {
-			mergeSubnodes(dest, orig, node.getNext());
-		}
 	}
 
 	public Object order(Object... subs) {
@@ -286,7 +261,7 @@ public final class Tree extends Node {
 		if (node != null) {
 			Node next = node;
 			do {
-				operation.operate(node);
+				operation.operate(next);
 
 				if (next.hasSubnodes()) {
 					operateOverSubnodes(next.getSubnode(), operation);
@@ -446,6 +421,34 @@ public final class Tree extends Node {
 			keyValue.put(node.getKey(), node);
 		}
 
+	}
+
+	private final class MergeOperationOverNodes implements OperationOverNodes {
+		private Object[] dest;
+		private Object[] orig;
+		private final Tree tree;
+
+		public MergeOperationOverNodes(Tree tree) {
+			this.tree = tree;
+		}
+
+		public void set(Object[] dest, Object[] orig) {
+			this.dest = dest;
+			this.orig = orig;
+		}
+
+		public void operate(Node node) {
+			Object[] concatSubs = null;
+			Object subnodeValue = node.getValue();
+			concatSubs = DataStructureUtil.concat(dest,
+					node.getSubs(orig.length));
+			Node destNode = findNode(concatSubs);
+			if (destNode == null) {
+				tree.set(concatSubs, subnodeValue);
+			} else if (subnodeValue != null) {
+				destNode.setValue(subnodeValue);
+			}
+		}
 	}
 
 	private final class DumpOperationOverNodes implements OperationOverNodes {
