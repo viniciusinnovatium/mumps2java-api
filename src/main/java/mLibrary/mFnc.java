@@ -331,10 +331,10 @@ public final class mFnc extends mParent {
 	 *         be right-aligned. It can be a positive integer value, the name of
 	 *         an integer variable, or any valid Caché ObjectScript expression
 	 *         that evaluates to a positive integer. <br/>
-	 *         decimal -> Optional — The position at which to place the decimal
-	 *         point within the width. It can be a positive integer value, the
-	 *         name of an integer variable, or any valid Caché ObjectScript
-	 *         expression that evaluates to a positive integer.
+	 *         decimal -> Optional — The position at which to place the
+	 *         decimal point within the width. It can be a positive integer
+	 *         value, the name of an integer variable, or any valid Caché
+	 *         ObjectScript expression that evaluates to a positive integer.
 	 */
 	public static Object $justify(Object expression, int width, Object decimal) {
 		if (decimal != null) {
@@ -745,11 +745,6 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zstrip(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	/**
 	 * Removes types of characters and individual characters from a specified
 	 * string.
@@ -768,9 +763,18 @@ public final class mFnc extends mParent {
 	 *         not remove that are designated for removal by the action
 	 *         parameter�s mask code.
 	 */
-	public static Object $zstrip(Object object, Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zstrip(Object targetString, Object maskCode) {
+		return $zstrip(targetString, maskCode, "", "");
+	}
+
+	public static Object $zstrip(Object targetString, Object maskCode,
+			Object remChars) {
+		return $zstrip(targetString, maskCode, remChars, "");
+	}
+
+	public static Object $zstrip(Object targetString, Object maskCode,
+			Object remChars, Object keepChars) {
+		return mZStripParser.zstrip(String.valueOf(targetString),String.valueOf(maskCode), String.valueOf(remChars),String.valueOf(keepChars));
 	}
 
 	public static String $ztimestamp() {

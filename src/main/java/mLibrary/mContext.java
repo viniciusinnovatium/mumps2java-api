@@ -220,7 +220,7 @@ public class mContext {
 	}
 
 	public void merge(mVar dest, mVar orig) {
-		mDataPublic.merge(dest.getSubs(), orig.getSubs());
+		mDataLocal.merge(dest.getSubs(), orig.getSubs());
 	}
 
 	public void newVar(mVar... vars) {

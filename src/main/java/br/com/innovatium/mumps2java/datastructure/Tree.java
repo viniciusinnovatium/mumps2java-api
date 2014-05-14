@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
-import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
@@ -109,16 +108,7 @@ public final class Tree extends Node {
 	}
 
 	public void set(Object[] subs, Object value) {
-
-		if (subs == null || subs.length == 0) {
-			return;
-		}
-
-		Node node = findNode(subs);
-		if (node == null) {
-			node = generateNode(subs);
-		}
-		node.setValue(value);
+		setting(subs, value);
 	}
 
 	public Node kill(Object... subs) {
@@ -235,37 +225,52 @@ public final class Tree extends Node {
 
 	public void merge(final Object[] destSubs, final Object[] origSubs) {
 		Node origNode = findNode(origSubs);
-		if (origNode != null && origNode.hasSubnodes()) {
-			merge(destSubs, origSubs, origNode.getSubnode());
-		}
-	}
+		Node destNode = findNode(destSubs);
 
-	@REMOVE
-	/*
-	 * private List<Node> findSubnodes(Node node) { final List<Node> subnodeList
-	 * = new ArrayList<Node>(100); fillSubnodeList(node, subnodeList); return
-	 * subnodeList; }
-	 */
-	private void merge(final Object[] dest, final Object[] orig, Node node) {
+		if (destNode == null) {
+			destNode = setting(destSubs, null);
+		}
+
+		if (origNode == null) {
+			origNode = setting(origSubs, null);
+		}
+
+		if (origNode.getValue() != null) {
+			destNode.setValue(origNode.getValue());
+		}
+
+		if(origNode.hasSubnodes()) {
+			mergeSubnodes(destSubs, origSubs, origNode.getSubnode());	
+		}
+		
+	}
+	
+	private void mergeSubnodes(final Object[] dest, final Object[] orig, Node node) {
 
 		Object[] concatSubs = null;
 		boolean hasSubnodes = node.hasSubnodes();
-		boolean hasNext = node.hasNext();
+		boolean subnodeHasNext = hasSubnodes && node.getSubnode().hasNext();
 
+		Object subnodeValue = node.getValue();
 		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
-		set(concatSubs, node.getValue());
-
+		Node destNode = findNode(concatSubs);
+		if (destNode == null) {
+			set(concatSubs, subnodeValue);
+		} else if (subnodeValue != null) {
+			destNode.setValue(subnodeValue);
+		}
+		
 		if (hasSubnodes) {
-			node = node.getSubnode();
-		} else if (hasNext) {
-			node = node.getNext();
+			mergeSubnodes(dest, orig, node.getSubnode());
 		}
 
-		if (!hasSubnodes && !hasNext) {
-			return;
+		if (subnodeHasNext) {
+			mergeSubnodes(dest, orig, node.getSubnode().getNext());
 		}
-
-		merge(dest, orig, node);
+		
+		if (node.hasNext()) {
+			mergeSubnodes(dest, orig, node.getNext());
+		}
 	}
 
 	public Object order(Object... subs) {
@@ -320,6 +325,20 @@ public final class Tree extends Node {
 
 		}
 		return list;
+	}
+
+	private Node setting(Object[] subs, Object value) {
+
+		if (subs == null || subs.length == 0) {
+			return null;
+		}
+
+		Node node = findNode(subs);
+		if (node == null) {
+			node = generateNode(subs);
+		}
+		node.setValue(value);
+		return node;
 	}
 
 	private void replaceNode(Node stackedNode, Node currentNode) {
@@ -447,18 +466,15 @@ public final class Tree extends Node {
 	}
 
 	public static void main(String[] asd) {
-		teste1();
-		// teste3();
+		// teste1();
+		teste3();
 	}
 
 	private static void teste3() {
 		Tree tree = new Tree();
-		tree.set(new Object[] { "x", "a" }, "teste");
-		tree.set(new Object[] { "y", "b", "1" }, "1");
-		tree.set(new Object[] { "y", "b", "2" }, "2");
-		tree.set(new Object[] { "y", "b", "2", "22" }, "22");
-		tree.set(new Object[] { "y", "b", "2", "23" }, "23");
-		tree.merge(new Object[] { "x", "a" }, new Object[] { "y", "b" });
+		tree.set(new Object[] { "x" }, "teste");
+		tree.set(new Object[] { "y" }, "1");
+		tree.merge(new Object[] { "x" }, new Object[] { "y" });
 		System.out.println("depois:\n" + tree.dump());
 	}
 

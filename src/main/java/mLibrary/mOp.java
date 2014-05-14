@@ -138,13 +138,10 @@ public final class mOp {
 		return mFncUtil.numberConverter(object) < mFncUtil.numberConverter(object2);				
 	}
 
-	public static boolean Match(Object string, Object regex) {
-		String regexJava = regexConverter(regex);
-		return String.valueOf(string).matches(String.valueOf(regex));
-	}
-
-	private static String regexConverter(Object regex) {
-		return "";
+	public static Boolean Match(Object string, Object regex) {
+		String regexJava;
+		regexJava = mRegExConverter.convertPattern(String.valueOf(regex));
+		return String.valueOf(string).matches(regexJava);
 	}
 
 	public static boolean NotLess(Object object, Object object2) {
