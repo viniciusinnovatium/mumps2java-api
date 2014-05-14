@@ -571,8 +571,8 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $tlevel() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR RETORNO PROVISÓRIO
+		return 1;
 	}
 
 	//

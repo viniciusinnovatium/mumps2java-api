@@ -219,19 +219,26 @@ public class mContext {
 	}
 
 	public void merge(mVar dest, mVar orig) {
-		int type = dest.getType();
-		if (type == 1 && dest.isSameType(orig)) {
-			mDataPublic.merge(dest.getSubs(), orig.getSubs());
-		} else if (type == 2 && dest.isSameType(orig)) {
-			mDataGlobal.merge(dest.getSubs(), orig.getSubs());
-		} else if (type == 3 && dest.isSameType(orig)) {
-			mDataLocal.merge(dest.getSubs(), orig.getSubs());
-		} else {
-			throw new IllegalStateException(
-					"The variables to merge have different types. destine variable: "
-							+ Arrays.deepToString(dest.getSubs())
-							+ " origin variable: "
-							+ Arrays.deepToString(dest.getSubs()));
+		Object objOrig = orig.get();
+		if(objOrig==null){
+			return;
+		}
+		dest.set(objOrig);
+		Object obj = String.valueOf("");
+		for (; ; ) {
+			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig.getSubs()));
+			subL.add(obj);
+			
+			obj = Fnc.$order(var(subL.toArray()));
+			if(String.valueOf(obj).isEmpty()){				
+				break;
+			}
+			ArrayList<Object> subDest = new ArrayList<Object>(Arrays.asList(dest.getSubs()));
+			subDest.add(obj);
+			
+			ArrayList<Object> subOrig = new ArrayList<Object>(Arrays.asList(orig.getSubs()));
+			subOrig.add(obj);			
+			merge(var(subDest.toArray()), var(subOrig.toArray()));
 		}
 	}
 
