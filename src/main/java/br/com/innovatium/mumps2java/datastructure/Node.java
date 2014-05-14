@@ -223,7 +223,7 @@ public class Node implements Comparable<Node> {
 	public String toString() {
 		StringBuilder string = new StringBuilder();
 		string.append("(").append(key != null ? key : "").append(", ")
-				.append(value != null ? value.toString() : "").append(")");
+				.append(value).append(")");
 
 		return string.toString();
 	}

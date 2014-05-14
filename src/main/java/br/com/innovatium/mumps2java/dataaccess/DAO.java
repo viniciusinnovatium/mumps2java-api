@@ -11,7 +11,8 @@ import java.util.Map;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class DAO {
-private final Connection con;
+	private final Connection con;
+
 	public DAO() {
 		this(ConnectionType.DATASOURCE);
 	}
@@ -21,9 +22,10 @@ private final Connection con;
 			con = ConnectionFactory.getConnection(connectionType);
 		} catch (SQLException e) {
 			throw new IllegalStateException(
-					"Fail to open connection to database access throught "+connectionType+" strategy", e);
+					"Fail to open connection to database access throught "
+							+ connectionType + " strategy", e);
 		}
-		
+
 	}
 
 	// Check another return type different from the map.
@@ -33,14 +35,16 @@ private final Connection con;
 			return null;
 		}
 		Map<String, String> map = null;
+		PreparedStatement select = null;
+		ResultSet result = null;
 		try {
 
 			String like = "select key_, value_ from \"" + tableName
 					+ "\" where key_ like ? order by key_ asc";
 
-			PreparedStatement select = con.prepareStatement(like);
+			select = con.prepareStatement(like);
 			select.setString(1, key + "%");
-			ResultSet result = select.executeQuery();
+			result = select.executeQuery();
 			map = new HashMap<String, String>();
 			while (result.next()) {
 				map.put(result.getString(1), result.getString(2));
@@ -54,15 +58,18 @@ private final Connection con;
 			throw new IllegalStateException(
 					"Fail to find data thought like clause from table "
 							+ tableName + " and key " + key, e);
+		} finally {
+			closeResouce(select);
 		}
 		return map;
 	}
 
 	public void remove(String tableName, String key) {
+		PreparedStatement delete = null;
 		try {
 			String string = "delete from \"" + tableName
 					+ "\" where key_ like ?";
-			PreparedStatement delete = con.prepareStatement(string);
+			delete = con.prepareStatement(string);
 			delete.setString(1, key + "%");
 			delete.execute();
 
@@ -73,35 +80,41 @@ private final Connection con;
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to remove data from table "
 					+ tableName + " and key " + key, e);
+		} finally {
+			closeResouce(delete);
 		}
 	}
 
 	// Remove table name treatment.
 	@TODO
 	public void insert(String tableName, Object key, Object value) {
+		PreparedStatement ps = null;
+		ResultSet result = null;
 		try {
 
-			String selectOne = "select key_, value_ from \"" + tableName.toUpperCase()
-					+ "\" where key_ = ?";
-			PreparedStatement select = con.prepareStatement(selectOne);
-			select.setObject(1, key);
-			ResultSet result = select.executeQuery();
-			PreparedStatement insert = null;
+			String selectOne = "select key_, value_ from \""
+					+ tableName.toUpperCase() + "\" where key_ = ?";
+			ps = con.prepareStatement(selectOne);
+			ps.setObject(1, key);
+			result = ps.executeQuery();
+			
 			if (!result.next()) {
+				closeResouce(ps);
 				String insertQuery = "insert into " + tableName.toUpperCase()
 						+ " values (?, ?)";
-				insert = con.prepareStatement(insertQuery);
-				insert.setObject(1, key);
-				insert.setObject(2, value);
+				ps = con.prepareStatement(insertQuery);
+				ps.setString(1, String.valueOf(key));
+				ps.setObject(2, value);
 			} else {
+				closeResouce(ps);
 				String updateQuery = "update \"" + tableName.toUpperCase()
 						+ "\" set value_ = ? where key_ = ?";
-				insert = con.prepareStatement(updateQuery);
-				insert.setObject(1, value);
-				insert.setObject(2, key);
+				ps = con.prepareStatement(updateQuery);
+				ps.setObject(1, value);
+				ps.setString(2, String.valueOf(key));
 			}
 
-			insert.execute();
+			ps.execute();
 
 		} catch (java.sql.SQLSyntaxErrorException e) {
 			if (!hasTable(tableName)) {
@@ -112,6 +125,8 @@ private final Connection con;
 
 			throw new IllegalStateException("Fail to insert data into table "
 					+ tableName + " and key " + key, e);
+		} finally {
+			closeResouce(ps);
 		}
 	}
 
@@ -148,41 +163,62 @@ private final Connection con;
 	// Remove table name treatment.
 	@TODO
 	public Object find(String tableName, String key) {
+		Object objResult = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
 		try {
 			final StringBuilder selectOne = new StringBuilder(
-					"select key_, value_ from \"").append(tableName).append(
+					"select key_, value_ from \"").append(tableName.toUpperCase()).append(
 					"\" where key_ = ?");
-			PreparedStatement ps = con.prepareStatement(selectOne.toString());
+			ps = con.prepareStatement(selectOne.toString());
 			ps.setString(1, key);
-			ResultSet result = ps.executeQuery();
-
-			return result.next() ? result.getString(2) : null;
-
+			result = ps.executeQuery();
+			objResult = result.next() ? result.getString(2) : null;
 		} catch (java.sql.SQLSyntaxErrorException e) {
 			if (!hasTable(tableName)) {
-				return null;
+				objResult = null;
 			} else {
-				return null;
+				objResult = null;
 			}
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to select data from the table " + tableName
 							+ " and key " + key, e);
+		} finally {
+			closeResouce(ps);
 		}
+		return objResult;
 	}
 
 	public boolean createTable(String tableName) {
+		PreparedStatement ps =null;
 		try {
 			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "
 					+ tableName.toUpperCase()
 					+ "( \"KEY_\" VARCHAR2(4000 BYTE) NOT NULL ENABLE,"
 					+ "\"VALUE_\" VARCHAR2(4000 BYTE))");
-			PreparedStatement ps = con.prepareStatement(selectOne.toString());
+			ps = con.prepareStatement(selectOne.toString());
 			return ps.execute();
 
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to create table " + tableName, e);
+		}finally{
+			closeResouce(ps);
 		}
 	}
+	
+	private void closeResouce(PreparedStatement ps) {
+		try {
+			if (ps != null && !ps.isClosed()) {
+				ps.close();			
+			}
+		} catch (SQLException e) {
+			throw new IllegalStateException("Fail to close prepare statement",
+					e);
+		}
+	}
+	
+	
 }

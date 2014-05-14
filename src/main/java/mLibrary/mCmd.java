@@ -201,7 +201,7 @@ public class mCmd extends mParent {
 			String methodSrc = String.valueOf(object).replaceAll("do ", "");
 			if (object.equals("do ^WWWFORM")) {
 				methodName = "WWWFORM.main";
-			} else {
+			}else {
 				if (methodSrc.contains("^")) {
 					String[] methodSplit = methodSrc.split("\\^");
 					if (methodSplit.length == 2) {
@@ -213,6 +213,8 @@ public class mCmd extends mParent {
 				}
 			}
 			Do(methodName);
+		} else if (String.valueOf(object).startsWith("U ") || String.valueOf(object).startsWith("USER ")) {
+			
 		} else {
 			throw new UnsupportedOperationException();
 		}

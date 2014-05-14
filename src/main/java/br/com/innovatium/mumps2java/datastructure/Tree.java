@@ -212,7 +212,7 @@ public final class Tree extends Node {
 	}
 
 	public Object get(Object... subs) {
-		Node node = keyValue.get(generateKey(subs));
+		Node node = findNode(subs);
 		if (node != null) {
 			return node.getValue();
 		}
@@ -246,6 +246,35 @@ public final class Tree extends Node {
 			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
 		}
 
+	}
+
+	private void mergeSubnodes(final Object[] dest, final Object[] orig,
+			Node node) {
+
+		Object[] concatSubs = null;
+		boolean hasSubnodes = node.hasSubnodes();
+		boolean subnodeHasNext = hasSubnodes && node.getSubnode().hasNext();
+
+		Object subnodeValue = node.getValue();
+		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
+		Node destNode = findNode(concatSubs);
+		if (destNode == null) {
+			set(concatSubs, subnodeValue);
+		} else if (subnodeValue != null) {
+			destNode.setValue(subnodeValue);
+		}
+
+		if (hasSubnodes) {
+			mergeSubnodes(dest, orig, node.getSubnode());
+		}
+
+		if (subnodeHasNext) {
+			mergeSubnodes(dest, orig, node.getSubnode().getNext());
+		}
+
+		if (node.hasNext()) {
+			mergeSubnodes(dest, orig, node.getNext());
+		}
 	}
 
 	public Object order(Object... subs) {

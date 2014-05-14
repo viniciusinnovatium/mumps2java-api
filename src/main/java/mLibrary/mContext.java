@@ -219,7 +219,20 @@ public class mContext {
 	}
 
 	public void merge(mVar dest, mVar orig) {
-		mDataLocal.merge(dest.getSubs(), orig.getSubs());
+		int type = dest.getType();
+		if (type == 1 && dest.isSameType(orig)) {
+			mDataPublic.merge(dest.getSubs(), orig.getSubs());
+		} else if (type == 2 && dest.isSameType(orig)) {
+			mDataGlobal.merge(dest.getSubs(), orig.getSubs());
+		} else if (type == 3 && dest.isSameType(orig)) {
+			mDataLocal.merge(dest.getSubs(), orig.getSubs());
+		} else {
+			throw new IllegalStateException(
+					"The variables to merge have different types. destine variable: "
+							+ Arrays.deepToString(dest.getSubs())
+							+ " origin variable: "
+							+ Arrays.deepToString(dest.getSubs()));
+		}
 	}
 
 	public void newVar(mVar... vars) {
@@ -275,7 +288,7 @@ public class mContext {
 			return;
 		}
 		while (totalLevel-- > 0) {
-			//mDataPublic.unstacking();
+			// mDataPublic.unstacking();
 			mDataLocal.unstacking();
 		}
 	}
@@ -308,7 +321,7 @@ public class mContext {
 		if (Character.isDigit(varName.charAt(0))) {
 			return null;
 		}
-		
+
 		return new mVar(subs, generateMData(varName));
 	}
 
@@ -387,7 +400,7 @@ public class mContext {
 					y = x + 1;
 				}
 			}
-			
+
 			else if (_content.charAt(x) == ',') {
 				if (_level == 1) {
 					_result.add(parseVarValue(_content.substring(y, x)));
@@ -395,8 +408,8 @@ public class mContext {
 				}
 			}
 		}
-		if ((x-1) > y) {
-			_result.add(_content.substring(y, x-1));
+		if ((x - 1) > y) {
+			_result.add(_content.substring(y, x - 1));
 		}
 		return _result.toArray();
 	}
@@ -450,8 +463,8 @@ public class mContext {
 		}
 
 		map.put(this.mDataLocal, locals.toArray());
-		//map.put(this.mDataPublic, publics.toArray());
-		//map.put(this.mDataGlobal, globals.toArray());
+		// map.put(this.mDataPublic, publics.toArray());
+		// map.put(this.mDataGlobal, globals.toArray());
 		return map;
 	}
 }

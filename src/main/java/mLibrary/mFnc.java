@@ -1181,8 +1181,7 @@ public final class mFnc extends mParent {
 	}
 
 	public Object $ztrap() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return m$.var("$ZTRAP").get();
 	}
 
 	public Object $zversion(int i) {

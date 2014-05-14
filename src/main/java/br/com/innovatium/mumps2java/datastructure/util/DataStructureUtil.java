@@ -29,7 +29,7 @@ public final class DataStructureUtil {
 
 	public static String generateKey(boolean isDiskAccess, Object... subs) {
 		if (subs == null || subs.length == 0) {
-			return null;
+			return " ";
 		}
 
 		final StringBuilder builder = new StringBuilder();
