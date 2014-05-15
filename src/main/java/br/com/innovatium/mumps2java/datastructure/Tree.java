@@ -227,6 +227,10 @@ public final class Tree extends Node {
 		return string.toString();
 	}
 
+	public boolean isEmpty() {
+		return !this.hasSubnodes();
+	}
+
 	public void merge(final Object[] destSubs, final Object[] origSubs) {
 		Node origNode = findNode(origSubs);
 		Node destNode = findNode(destSubs);

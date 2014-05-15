@@ -37,6 +37,22 @@ public class mContext {
 		this.system = new mSystem(this);
 	}
 
+	public mData getmDataPublic() {
+		return mDataPublic;
+	}
+	
+	public boolean hasPublicVariables() {
+		return !mDataPublic.isEmpty();
+	}
+
+	public mData getmDataGlobal() {
+		return mDataGlobal;
+	}
+
+	public mData getmDataLocal() {
+		return mDataLocal;
+	}
+
 	public mSystem getSystem() {
 		return system;
 	}
