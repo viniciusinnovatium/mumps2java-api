@@ -15,9 +15,10 @@ import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
-	private mData mDataPublic;
-	private mData mDataGlobal;
-	private mData mDataLocal;
+	private final mDataAccess mDataPublic;
+	private final mDataAccess mDataGlobal;
+	private final mDataAccess mDataLocal;
+	private final mVariables mVariables;
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
 
@@ -28,9 +29,10 @@ public class mContext {
 	private mSystem system;
 
 	public mContext() {
-		this.mDataPublic = new mData();
-		this.mDataGlobal = new mData();
-		this.mDataLocal = new mData();
+		this.mVariables = new mVariables();
+		this.mDataPublic = new mDataAccessPublic(mVariables);
+		this.mDataGlobal = new mDatabaseAcess(mVariables);
+		this.mDataLocal = new mDataAccessLocal(mVariables);
 
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
@@ -39,10 +41,6 @@ public class mContext {
 
 	public mSystem getSystem() {
 		return system;
-	}
-
-	public String dump() {
-		return mDataPublic.dump();
 	}
 
 	public Object dispatch(mClass objClass, String methodName,
@@ -243,9 +241,9 @@ public class mContext {
 	}
 
 	public void newVar(mVar... vars) {
-		Map<mData, Object[]> maps = filteringVariableTypes(vars);
-		Set<Entry<mData, Object[]>> set = maps.entrySet();
-		for (Entry<mData, Object[]> entry : set) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
 			entry.getKey().stacking(entry.getValue());
 		}
 
@@ -253,9 +251,9 @@ public class mContext {
 	}
 
 	public void newVarExcept(mVar... vars) {
-		Map<mData, Object[]> maps = filteringVariableTypes(vars);
-		Set<Entry<mData, Object[]>> set = maps.entrySet();
-		for (Entry<mData, Object[]> entry : set) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
 			entry.getKey().stackingExcept(entry.getValue());
 		}
 		countNewOperator++;
@@ -329,7 +327,7 @@ public class mContext {
 			return null;
 		}
 
-		return new mVar(subs, generateMData(varName));
+		return new mVar(subs, getMDataAccess(varName));
 	}
 
 	public mVar varRef(String name, Object ref) {
@@ -439,7 +437,7 @@ public class mContext {
 		return _result;
 	}
 
-	private mData generateMData(String variableName) {
+	private mDataAccess getMDataAccess(String variableName) {
 		final char type = variableName.charAt(0);
 		if (type == '%') {
 			return mDataPublic;
@@ -450,8 +448,8 @@ public class mContext {
 		}
 	}
 
-	private Map<mData, Object[]> filteringVariableTypes(mVar... variables) {
-		Map<mData, Object[]> map = new HashMap<mData, Object[]>();
+	private Map<mDataAccess, Object[]> filteringVariableTypes(mVar... variables) {
+		Map<mDataAccess, Object[]> map = new HashMap<mDataAccess, Object[]>();
 		List<String> locals = new ArrayList<String>();
 		List<String> publics = new ArrayList<String>();
 		List<String> globals = new ArrayList<String>();

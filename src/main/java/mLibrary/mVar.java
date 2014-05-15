@@ -2,8 +2,6 @@ package mLibrary;
 
 import java.util.Arrays;
 
-import br.com.innovatium.mumps2java.datastructure.Tree;
-import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mVar {
@@ -12,28 +10,11 @@ public class mVar {
 	 */
 	@TODO
 	private Object[] subs;
-	private mData mData;
+	private mDataAccess mData;
 
-	public mVar(Object[] subs, mLibrary.mData mData) {
+	public mVar(Object[] subs, mDataAccess mData) {
 		this.subs = subs;
 		this.mData = mData;
-	}
-
-	@REMOVE
-	public int getType() {
-		char type = subs[0].toString().charAt(0);
-		if ('%' == type) {
-			return 1;
-		} else if ('^' == type) {
-			return 2;
-		} else {
-			return 3;
-		}
-	}
-
-	@REMOVE
-	public boolean isSameType(mVar var) {
-		return this.getType() == var.getType();
 	}
 
 	public Object order(int direction) {
@@ -45,9 +26,6 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-		if (Tree.generateKey(subs).contains("YBED")) {
-			int i = 0;
-		}
 		mData.subs(subs).set(value);
 	}
 
@@ -83,7 +61,7 @@ public class mVar {
 		return subs;
 	}
 
-	public mData getmData() {
+	public mDataAccess getmData() {
 		return mData;
 	}
 

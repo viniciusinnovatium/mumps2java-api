@@ -8,7 +8,7 @@ import java.util.UUID;
 public class mSession {
 	
 	private String sessionId;
-	private mData mDataSession = new mData();
+	private mDataAccessMemory mDataSession = new mDataAccessLocal(new mVariables());
 	
 	public mSession(Map<String, String[]> map) {
 		populateParameter(map);

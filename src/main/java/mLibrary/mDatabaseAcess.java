@@ -5,9 +5,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
-public class mDatabaseAcess extends mData {
+public class mDatabaseAcess extends mDataAccess {
+	private Tree tree;
+
+	public mDatabaseAcess(mVariables mVariables) {
+		super(mVariables);
+		tree = mVariables.getVariables('^');
+	}
+
+	private final DAO dao = new DAO();
+	private Object[] currentSubs;
 
 	public Object get(Object... subs) {
 		final String tableName = generateTableName(subs);
@@ -50,7 +60,7 @@ public class mDatabaseAcess extends mData {
 		return tree.dump();
 	}
 
-	public void kill(Object... subs) {
+	public void kill(Object[] subs) {
 		currentSubs = null;
 		dao.remove(generateTableName(subs), Tree.generateKey(subs));
 	}

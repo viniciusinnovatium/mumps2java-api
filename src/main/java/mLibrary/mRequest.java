@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class mRequest {
 	
-	private mData data = new mData();
+	private mDataAccess data = new mDataAccessLocal(new mVariables());
 	private Map<String,String[]> cgiEnvs = new HashMap<String,String[]>();
 	private mContent content;
 	
