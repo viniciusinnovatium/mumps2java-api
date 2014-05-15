@@ -1,6 +1,7 @@
 package mLibrary;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -16,6 +17,7 @@ public class mData {
 	boolean firstExecutionOrder = true;
 	DAO dao;
 	final Tree tree = new Tree();
+	final Set<String> cacheOrderFunction = new HashSet<String>(50);
 
 	public Object get(Object... subs) {
 		if (isDiskAccess(subs)) {
@@ -108,8 +110,11 @@ public class mData {
 		if (subsChanged) {
 			if (isDiskAccess(subs)) {
 				initDAO();
+				String key = Tree.generateKey(currentSubs);
+				if (!cacheOrderFunction.contains(key)) {
+					findDataOnDisk();
+				}
 				this.currentSubs = subs;
-				findDataOnDisk();
 			}
 			firstExecutionOrder = true;
 		}
