@@ -8,6 +8,7 @@ import java.util.Set;
 
 import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.*;
 
 public class mData {
 	Object[] currentSubs;
@@ -20,8 +21,7 @@ public class mData {
 		if (isDiskAccess(subs)) {
 			initDAO();
 			final String tableName = generateTableName(subs);
-			subs = Arrays.copyOfRange(subs, 1, subs.length);
-			return dao.find(tableName, Tree.generateKey(subs));
+			return dao.find(tableName, generateKeyWithoutVarName(subs));
 		} else {
 			return tree.get(subs);
 		}
@@ -38,11 +38,10 @@ public class mData {
 			if (currentSubs != null) {
 				initDAO();
 				final String tableName = generateTableName(currentSubs);
-				currentSubs = Arrays.copyOfRange(currentSubs, 1,
-						currentSubs.length);
 				// Here we have calling toString method because ListObject
 				// should be persisted as string
-				dao.insert(tableName, Tree.generateKey(currentSubs),
+				dao.insert(tableName,
+						generateKeyWithoutVarName(currentSubs),
 						value != null ? value.toString() : null);
 			}
 		} else {
@@ -79,7 +78,7 @@ public class mData {
 		currentSubs = null;
 		if (isDiskAccess(subs)) {
 			initDAO();
-			dao.remove(generateTableName(subs), Tree.generateKey(subs));
+			dao.remove(generateTableName(subs), generateKey(subs));
 		} else {
 			tree.kill(subs);
 		}
@@ -108,8 +107,9 @@ public class mData {
 
 	private void populateTree() {
 		if (isDiskAccess(currentSubs)
-				&& !cacheOrderFunction.contains(Tree.generateKey(currentSubs))) {
+				&& !cacheOrderFunction.contains(generateKey(currentSubs))) {
 
+			cacheOrderFunction.add(generateKey(currentSubs));
 			initDAO();
 			findDataOnDisk();
 		}
@@ -132,13 +132,10 @@ public class mData {
 
 	private void findDataOnDisk() {
 
-		Object[] brothers = Arrays.copyOfRange(currentSubs, 0,
-				currentSubs.length - 1);
-
 		final String tableName = generateTableName(currentSubs);
 
 		Map<String, String> map = dao.like(tableName,
-				Tree.generateKey(true, brothers));
+				generateKeyToLikeQuery(currentSubs));
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {
@@ -148,9 +145,5 @@ public class mData {
 						entry.getValue());
 			}
 		}
-	}
-
-	private String generateTableName(Object... subs) {
-		return subs[0].toString().replace("^", "");
 	}
 }

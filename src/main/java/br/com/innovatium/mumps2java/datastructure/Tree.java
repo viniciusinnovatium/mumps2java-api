@@ -158,15 +158,11 @@ public final class Tree extends Node {
 		return subscript;
 	}
 
-	public static String generateKey(Object... subs) {
+	private String generateKey(Object... subs) {
 		return DataStructureUtil.generateKey(subs);
 	}
 
-	public static String generateKey(boolean isDiskAccess, Object... subs) {
-		return DataStructureUtil.generateKey(isDiskAccess, subs);
-	}
-
-	public boolean hasPopulatedSubnode(Node node) {
+		public boolean hasPopulatedSubnode(Node node) {
 
 		boolean isPreenchido = false;
 		if (node.hasSubnodes()) {
