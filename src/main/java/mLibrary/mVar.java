@@ -45,8 +45,8 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-		if (Tree.generateKey(subs).contains("YBED")) {
-			int i = 0;
+		if (Tree.generateKey(subs).contains("YLFN")) {
+			System.out.print("");
 		}
 		mData.subs(subs).set(value);
 	}

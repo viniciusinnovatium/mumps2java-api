@@ -255,8 +255,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $increment(mVar var, Object increment) {
-		Double dbl = mFncUtil.numberConverter(var.get())
-				+ mFncUtil.numberConverter(increment);
+		Object dbl = mOp.Add(var.get(), increment);
 		var.set(dbl);
 		return dbl;
 	}

@@ -1,5 +1,7 @@
 package br.com.innovatium.mumps2java.datastructure.util;
 
+import mLibrary.mFncUtil;
+
 
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
@@ -35,7 +37,7 @@ public final class DataStructureUtil {
 		final StringBuilder builder = new StringBuilder();
 		int index = subs.length - 1;
 		for (int i = isDiskAccess ? 1 : 0; i < subs.length; i++) {
-			builder.append(subs[i]);
+			builder.append(mFncUtil.toString(subs[i]));
 			if (index-- > 0) {
 				builder.append(DELIMITER);
 			}
