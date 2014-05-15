@@ -420,29 +420,29 @@ public final class mFnc extends mParent {
 	public static Object $order(mVar var, Object dir) {
 		final Object[] subs = var.getSubs();
 		final int lenght = subs.length;
-		final boolean isOrderOverVariables = lenght == 1
-				&& subs[0].toString().length() > 1;
 
 		final boolean isEmpty = lenght == 1 && subs[0].toString().length() == 0;
-
+		final boolean isOrderOverVariables = lenght == 1 && !isEmpty;
 		Object next = null;
 		if (isOrderOverVariables) {
-			char type = ' ';
-			type = subs[0].toString().charAt(0);
-
-			next = var.order(mFncUtil.numberConverter(dir).intValue());
-
-			boolean isEndPublic = "".equals(next) && '%' == type;
-			if (isEndPublic) {
-				next = new mVar(new Object[] { "" }, m$.getmDataLocal())
-						.order((Integer) dir);
+			boolean isPublic = subs[0].toString().indexOf("%") >= 0;
+			boolean isGlobal = subs[0].toString().indexOf("^") >= 0;
+			if (isGlobal) {
+				throw new UnsupportedOperationException(
+						"Does not be able order over global variables");
+			}
+			if (isPublic) {
+				next = m$.getmDataPublic().order(subs,
+						mFncUtil.numberConverter(dir).intValue());
+			} else {
+				next = m$.getmDataLocal().order(subs,
+						mFncUtil.numberConverter(dir).intValue());
 			}
 
-			boolean hasNextLocal = next != null;
-			if (!hasNextLocal) {
-				// Looking for the first public variable
-				next = new mVar(new Object[] { "" }, m$.getmDataPublic())
-						.order((Integer) dir);
+			boolean isEndPublic = isPublic && "".equals(next);
+			if (isEndPublic) {
+				next = m$.getmDataLocal().order(new Object[] { "" },
+						mFncUtil.numberConverter(dir).intValue());
 			}
 
 		} else if (isEmpty) {

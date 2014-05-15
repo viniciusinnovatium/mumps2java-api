@@ -28,8 +28,8 @@ public class mData {
 		}
 
 	}
-	
-	public boolean isEmpty(){
+
+	public boolean isEmpty() {
 		return tree.isEmpty();
 	}
 
@@ -116,7 +116,7 @@ public class mData {
 		return tree.order(subs, direction);
 	}
 
-	public Object order(Object... subs) {
+	public Object order(Object[] subs) {
 		return order(subs, 1);
 	}
 
