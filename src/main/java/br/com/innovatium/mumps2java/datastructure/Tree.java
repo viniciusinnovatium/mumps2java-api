@@ -19,7 +19,9 @@ public final class Tree extends Node {
 			this);
 
 	public Tree() {
-		super(new Object[] { "root" }, null, "root");
+		// We adopted this subscript to the tree because no one mumps variable
+		// can be declared about this symbol.
+		super(new Object[] { "@" }, null, "@");
 	}
 
 	public void stacking(Object... variables) {
