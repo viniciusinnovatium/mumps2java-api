@@ -1,10 +1,11 @@
 package mLibrary;
 
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
+
 import java.util.Arrays;
 
 import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
-
 public class mVar {
 	/*
 	 * The subscripts should be converted to String soon.
@@ -44,12 +45,9 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-<<<<<<< HEAD
-		if (Tree.generateKey(subs).contains("YART")) {
+		if (generateKey(subs).contains("YART")) {
 			System.out.print("");
 		}
-=======
->>>>>>> a65f1b1f506f49d9bf8fa228f51d43036db83124
 		mData.subs(subs).set(value);
 	}
 

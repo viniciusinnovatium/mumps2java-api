@@ -1,5 +1,7 @@
 package br.com.innovatium.mumps2java.datastructure.util;
 
+import mLibrary.mFncUtil;
+
 
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
