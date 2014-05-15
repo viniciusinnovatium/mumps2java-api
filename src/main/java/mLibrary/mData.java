@@ -1,28 +1,27 @@
 package mLibrary;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import br.com.innovatium.mumps2java.dataaccess.ConnectionType;
 import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.*;
 
 public class mData {
 	Object[] currentSubs;
 
-	boolean subsChanged;
-	boolean firstExecutionOrder = true;
 	DAO dao;
 	final Tree tree = new Tree();
+	final Set<String> cacheOrderFunction = new HashSet<String>(50);
 
 	public Object get(Object... subs) {
 		if (isDiskAccess(subs)) {
 			initDAO();
 			final String tableName = generateTableName(subs);
-			subs = Arrays.copyOfRange(subs, 1, subs.length);
-			return dao.find(tableName, Tree.generateKey(subs));
+			return dao.find(tableName, generateKeyWithoutVarName(subs));
 		} else {
 			return tree.get(subs);
 		}
@@ -39,11 +38,10 @@ public class mData {
 			if (currentSubs != null) {
 				initDAO();
 				final String tableName = generateTableName(currentSubs);
-				currentSubs = Arrays.copyOfRange(currentSubs, 1,
-						currentSubs.length);
 				// Here we have calling toString method because ListObject
 				// should be persisted as string
-				dao.insert(tableName, Tree.generateKey(currentSubs),
+				dao.insert(tableName,
+						generateKeyWithoutVarName(currentSubs),
 						value != null ? value.toString() : null);
 			}
 		} else {
@@ -80,39 +78,21 @@ public class mData {
 		currentSubs = null;
 		if (isDiskAccess(subs)) {
 			initDAO();
-			dao.remove(generateTableName(subs), Tree.generateKey(subs));
+			dao.remove(generateTableName(subs), generateKey(subs));
 		} else {
 			tree.kill(subs);
 		}
 	}
 
 	public int data(Object... subs) {
-		verifySubsChanges(subs);
 		currentSubs = subs;
 		populateTree();
 		return tree.data(subs);
 	}
 
-	/*
-	 * public Object order(int direction) { if (subsChanged) { if
-	 * (isDiskAccess(currentSubs)) { initDAO(); findDataOnDisk(); }
-	 * firstExecutionOrder = true; }
-	 * 
-	 * if (firstExecutionOrder) { firstExecutionOrder = false; orderSubs =
-	 * Arrays.copyOfRange(currentSubs, 0, currentSubs.length); return
-	 * orderSubs[orderSubs.length - 1] = tree.order(currentSubs, direction); }
-	 * else { return orderSubs[orderSubs.length - 1] = tree.order(orderSubs,
-	 * direction); } }
-	 */
 	public Object order(Object[] subs, int direction) {
-		if (subsChanged) {
-			if (isDiskAccess(subs)) {
-				initDAO();
-				this.currentSubs = subs;
-				findDataOnDisk();
-			}
-			firstExecutionOrder = true;
-		}
+		this.currentSubs = subs;
+		populateTree();
 		return tree.order(subs, direction);
 	}
 
@@ -121,34 +101,17 @@ public class mData {
 	}
 
 	public mData subs(Object... subs) {
-		verifySubsChanges(subs);
 		currentSubs = subs;
 		return this;
 	}
 
 	private void populateTree() {
-		if (subsChanged && isDiskAccess(currentSubs)) {
+		if (isDiskAccess(currentSubs)
+				&& !cacheOrderFunction.contains(generateKey(currentSubs))) {
+
+			cacheOrderFunction.add(generateKey(currentSubs));
 			initDAO();
 			findDataOnDisk();
-		}
-	}
-
-	private void verifySubsChanges(Object... subs) {
-		subsChanged = false;
-		if (currentSubs != null && subs != null) {
-			if (currentSubs.length == subs.length) {
-				for (int i = 0; i < subs.length; i++) {
-					if (currentSubs[i] != null
-							&& !currentSubs[i].equals(subs[i])) {
-						subsChanged = true;
-						break;
-					}
-				}
-			} else {
-				subsChanged = true;
-			}
-		} else {
-			subsChanged = true;
 		}
 	}
 
@@ -163,19 +126,16 @@ public class mData {
 
 	private void initDAO() {
 		if (dao == null) {
-			this.dao = new DAO(ConnectionType.DATASOURCE);
+			this.dao = new DAO();
 		}
 	}
 
 	private void findDataOnDisk() {
 
-		Object[] brothers = Arrays.copyOfRange(currentSubs, 0,
-				currentSubs.length - 1);
-
 		final String tableName = generateTableName(currentSubs);
 
 		Map<String, String> map = dao.like(tableName,
-				Tree.generateKey(true, brothers));
+				generateKeyToLikeQuery(currentSubs));
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {
@@ -185,9 +145,5 @@ public class mData {
 						entry.getValue());
 			}
 		}
-	}
-
-	private String generateTableName(Object... subs) {
-		return subs[0].toString().replace("^", "");
 	}
 }
