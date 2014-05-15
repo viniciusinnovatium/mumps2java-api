@@ -456,7 +456,7 @@ public final class mFncUtil {
 	}
 
 
-	public static Object toString(Object expression) {
+	public static String toString(Object expression) {
 		String str = String.valueOf(expression);
 		if(expression instanceof Double){
 			Double dbl = (Double)expression;

@@ -113,7 +113,7 @@ public class mData {
 	}
 
 	public Object order(Object... subs) {
-		return tree.order(subs, 1);
+		return order(subs, 1);
 	}
 
 	public mData subs(Object... subs) {

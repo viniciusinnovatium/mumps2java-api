@@ -255,9 +255,10 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $increment(mVar var, Object increment) {
-		var.set(mFncUtil.numberConverter(var.get())
-				+ mFncUtil.numberConverter(increment));
-		return var.get();
+		Double dbl = mFncUtil.numberConverter(var.get())
+				+ mFncUtil.numberConverter(increment);
+		var.set(dbl);
+		return dbl;
 	}
 
 	public static Object $io() {

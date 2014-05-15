@@ -176,11 +176,7 @@ public class mCmd extends mParent {
 	public void Write(Object... string) {
 		try {
 			for (Object str : string) {
-				if (str instanceof Double) {
-					System.out.print(BigDecimal.valueOf((Double) str));
-				} else {
-					System.out.print(String.valueOf(str));
-				}
+				System.out.print(mFncUtil.toString(str));
 			}
 		} catch (NullPointerException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);

@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import br.com.innovatium.mumps2java.todo.TODO;
+
 public class mPage extends mClass {
 
 	public static Object EscapeURL(Object url){		
@@ -15,17 +17,17 @@ public class mPage extends mClass {
 			return url;
 		}
 	}
-	
+	@TODO
 	public static String Encrypt(String string){
-		return string;
+		return string;//TODO REVISAR
 	}
-	
+	@TODO
 	public static String Decrypt(String string){
-		return string;
+		return string;//TODO REVISAR
 	}
-	
+	@TODO
 	public static String HyperEventCall(String method , String args, Integer type){
-		return "";
+		return "\"\"\"cspHttpServerMethod(\"\"\"\""+method+"\"\"\"\","+args+")\"\"\"";
 	}
 
 	public static Object UnescapeURL(Object url) {

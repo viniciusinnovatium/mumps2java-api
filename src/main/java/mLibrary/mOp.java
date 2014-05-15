@@ -2,7 +2,6 @@ package mLibrary;
 
 import java.math.BigDecimal;
 
-
 public final class mOp {
 	private mOp() {
 	}
@@ -37,11 +36,11 @@ public final class mOp {
 	}
 
 	public static boolean Equal(Object x, Object y) {
-		if(x instanceof Double && (((Double) x)%1 == 0)){
-			x =  ((Double)x).longValue();
+		if (x instanceof Double && (((Double) x) % 1 == 0)) {
+			x = ((Double) x).longValue();
 		}
-		if(y instanceof Double && (((Double) y)%1 == 0)){
-			y = ((Double)y).longValue();
+		if (y instanceof Double && (((Double) y) % 1 == 0)) {
+			y = ((Double) y).longValue();
 		}
 		if (String.valueOf(x).equals(String.valueOf(y))) {
 			return true;
@@ -55,11 +54,10 @@ public final class mOp {
 	}
 
 	public static Object Concat(Object string1, Object string2) {
-		if (string2 instanceof Double) {
-			Double dbl = (Double) string2;
-			string2 = BigDecimal.valueOf(dbl).setScale(dbl > Math.floor(dbl) ? 2 : 0);
+		if (string2 instanceof mVar) {
+			int i = 0;
 		}
-		return String.valueOf(string1).concat(String.valueOf(string2));
+		return mFncUtil.toString(string1).concat(mFncUtil.toString(string2));
 	}
 
 	public static boolean SortsAfter(Object object, Object object2) {
@@ -84,8 +82,9 @@ public final class mOp {
 	}
 
 	public static boolean Greater(Object object, Object object2) {
-			return mFncUtil.numberConverter(object) > mFncUtil.numberConverter(object2);
-		
+		return mFncUtil.numberConverter(object) > mFncUtil
+				.numberConverter(object2);
+
 	}
 
 	public static Object Subtract(Object num1, Object num2) {
@@ -99,11 +98,13 @@ public final class mOp {
 	}
 
 	public static boolean GreaterOrEqual(Object object, Object object2) {
-		return mFncUtil.numberConverter(object) >= mFncUtil.numberConverter(object2);
+		return mFncUtil.numberConverter(object) >= mFncUtil
+				.numberConverter(object2);
 	}
 
 	public static boolean LessOrEqual(Object object, Object object2) {
-		return mFncUtil.numberConverter(object) <= mFncUtil.numberConverter(object2);		
+		return mFncUtil.numberConverter(object) <= mFncUtil
+				.numberConverter(object2);
 	}
 
 	public static boolean Contains(Object str1, Object str2) {
@@ -135,7 +136,8 @@ public final class mOp {
 	}
 
 	public static boolean Less(Object object, Object object2) {
-		return mFncUtil.numberConverter(object) < mFncUtil.numberConverter(object2);				
+		return mFncUtil.numberConverter(object) < mFncUtil
+				.numberConverter(object2);
 	}
 
 	public static Boolean Match(Object string, Object regex) {

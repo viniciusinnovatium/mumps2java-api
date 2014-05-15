@@ -218,6 +218,7 @@ public class mContext {
 		throw new UnsupportedOperationException();
 	}
 
+	@TODO
 	public void merge(mVar dest, mVar orig) {
 		Object objOrig = orig.get();
 		if(objOrig==null){
@@ -229,7 +230,7 @@ public class mContext {
 			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig.getSubs()));
 			subL.add(obj);
 			
-			obj = Fnc.$order(var(subL.toArray()));
+			obj = mFnc.$order(var(subL.toArray()));
 			if(String.valueOf(obj).isEmpty()){				
 				break;
 			}
