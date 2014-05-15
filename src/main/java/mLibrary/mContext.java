@@ -220,11 +220,10 @@ public class mContext {
 
 	@TODO
 	public void merge(mVar dest, mVar orig) {
-		Object objOrig = orig.get();
-		if(objOrig==null){
-			return;
+		Object valOrig = orig.get();
+		if(valOrig!=null){
+			dest.set(valOrig);
 		}
-		dest.set(objOrig);
 		Object obj = String.valueOf("");
 		for (; ; ) {
 			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig.getSubs()));
