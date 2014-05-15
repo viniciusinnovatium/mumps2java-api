@@ -1,4 +1,4 @@
-package com.disclinc.netmanager.variable.test;
+package com.disclinc.netmanager.function.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;

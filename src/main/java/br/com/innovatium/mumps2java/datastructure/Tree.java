@@ -504,8 +504,7 @@ public final class Tree extends Node {
 	}
 
 	public static void main(String[] asd) {
-		// teste1();
-		teste3();
+		teste1();
 	}
 
 	private static void teste3() {

@@ -6,15 +6,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import br.com.innovatium.mumps2java.dataaccess.ConnectionType;
 import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class mData {
 	Object[] currentSubs;
 
-	boolean subsChanged;
-	boolean firstExecutionOrder = true;
 	DAO dao;
 	final Tree tree = new Tree();
 	final Set<String> cacheOrderFunction = new HashSet<String>(50);
@@ -89,35 +86,14 @@ public class mData {
 	}
 
 	public int data(Object... subs) {
-		verifySubsChanges(subs);
 		currentSubs = subs;
 		populateTree();
 		return tree.data(subs);
 	}
 
-	/*
-	 * public Object order(int direction) { if (subsChanged) { if
-	 * (isDiskAccess(currentSubs)) { initDAO(); findDataOnDisk(); }
-	 * firstExecutionOrder = true; }
-	 * 
-	 * if (firstExecutionOrder) { firstExecutionOrder = false; orderSubs =
-	 * Arrays.copyOfRange(currentSubs, 0, currentSubs.length); return
-	 * orderSubs[orderSubs.length - 1] = tree.order(currentSubs, direction); }
-	 * else { return orderSubs[orderSubs.length - 1] = tree.order(orderSubs,
-	 * direction); } }
-	 */
 	public Object order(Object[] subs, int direction) {
-		if (subsChanged) {
-			if (isDiskAccess(subs)) {
-				initDAO();
-				String key = Tree.generateKey(currentSubs);
-				if (!cacheOrderFunction.contains(key)) {
-					findDataOnDisk();
-				}
-				this.currentSubs = subs;
-			}
-			firstExecutionOrder = true;
-		}
+		this.currentSubs = subs;
+		populateTree();
 		return tree.order(subs, direction);
 	}
 
@@ -126,34 +102,16 @@ public class mData {
 	}
 
 	public mData subs(Object... subs) {
-		verifySubsChanges(subs);
 		currentSubs = subs;
 		return this;
 	}
 
 	private void populateTree() {
-		if (subsChanged && isDiskAccess(currentSubs)) {
+		if (isDiskAccess(currentSubs)
+				&& !cacheOrderFunction.contains(Tree.generateKey(currentSubs))) {
+
 			initDAO();
 			findDataOnDisk();
-		}
-	}
-
-	private void verifySubsChanges(Object... subs) {
-		subsChanged = false;
-		if (currentSubs != null && subs != null) {
-			if (currentSubs.length == subs.length) {
-				for (int i = 0; i < subs.length; i++) {
-					if (currentSubs[i] != null
-							&& !currentSubs[i].equals(subs[i])) {
-						subsChanged = true;
-						break;
-					}
-				}
-			} else {
-				subsChanged = true;
-			}
-		} else {
-			subsChanged = true;
 		}
 	}
 
@@ -168,7 +126,7 @@ public class mData {
 
 	private void initDAO() {
 		if (dao == null) {
-			this.dao = new DAO(ConnectionType.DATASOURCE);
+			this.dao = new DAO();
 		}
 	}
 
