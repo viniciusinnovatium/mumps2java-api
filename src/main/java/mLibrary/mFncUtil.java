@@ -13,6 +13,9 @@ public final class mFncUtil {
 		return DataStructureUtil.concat(dest, orig);
 	}
 
+	public static Object[] concatSinceLastSubscript(Object[] dest, Object[] orig) {
+		return DataStructureUtil.concatSinceLast(dest, orig);
+	}
 	
 	public static Boolean booleanConverter(Object obj) {
 		Boolean bool = false;
