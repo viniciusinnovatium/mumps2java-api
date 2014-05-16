@@ -45,7 +45,7 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-		if (generateKey(subs).contains("YART")) {
+		if (generateKey(subs).contains("YLFN")) {
 			System.out.print("");
 		}
 		mData.subs(subs).set(value);

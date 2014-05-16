@@ -1271,4 +1271,12 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
+	public Object $text(Object add) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $query(mVar indirectVar, Object negative) {
+		throw new UnsupportedOperationException();
+	}
+
 }

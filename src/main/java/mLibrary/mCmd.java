@@ -1,9 +1,12 @@
 package mLibrary;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mCmd extends mParent {
 
@@ -173,10 +176,21 @@ public class mCmd extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
+	/*
+	 * Remove toString to wirte faster
+	 */
+	@TODO
 	public void Write(Object... string) {
 		try {
+			Writer writer = m$.getWriter();
 			for (Object str : string) {
-				System.out.print(mFncUtil.toString(str));
+				try {
+					writer.write(str.toString());
+					System.out.print(mFncUtil.toString(str));
+				} catch (IOException e) {
+					throw new IllegalArgumentException("Fail to write the string HTML "+str.toString());
+				}
+				
 			}
 		} catch (NullPointerException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
