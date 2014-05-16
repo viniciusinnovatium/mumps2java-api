@@ -7,12 +7,16 @@ public abstract class mDataAccess {
 	Object[] currentSubs;
 	mVariables mVariables;
 
-	public mDataAccess(){
+	public mDataAccess() {
 		this(new mVariables());
 	}
-	
+
 	public mDataAccess(mVariables mVariables) {
 		this.mVariables = mVariables;
+	}
+
+	Object[] getCurrentSubs() {
+		return currentSubs;
 	}
 
 	public abstract Object get(Object... subs);
@@ -31,9 +35,15 @@ public abstract class mDataAccess {
 
 	public abstract Object order(Object... subs);
 
-	public abstract mDataAccess subs(Object... subs);
+	mDataAccess subs(Object... subs) {
+		currentSubs = subs;
+		return this;
+	}
 
 	public abstract void unstacking();
 
 	public abstract void kill(Object[] subs);
+
+	public abstract boolean isEmpty();
+
 }

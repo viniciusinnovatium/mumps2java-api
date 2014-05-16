@@ -3,7 +3,6 @@ package mLibrary;
 import java.util.Arrays;
 
 import br.com.innovatium.mumps2java.todo.TODO;
-
 public class mVar {
 	/*
 	 * The subscripts should be converted to String soon.
@@ -48,6 +47,10 @@ public class mVar {
 	public mVar var(Object... subs) {
 		return new mVar(mFncUtil.concat(this.subs, subs), mData);
 	}
+	
+	public mVar lastVar(Object... subs) {
+		return new mVar(mFncUtil.concatSinceLastSubscript(this.subs, subs), mData);  
+	} 
 
 	public String getName() {
 		return subs[0].toString();

@@ -55,8 +55,8 @@ class mDataAccessMemory extends mDataAccess {
 		return order(subs, 1);
 	}
 
-	public mDataAccessMemory subs(Object... subs) {
-		currentSubs = subs;
-		return this;
+	@Override
+	public boolean isEmpty() {
+		return tree.isEmpty();
 	}
 }

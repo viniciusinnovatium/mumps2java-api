@@ -255,8 +255,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $increment(mVar var, Object increment) {
-		Double dbl = mFncUtil.numberConverter(var.get())
-				+ mFncUtil.numberConverter(increment);
+		Object dbl = mOp.Add(var.get(), increment);
 		var.set(dbl);
 		return dbl;
 	}
@@ -332,17 +331,18 @@ public final class mFnc extends mParent {
 	 *         be right-aligned. It can be a positive integer value, the name of
 	 *         an integer variable, or any valid Caché ObjectScript expression
 	 *         that evaluates to a positive integer. <br/>
-	 *         decimal -> Optional — The position at which to place the
-	 *         decimal point within the width. It can be a positive integer
-	 *         value, the name of an integer variable, or any valid Caché
-	 *         ObjectScript expression that evaluates to a positive integer.
+	 *         decimal -> Optional — The position at which to place the decimal
+	 *         point within the width. It can be a positive integer value, the
+	 *         name of an integer variable, or any valid Caché ObjectScript
+	 *         expression that evaluates to a positive integer.
 	 */
 	public static Object $justify(Object expression, int width, Object decimal) {
 		if (decimal != null) {
 			expression = $fnumber(expression, ",", decimal);
 		}
 		expression = mFncUtil.toString(expression);
-		width = width > expression.toString().length() ? width :  expression.toString().length();
+		width = width > expression.toString().length() ? width : expression
+				.toString().length();
 		String strFormated = new String(new char[width
 				- expression.toString().length()]).replace("\0", " ").concat(
 				String.valueOf(expression));
@@ -417,7 +417,41 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $order(mVar var, Object dir) {
-		return var.order(mFncUtil.numberConverter(dir).intValue());
+		final Object[] subs = var.getSubs();
+		final int lenght = subs.length;
+
+		final boolean isEmpty = lenght == 1 && subs[0].toString().length() == 0;
+		final boolean isOrderOverVariables = lenght == 1 && !isEmpty;
+		Object next = null;
+		if (isOrderOverVariables) {
+			boolean isPublic = subs[0].toString().indexOf("%") >= 0;
+			boolean isGlobal = subs[0].toString().indexOf("^") >= 0;
+			if (isGlobal) {
+				throw new UnsupportedOperationException(
+						"Does not be able order over global variables");
+			}
+			if (isPublic) {
+				next = m$.getmDataPublic().order(subs,
+						mFncUtil.numberConverter(dir).intValue());
+			} else {
+				next = m$.getmDataLocal().order(subs,
+						mFncUtil.numberConverter(dir).intValue());
+			}
+
+			boolean isEndPublic = isPublic && "".equals(next);
+			if (isEndPublic) {
+				next = m$.getmDataLocal().order(new Object[] { "" },
+						mFncUtil.numberConverter(dir).intValue());
+			}
+
+		} else if (isEmpty) {
+			mDataAccess mdata = m$.hasPublicVariables() ? m$.getmDataPublic() : m$
+					.getmDataLocal();
+			next = new mVar(new Object[] { "" }, mdata).order((Integer) dir);
+		} else {
+			next = var.order(mFncUtil.numberConverter(dir).intValue());
+		}
+		return next;
 	}
 
 	public static Object $piece(Object string, Object delimiter) {
@@ -775,7 +809,9 @@ public final class mFnc extends mParent {
 
 	public static Object $zstrip(Object targetString, Object maskCode,
 			Object remChars, Object keepChars) {
-		return mZStripParser.zstrip(String.valueOf(targetString),String.valueOf(maskCode), String.valueOf(remChars),String.valueOf(keepChars));
+		return mZStripParser.zstrip(String.valueOf(targetString),
+				String.valueOf(maskCode), String.valueOf(remChars),
+				String.valueOf(keepChars));
 	}
 
 	public static String $ztimestamp() {
@@ -1232,6 +1268,14 @@ public final class mFnc extends mParent {
 
 	public Object $zobjclassmethod(Object object, String string, Object object2) {
 		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $text(Object add) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $query(mVar indirectVar, Object negative) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -1,4 +1,4 @@
-package com.disclinc.netmanager.variable.test;
+package com.disclinc.netmanager.function.test;
 
 import static org.junit.Assert.assertEquals;
 import mLibrary.mContext;
@@ -63,11 +63,13 @@ public class OrderFunctionTest {
 		m$.var("%").set(1);
 		m$.var("%g", "2").set(2);
 		m$.var("%a", "5", "2").set(4);
+		m$.var("e", "6").set(66);
 		
 		assertEquals("Fail to find first public variable on memory.", "%a", mFnc.$order(m$.var("%")));
 		assertEquals("Fail to find first public variable on memory.", "%g", mFnc.$order(m$.var("%a")));
 		assertEquals("Fail to find first public variable on memory.", "%x", mFnc.$order(m$.var("%g")));
-		assertEquals("Fail to find first public variable on memory.", "", mFnc.$order(m$.var("%x")));
+		assertEquals("Fail to find first public variable on memory.", "e", mFnc.$order(m$.var("%x")));
+		assertEquals("Fail to find first public variable on memory.", "", mFnc.$order(m$.var("e")));
 		assertEquals("Fail to find first public variable on memory.", "%", mFnc.$order(m$.var("")));
 	}
 }

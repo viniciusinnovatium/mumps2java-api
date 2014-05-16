@@ -7,13 +7,20 @@ public class mPieceVar extends mVar {
 	public mPieceVar(mVar var, Object delimiter, Object position) {
 		super(var.getSubs(), var.getmData());
 		this.delimiter = String.valueOf(delimiter);
-
 		if (position instanceof Integer) {
 			this.position = (Integer) position;
 		} else if (position instanceof Double) {
 			this.position = ((Double) position).intValue();
-		} else {
-			this.position = null;
+		}   else {
+			if (position instanceof String) {
+				this.position = Double.valueOf(position.toString()).intValue();				
+				try {
+				} catch (NumberFormatException e) {	
+				}
+			}else{
+				this.position = null;
+				
+			}
 		}
 		if (this.position == null || this.position < 0) {
 			throw new IllegalArgumentException(

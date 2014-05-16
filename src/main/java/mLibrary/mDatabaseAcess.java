@@ -1,6 +1,12 @@
 package mLibrary;
 
-import java.util.Arrays;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyOfParent;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyToLikeQuery;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyWithoutVarName;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateTableName;
+
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -9,31 +15,52 @@ import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class mDatabaseAcess extends mDataAccess {
-	private Tree tree;
+	Object[] currentSubs;
 
-	public mDatabaseAcess(mVariables mVariables) {
+	DAO dao;
+	final Tree tree;
+	final Set<String> cacheOrderFunction = new HashSet<String>(50);
+	
+	public mDatabaseAcess(mVariables mVariables){
 		super(mVariables);
-		tree = mVariables.getVariables('^');
+		this.tree = mVariables.getVariables(null);
 	}
 
-	private final DAO dao = new DAO();
-	private Object[] currentSubs;
-
 	public Object get(Object... subs) {
-		final String tableName = generateTableName(subs);
-		subs = Arrays.copyOfRange(subs, 1, subs.length);
-		return dao.find(tableName, Tree.generateKey(subs));
+		if (isDiskAccess(subs)) {
+			initDAO();
+			final String tableName = generateTableName(subs);
+			return dao.find(tableName, generateKeyWithoutVarName(subs));
+		} else {
+			return tree.get(subs);
+		}
+
+	}
+
+	/*
+	 * This method was create to support lastVar function and should not remove.
+	 */
+	public Object[] getCurrentSubs() {
+		return currentSubs;
+	}
+
+	public boolean isEmpty() {
+		return tree.isEmpty();
 	}
 
 	public void set(Object value) {
-		if (currentSubs != null) {
-			final String tableName = generateTableName(currentSubs);
-			currentSubs = Arrays
-					.copyOfRange(currentSubs, 1, currentSubs.length);
-			// Here we have calling toString method because ListObject
-			// should be persisted as string
-			dao.insert(tableName, Tree.generateKey(currentSubs),
-					value != null ? value.toString() : null);
+
+		if (isDiskAccess(currentSubs)) {
+			if (currentSubs != null) {
+				initDAO();
+				final String tableName = generateTableName(currentSubs);
+				// Here we have calling toString method because ListObject
+				// should be persisted as string
+				dao.insert(tableName, generateKeyWithoutVarName(currentSubs),
+						value != null ? value.toString() : null);
+			}
+		} else {
+			tree.set(currentSubs, value);
 		}
 	}
 
@@ -41,19 +68,21 @@ public class mDatabaseAcess extends mDataAccess {
 		tree.merge(dest, orig);
 	}
 
-	public void stacking(Object... subs) {
-		throw new UnsupportedOperationException(
-				"Stacking variable is not supported to access data on disk");
+	public void stacking(Object... variables) {
+		if (!isDiskAccess(variables)) {
+			tree.stacking(variables);
+		} else {
+			throw new UnsupportedOperationException(
+					"Stacking variable is not supported to access data on disk");
+		}
 	}
 
-	public void stackingExcept(Object... subs) {
-		throw new UnsupportedOperationException(
-				"Stacking variable is not supported to access data on disk");
+	public void stackingExcept(Object... variables) {
+		tree.stackingExcept(variables);
 	}
 
 	public void unstacking() {
-		throw new UnsupportedOperationException(
-				"Unstacking variable is not supported to access data on disk");
+		tree.unstacking();
 	}
 
 	public String dump() {
@@ -62,69 +91,63 @@ public class mDatabaseAcess extends mDataAccess {
 
 	public void kill(Object[] subs) {
 		currentSubs = null;
-		dao.remove(generateTableName(subs), Tree.generateKey(subs));
+		if (isDiskAccess(subs)) {
+			initDAO();
+			dao.remove(generateTableName(subs), generateKey(subs));
+		} else {
+			tree.kill(subs);
+		}
 	}
 
 	public int data(Object... subs) {
-		verifySubsChanges(subs);
 		currentSubs = subs;
 		populateTree();
 		return tree.data(subs);
 	}
 
 	public Object order(Object[] subs, int direction) {
-		if (subsChanged) {
-			this.currentSubs = subs;
-			findDataOnDisk();
-			firstExecutionOrder = true;
-		}
+		this.currentSubs = subs;
+		populateTree();
 		return tree.order(subs, direction);
 	}
 
 	public Object order(Object... subs) {
-		return tree.order(subs, 1);
-	}
-
-	public mDatabaseAcess subs(Object... subs) {
-		verifySubsChanges(subs);
-		currentSubs = subs;
-		return this;
+		return order(subs, 1);
 	}
 
 	private void populateTree() {
-		if (subsChanged) {
+		String key = null;
+		if (isDiskAccess(currentSubs)
+				&& !cacheOrderFunction
+						.contains(key = generateKeyOfParent(currentSubs))) {
+
+			cacheOrderFunction.add(key);
+			initDAO();
 			findDataOnDisk();
 		}
 	}
 
-	private void verifySubsChanges(Object... subs) {
-		subsChanged = false;
-		if (currentSubs != null && subs != null) {
-			if (currentSubs.length == subs.length) {
-				for (int i = 0; i < subs.length; i++) {
-					if (currentSubs[i] != null
-							&& !currentSubs[i].equals(subs[i])) {
-						subsChanged = true;
-						break;
-					}
-				}
-			} else {
-				subsChanged = true;
-			}
-		} else {
-			subsChanged = true;
+	private boolean isDiskAccess(Object... subs) {
+		boolean bool = false;
+		if (subs != null && subs.length > 0 && subs[0] != null
+				&& !subs[0].toString().isEmpty()) {
+			bool = subs[0].toString().charAt(0) == '^';
+		}
+		return bool;
+	}
+
+	private void initDAO() {
+		if (dao == null) {
+			this.dao = new DAO();
 		}
 	}
 
 	private void findDataOnDisk() {
 
-		Object[] brothers = Arrays.copyOfRange(currentSubs, 0,
-				currentSubs.length - 1);
-
 		final String tableName = generateTableName(currentSubs);
 
 		Map<String, String> map = dao.like(tableName,
-				Tree.generateKey(true, brothers));
+				generateKeyToLikeQuery(currentSubs));
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {
@@ -134,9 +157,5 @@ public class mDatabaseAcess extends mDataAccess {
 						entry.getValue());
 			}
 		}
-	}
-
-	private String generateTableName(Object... subs) {
-		return subs[0].toString().replace("^", "");
 	}
 }

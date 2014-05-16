@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -27,6 +28,12 @@ public class mContext {
 	public mFnc Fnc;
 	public mCmd Cmd;
 	private mSystem system;
+	private Writer writer;
+
+	public mContext(Writer writer) {
+		this();
+		this.writer = writer;
+	}
 
 	public mContext() {
 		this.mVariables = new mVariables();
@@ -37,6 +44,26 @@ public class mContext {
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
 		this.system = new mSystem(this);
+	}
+
+	public Writer getWriter() {
+		return writer;
+	}
+
+	public mDataAccess getmDataPublic() {
+		return mDataPublic;
+	}
+
+	public boolean hasPublicVariables() {
+		return !mDataPublic.isEmpty();
+	}
+
+	public mDataAccess getmDataGlobal() {
+		return mDataGlobal;
+	}
+
+	public mDataAccess getmDataLocal() {
+		return mDataLocal;
 	}
 
 	public mSystem getSystem() {
@@ -205,37 +232,36 @@ public class mContext {
 		return var(parseVarSubs(val.toString()));
 	}
 
-	@REMOVE
-	public mVar lastvar(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public mVar lastVar(Object... subs) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		final String varName = mFncUtil.castString(subs[0]);
+		mDataAccess mData = getMDataAccess(varName);
+		Object[] concat = mFncUtil.concatSinceLastSubscript(mData.getCurrentSubs(), subs);
+		return var(concat);
 	}
 
 	@TODO
 	public void merge(mVar dest, mVar orig) {
 		Object valOrig = orig.get();
-		if(valOrig!=null){
+		if (valOrig != null) {
 			dest.set(valOrig);
 		}
 		Object obj = String.valueOf("");
-		for (; ; ) {
-			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig.getSubs()));
+		for (;;) {
+			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig
+					.getSubs()));
 			subL.add(obj);
-			
+
 			obj = mFnc.$order(var(subL.toArray()));
-			if(String.valueOf(obj).isEmpty()){				
+			if (String.valueOf(obj).isEmpty()) {
 				break;
 			}
-			ArrayList<Object> subDest = new ArrayList<Object>(Arrays.asList(dest.getSubs()));
+			ArrayList<Object> subDest = new ArrayList<Object>(
+					Arrays.asList(dest.getSubs()));
 			subDest.add(obj);
-			
-			ArrayList<Object> subOrig = new ArrayList<Object>(Arrays.asList(orig.getSubs()));
-			subOrig.add(obj);			
+
+			ArrayList<Object> subOrig = new ArrayList<Object>(
+					Arrays.asList(orig.getSubs()));
+			subOrig.add(obj);
 			merge(var(subDest.toArray()), var(subOrig.toArray()));
 		}
 	}
