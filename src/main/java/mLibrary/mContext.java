@@ -233,9 +233,9 @@ public class mContext {
 	}
 
 	public mVar lastVar(Object... subs) {
-		final String varName = mFncUtil.castString(subs[0]);
-		mDataAccess mData = getMDataAccess(varName);
-		Object[] concat = mFncUtil.concatSinceLastSubscript(mData.getCurrentSubs(), subs);
+		// Because the lastVar operator will be able to global variables only.
+		Object[] concat = mFncUtil.concatSinceLastSubscript(getmDataGlobal()
+				.getCurrentSubs(), subs);
 		return var(concat);
 	}
 

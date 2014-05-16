@@ -66,7 +66,7 @@ public class mCmd extends mParent {
 		Do(null, methodName, parameters);
 	}
 
-	public void Goto(String label) {
+	public void Goto(Object label) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -230,7 +230,20 @@ public class mCmd extends mParent {
 		}
 	}
 
+	/*
+	 * Revisar implementacao
+	 */
+	@TODO
 	public void Lock(mVar var) {
+		// TODO REVISAR IMPLEMENTAÇÃO	
+	}
+	
+
+	/*
+	 * Revisar implementacao
+	 */
+	@TODO
+	public void Lock(mVar var, int index) {
 		// TODO REVISAR IMPLEMENTAÇÃO	
 	}
 

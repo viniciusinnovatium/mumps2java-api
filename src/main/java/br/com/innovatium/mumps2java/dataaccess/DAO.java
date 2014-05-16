@@ -59,7 +59,7 @@ public class DAO {
 					"Fail to find data thought like clause from table "
 							+ tableName + " and key " + key, e);
 		} finally {
-			closeResouce(select);
+			releaseResouce(select);
 		}
 		return map;
 	}
@@ -81,7 +81,7 @@ public class DAO {
 			throw new IllegalStateException("Fail to remove data from table "
 					+ tableName + " and key " + key, e);
 		} finally {
-			closeResouce(delete);
+			releaseResouce(delete);
 		}
 	}
 
@@ -99,14 +99,14 @@ public class DAO {
 			result = ps.executeQuery();
 			
 			if (!result.next()) {
-				closeResouce(ps);
+				releaseResouce(ps);
 				String insertQuery = "insert into " + tableName.toUpperCase()
 						+ " values (?, ?)";
 				ps = con.prepareStatement(insertQuery);
 				ps.setString(1, String.valueOf(key));
 				ps.setObject(2, value);
 			} else {
-				closeResouce(ps);
+				releaseResouce(ps);
 				String updateQuery = "update \"" + tableName.toUpperCase()
 						+ "\" set value_ = ? where key_ = ?";
 				ps = con.prepareStatement(updateQuery);
@@ -126,7 +126,7 @@ public class DAO {
 			throw new IllegalStateException("Fail to insert data into table "
 					+ tableName + " and key " + key, e);
 		} finally {
-			closeResouce(ps);
+			releaseResouce(ps);
 		}
 	}
 
@@ -186,7 +186,7 @@ public class DAO {
 					"Fail to select data from the table " + tableName
 							+ " and key " + key, e);
 		} finally {
-			closeResouce(ps);
+			releaseResouce(ps);
 		}
 		return objResult;
 	}
@@ -205,11 +205,11 @@ public class DAO {
 			throw new IllegalStateException(
 					"Fail to create table " + tableName, e);
 		}finally{
-			closeResouce(ps);
+			releaseResouce(ps);
 		}
 	}
 	
-	private void closeResouce(PreparedStatement ps) {
+	private void releaseResouce(PreparedStatement ps) {
 		try {
 			if (ps != null && !ps.isClosed()) {
 				ps.close();			
