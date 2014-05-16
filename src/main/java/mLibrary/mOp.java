@@ -162,8 +162,10 @@ public final class mOp {
 		return !Contains(str1, str2);
 	}
 
-	public static boolean And(boolean b, boolean c) {
-		return b && c;
+	public static boolean And(Object x, Object y) {
+		double a = mFncUtil.numberConverter(x);
+		double b = mFncUtil.numberConverter(y);
+		return 0 != a && 0 != b; 
 	}
 
 }
