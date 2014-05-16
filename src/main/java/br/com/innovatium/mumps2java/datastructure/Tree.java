@@ -162,7 +162,7 @@ public final class Tree extends Node {
 		return DataStructureUtil.generateKey(subs);
 	}
 
-		public boolean hasPopulatedSubnode(Node node) {
+	public boolean hasPopulatedSubnode(Node node) {
 
 		boolean isPreenchido = false;
 		if (node.hasSubnodes()) {
@@ -247,35 +247,26 @@ public final class Tree extends Node {
 			mergeSubnodesOperation.set(destSubs, origSubs);
 			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
 		}
-
 	}
+	
+	public void merge(final Object[] destSubs, final Node origNode) {
+		if(origNode == null) {
+			return;
+		}
+		
+		Node destNode = findNode(destSubs);
 
-	private void mergeSubnodes(final Object[] dest, final Object[] orig,
-			Node node) {
-
-		Object[] concatSubs = null;
-		boolean hasSubnodes = node.hasSubnodes();
-		boolean subnodeHasNext = hasSubnodes && node.getSubnode().hasNext();
-
-		Object subnodeValue = node.getValue();
-		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
-		Node destNode = findNode(concatSubs);
 		if (destNode == null) {
-			set(concatSubs, subnodeValue);
-		} else if (subnodeValue != null) {
-			destNode.setValue(subnodeValue);
+			destNode = setting(destSubs, null);
 		}
 
-		if (hasSubnodes) {
-			mergeSubnodes(dest, orig, node.getSubnode());
+		if (origNode.getValue() != null) {
+			destNode.setValue(origNode.getValue());
 		}
 
-		if (subnodeHasNext) {
-			mergeSubnodes(dest, orig, node.getSubnode().getNext());
-		}
-
-		if (node.hasNext()) {
-			mergeSubnodes(dest, orig, node.getNext());
+		if (origNode.hasSubnodes()) {
+			mergeSubnodesOperation.set(destSubs, origNode.getSubs());
+			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
 		}
 	}
 

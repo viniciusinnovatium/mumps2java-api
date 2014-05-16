@@ -41,21 +41,4 @@ public class MContextUsingInMemoryAccessTest {
 		m$.var("%x").set("publica");
 		assertEquals("publica", m$.var("%x").get());
 	}
-	
-	@Test
-	public void testLastVarOperator() {
-		m$.var("^y", "1", "2", "3").set(7);
-		m$.lastVar("7", "8").set(76);
-		assertEquals("This subscripts was merge by last var operator", 76, m$.var("%y", "1", "2", "7", "8").get());
-	}
-	
-	@Test
-	public void testLastVarOperatorOnTwoSteps() {
-		mVar var = m$.var("%y", "1", "2", "3");
-		var.set(7);
-		var = var.lastVar("7", "8");
-		var.set(76);
-		assertEquals("This subscripts was merge by last var operator", 76, m$.var("%y", "1", "2", "7", "8").get());
-	}
-	
 }

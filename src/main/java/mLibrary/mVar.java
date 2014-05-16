@@ -76,5 +76,9 @@ public class mVar {
 			return null;
 		}
 	}
+	
+	public void merge(mVar orig) {
+		this.mData.merge(this.subs, orig.subs);
+	}
 
 }

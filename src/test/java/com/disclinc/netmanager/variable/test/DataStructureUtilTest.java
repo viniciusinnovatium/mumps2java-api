@@ -1,8 +1,9 @@
 package com.disclinc.netmanager.variable.test;
 
-import java.util.Arrays;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
-import junit.framework.Assert;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class DataStructureUtilTest {
 	public void testConcat() {
 		Object[] concat = DataStructureUtil.concat(start, end);
 		Object[] result = new Object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-		Assert.assertTrue("All elements must have the same value",
+		assertTrue("All elements must have the same value",
 				Arrays.equals(result, concat));
 
 	}
@@ -26,7 +27,7 @@ public class DataStructureUtilTest {
 	public void testConcatLastElement() {
 		Object[] concat = DataStructureUtil.concat(start, 88);
 		Object[] result = new Object[] { 1, 2, 3, 4, 88 };
-		Assert.assertTrue("All elements must have the same value",
+		assertTrue("All elements must have the same value",
 				Arrays.equals(result, concat));
 	}
 
@@ -34,26 +35,42 @@ public class DataStructureUtilTest {
 	public void testConcatSinceLastElement() {
 		Object[] concat = DataStructureUtil.concatSinceLast(start, end);
 		Object[] result = new Object[] { 1, 2, 3, 5, 6, 7, 8, 9, 0 };
-		Assert.assertTrue("All elements must have the same value",
+		assertTrue("All elements must have the same value",
 				Arrays.equals(result, concat));
 	}
 
 	@Test
 	public void testGenerateKeyOfTheSubscripts() {
-		Assert.assertEquals("^www001~x~1~2~3",
-				DataStructureUtil.generateKey(query));
+		assertEquals("^www001~x~1~2~3", DataStructureUtil.generateKey(query));
 	}
 
 	@Test
 	public void testGenerateKeyOfParentSubscripts() {
-		Assert.assertEquals("^www001~x~1~2",
+		assertEquals("^www001~x~1~2",
 				DataStructureUtil.generateKeyOfParent(query));
 	}
 
 	@Test
 	public void testGenerateKeyToLikeQuery() {
-		Assert.assertEquals("x~1~2~",
-				DataStructureUtil.generateKeyToLikeQuery(query));
+		assertEquals("x~1~2~", DataStructureUtil.generateKeyToLikeQuery(query));
+	}
+
+	@Test
+	public void testVariableTypes() {
+		Object[] x = new Object[] { "%x", 2 };
+		Object[] y = new Object[] { "^y", 3 };
+		Object[] z = new Object[] { "z", 4 };
+		Object[] w = new Object[] { "", 5 };
+
+		assertEquals("This mustbe a public variable", 1,
+				DataStructureUtil.getVariableType(x));
+		assertEquals("This mustbe a global variable", 2,
+				DataStructureUtil.getVariableType(y));
+		assertEquals("This mustbe a local variable", 3,
+				DataStructureUtil.getVariableType(z));
+		assertEquals("This mustbe a local variable", 3,
+				DataStructureUtil.getVariableType(w));
+
 	}
 
 }

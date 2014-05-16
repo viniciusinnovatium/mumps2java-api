@@ -9,6 +9,10 @@ import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
 public final class mFncUtil {
 
+	public static int getVariableType(Object[] subs){
+		return DataStructureUtil.getVariableType(subs);
+	}
+	
 	public static Object[] concat(Object[] dest, Object[] orig) {
 		return DataStructureUtil.concat(dest, orig);
 	}

@@ -1,18 +1,22 @@
 package mLibrary;
 
+import br.com.innovatium.mumps2java.datastructure.Tree;
+
 public abstract class mDataAccess {
 
 	boolean subsChanged;
 	boolean firstExecutionOrder = true;
 	Object[] currentSubs;
-	mVariables mVariables;
-
-	public mDataAccess() {
-		this(new mVariables());
-	}
-
-	public mDataAccess(mVariables mVariables) {
+	final Tree tree;
+	final mVariables mVariables;
+	
+	public static final int PUBLIC = 1;
+	public static final int GLOBAL = 2;
+	public static final int LOCAL = 3;
+	
+	public mDataAccess(mVariables mVariables, int type) {
 		this.mVariables = mVariables;
+		this.tree = mVariables.getVariables(type);
 	}
 
 	Object[] getCurrentSubs() {
@@ -23,7 +27,6 @@ public abstract class mDataAccess {
 
 	public abstract void set(Object value);
 
-	public abstract void merge(Object[] dest, Object[] orig);
 
 	public abstract void stacking(Object... variables);
 
@@ -35,7 +38,7 @@ public abstract class mDataAccess {
 
 	public abstract Object order(Object... subs);
 
-	mDataAccess subs(Object... subs) {
+	final mDataAccess subs(Object... subs) {
 		currentSubs = subs;
 		return this;
 	}
@@ -45,5 +48,9 @@ public abstract class mDataAccess {
 	public abstract void kill(Object[] subs);
 
 	public abstract boolean isEmpty();
+	
+	public final void merge(Object[] dest, Object[] orig){
+		mVariables.merge(dest, orig);
+	}
 
 }

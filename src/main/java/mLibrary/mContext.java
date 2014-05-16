@@ -38,7 +38,7 @@ public class mContext {
 	public mContext() {
 		this.mVariables = new mVariables();
 		this.mDataPublic = new mDataAccessPublic(mVariables);
-		this.mDataGlobal = new mDatabaseAcess(mVariables);
+		this.mDataGlobal = new mDataGlobalAcess(mVariables);
 		this.mDataLocal = new mDataAccessLocal(mVariables);
 
 		this.Fnc = new mFnc(this);
@@ -239,31 +239,24 @@ public class mContext {
 		return var(concat);
 	}
 
+	/*
+	 * @TODO public void merge(mVar dest, mVar orig) { Object valOrig =
+	 * orig.get(); if (valOrig != null) { dest.set(valOrig); } Object obj =
+	 * String.valueOf(""); for (;;) { ArrayList<Object> subL = new
+	 * ArrayList<Object>(Arrays.asList(orig .getSubs())); subL.add(obj);
+	 * 
+	 * obj = mFnc.$order(var(subL.toArray())); if
+	 * (String.valueOf(obj).isEmpty()) { break; } ArrayList<Object> subDest =
+	 * new ArrayList<Object>( Arrays.asList(dest.getSubs())); subDest.add(obj);
+	 * 
+	 * ArrayList<Object> subOrig = new ArrayList<Object>(
+	 * Arrays.asList(orig.getSubs())); subOrig.add(obj);
+	 * merge(var(subDest.toArray()), var(subOrig.toArray())); } }
+	 */
+
 	@TODO
 	public void merge(mVar dest, mVar orig) {
-		Object valOrig = orig.get();
-		if (valOrig != null) {
-			dest.set(valOrig);
-		}
-		Object obj = String.valueOf("");
-		for (;;) {
-			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig
-					.getSubs()));
-			subL.add(obj);
-
-			obj = mFnc.$order(var(subL.toArray()));
-			if (String.valueOf(obj).isEmpty()) {
-				break;
-			}
-			ArrayList<Object> subDest = new ArrayList<Object>(
-					Arrays.asList(dest.getSubs()));
-			subDest.add(obj);
-
-			ArrayList<Object> subOrig = new ArrayList<Object>(
-					Arrays.asList(orig.getSubs()));
-			subOrig.add(obj);
-			merge(var(subDest.toArray()), var(subOrig.toArray()));
-		}
+		dest.merge(orig);
 	}
 
 	public void newVar(mVar... vars) {
@@ -353,7 +346,7 @@ public class mContext {
 			return null;
 		}
 
-		return new mVar(subs, getMDataAccess(varName));
+		return new mVar(subs, getMDataAccess(subs));
 	}
 
 	public mVar varRef(String name, Object ref) {
@@ -463,11 +456,11 @@ public class mContext {
 		return _result;
 	}
 
-	private mDataAccess getMDataAccess(String variableName) {
-		final char type = variableName.charAt(0);
-		if (type == '%') {
+	private mDataAccess getMDataAccess(Object[] subs) {
+		final int type = mFncUtil.getVariableType(subs);
+		if (type == 1) {
 			return mDataPublic;
-		} else if (type == '^') {
+		} else if (type == 2) {
 			return mDataGlobal;
 		} else {
 			return mDataLocal;

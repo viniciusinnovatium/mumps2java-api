@@ -12,18 +12,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import br.com.innovatium.mumps2java.dataaccess.DAO;
-import br.com.innovatium.mumps2java.datastructure.Tree;
 
-public class mDatabaseAcess extends mDataAccess {
-	Object[] currentSubs;
-
-	DAO dao;
-	final Tree tree;
+public class mDataGlobalAcess extends mDataAccess {
+	private DAO dao;
 	final Set<String> cacheOrderFunction = new HashSet<String>(50);
 	
-	public mDatabaseAcess(mVariables mVariables){
-		super(mVariables);
-		this.tree = mVariables.getVariables(null);
+	public mDataGlobalAcess(mVariables mVariables){
+		super(mVariables, mDataAccess.GLOBAL);
 	}
 
 	public Object get(Object... subs) {
@@ -62,10 +57,6 @@ public class mDatabaseAcess extends mDataAccess {
 		} else {
 			tree.set(currentSubs, value);
 		}
-	}
-
-	public void merge(Object[] dest, Object[] orig) {
-		tree.merge(dest, orig);
 	}
 
 	public void stacking(Object... variables) {

@@ -8,6 +8,18 @@ public final class DataStructureUtil {
 	private DataStructureUtil() {
 	}
 
+	public static int getVariableType(Object[] subs) {
+		String name = subs[0].toString();
+		final boolean isEmpty = name.length() == 0;
+		if (!isEmpty && '%' == name.charAt(0)) {
+			return 1;
+		} else if (!isEmpty && '^' == name.charAt(0)) {
+			return 2;
+		} else {
+			return 3;
+		}
+	}
+
 	public static Object[] concat(Object[] first, Object[] second) {
 		return concat(first, second, first.length, 0);
 	}

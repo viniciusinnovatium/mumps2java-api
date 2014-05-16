@@ -1,14 +1,10 @@
 package mLibrary;
 
-import br.com.innovatium.mumps2java.datastructure.Tree;
 
 class mDataAccessMemory extends mDataAccess {
 
-	final Tree tree;
-
-	public mDataAccessMemory(mVariables mVariables, Character type) {
-		super(mVariables);
-		tree = mVariables.getVariables(type);
+	public mDataAccessMemory(mVariables mVariables, int type) {
+		super(mVariables, type);
 	}
 
 	public Object get(Object... subs) {
@@ -17,10 +13,6 @@ class mDataAccessMemory extends mDataAccess {
 
 	public void set(Object value) {
 		tree.set(currentSubs, value);
-	}
-
-	public void merge(Object[] dest, Object[] orig) {
-		tree.merge(dest, orig);
 	}
 
 	public void stacking(Object... variables) {
