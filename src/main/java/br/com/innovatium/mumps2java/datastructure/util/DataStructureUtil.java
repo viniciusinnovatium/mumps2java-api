@@ -1,5 +1,8 @@
 package br.com.innovatium.mumps2java.datastructure.util;
 
+import mLibrary.mFncUtil;
+
+
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
 
@@ -48,7 +51,7 @@ public final class DataStructureUtil {
 		final StringBuilder builder = new StringBuilder();
 
 		for (int i = start; i < end; i++) {
-			builder.append(subs[i]);
+			builder.append(mFncUtil.toString(subs[i]));
 			if (delimiterOccurence-- > 0) {
 				builder.append(DELIMITER);
 			}

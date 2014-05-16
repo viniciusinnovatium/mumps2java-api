@@ -255,8 +255,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $increment(mVar var, Object increment) {
-		Double dbl = mFncUtil.numberConverter(var.get())
-				+ mFncUtil.numberConverter(increment);
+		Object dbl = mOp.Add(var.get(), increment);
 		var.set(dbl);
 		return dbl;
 	}
@@ -1269,6 +1268,14 @@ public final class mFnc extends mParent {
 
 	public Object $zobjclassmethod(Object object, String string, Object object2) {
 		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $text(Object add) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $query(mVar indirectVar, Object negative) {
 		throw new UnsupportedOperationException();
 	}
 

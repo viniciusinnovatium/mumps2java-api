@@ -1,10 +1,11 @@
 package mLibrary;
 
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
+
 import java.util.Arrays;
 
 import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
-
 public class mVar {
 	/*
 	 * The subscripts should be converted to String soon.
@@ -44,6 +45,9 @@ public class mVar {
 	}
 
 	public void set(Object value) {
+		if (generateKey(subs).contains("YLFN")) {
+			System.out.print("");
+		}
 		mData.subs(subs).set(value);
 	}
 
