@@ -259,6 +259,7 @@ public class mContext {
 		dest.merge(orig);
 	}
 
+	@TODO
 	public void newVar(mVar... vars) {
 		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
@@ -269,6 +270,7 @@ public class mContext {
 		countNewOperator++;
 	}
 
+	@TODO
 	public void newVarExcept(mVar... vars) {
 		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
