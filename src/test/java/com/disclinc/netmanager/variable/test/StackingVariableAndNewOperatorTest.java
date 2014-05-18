@@ -63,6 +63,7 @@ public class StackingVariableAndNewOperatorTest {
 		m$.newVar(m$.var("pedido"));
 	}
 
+	@Test
 	public void testStackingMultipleVariableThroughNewExceptionsOperatorCalling() {
 
 		stackingExceptionMultipleVariables();
@@ -72,7 +73,7 @@ public class StackingVariableAndNewOperatorTest {
 				"11", m$.var("pedido").get());
 		assertEquals(
 				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
-				"cod1", m$.var("contrato").get());
+				null, m$.var("contrato").get());
 
 		assertEquals(
 				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
@@ -84,7 +85,7 @@ public class StackingVariableAndNewOperatorTest {
 
 		assertEquals(
 				"After calling new exception operator, variables should be removed from the tree, therefore, they have not be present into that",
-				null, m$.var("eletronico").get());
+				"92", m$.var("eletronico").get());
 	}
 
 	@Test

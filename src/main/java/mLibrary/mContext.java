@@ -394,7 +394,6 @@ public class mContext {
 	}
 
 	public mVar prop(Object object, String string) {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
@@ -489,8 +488,6 @@ public class mContext {
 		}
 
 		map.put(this.mDataLocal, locals.toArray());
-		// map.put(this.mDataPublic, publics.toArray());
-		// map.put(this.mDataGlobal, globals.toArray());
 		return map;
 	}
 }

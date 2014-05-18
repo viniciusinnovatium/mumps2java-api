@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
-	
+
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -419,36 +419,11 @@ public final class mFnc extends mParent {
 
 	public static Object $order(mVar var, Object dir) {
 		final Object[] subs = var.getSubs();
-		final int lenght = subs.length;
-
-		final boolean isEmpty = lenght == 1 && subs[0].toString().length() == 0;
-		final boolean isOrderOverVariables = lenght == 1 && !isEmpty;
+		final boolean isOrderOverVariables = subs.length == 1;
 		Object next = null;
 		if (isOrderOverVariables) {
-			boolean isPublic = subs[0].toString().indexOf("%") >= 0;
-			boolean isGlobal = subs[0].toString().indexOf("^") >= 0;
-			if (isGlobal) {
-				throw new UnsupportedOperationException(
-						"Does not be able order over global variables");
-			}
-			if (isPublic) {
-				next = m$.getmDataPublic().order(subs,
-						mFncUtil.numberConverter(dir).intValue());
-			} else {
-				next = m$.getmDataLocal().order(subs,
-						mFncUtil.numberConverter(dir).intValue());
-			}
-
-			boolean isEndPublic = isPublic && "".equals(next);
-			if (isEndPublic) {
-				next = m$.getmDataLocal().order(new Object[] { "" },
-						mFncUtil.numberConverter(dir).intValue());
-			}
-
-		} else if (isEmpty) {
-			mDataAccess mdata = m$.hasPublicVariables() ? m$.getmDataPublic() : m$
-					.getmDataLocal();
-			next = new mVar(new Object[] { "" }, mdata).order((Integer) dir);
+			next = var.getmData().orderVars(subs,
+					mFncUtil.numberConverter(dir).intValue());
 		} else {
 			next = var.order(mFncUtil.numberConverter(dir).intValue());
 		}
@@ -1279,16 +1254,16 @@ public final class mFnc extends mParent {
 	public Object $query(mVar indirectVar, Object negative) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public Object $zf(Object x, Object y){
+
+	public Object $zf(Object x, Object y) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public Object $ztime(Object value, int index){
+
+	public Object $ztime(Object value, int index) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public Object $ztimeh(Object value, int index, Object defaultValue){
+
+	public Object $ztimeh(Object value, int index, Object defaultValue) {
 		throw new UnsupportedOperationException();
 	}
 }

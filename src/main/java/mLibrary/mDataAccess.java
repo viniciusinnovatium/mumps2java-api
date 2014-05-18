@@ -9,7 +9,7 @@ public abstract class mDataAccess {
 	Object[] currentSubs;
 	final Tree tree;
 	final mVariables mVariables;
-	
+
 	public mDataAccess(mVariables mVariables, int type) {
 		this.mVariables = mVariables;
 		this.tree = mVariables.getVariables(type);
@@ -23,7 +23,6 @@ public abstract class mDataAccess {
 
 	public abstract void set(Object value);
 
-
 	public abstract void stacking(Object... variables);
 
 	public abstract void stackingExcept(Object... variables);
@@ -31,6 +30,10 @@ public abstract class mDataAccess {
 	public abstract int data(Object... subs);
 
 	public abstract Object order(Object[] subs, int direction);
+
+	public Object orderVars(Object[] subs, int direction) {
+		return this.mVariables.order(subs, direction);
+	}
 
 	public abstract Object order(Object... subs);
 
@@ -44,8 +47,8 @@ public abstract class mDataAccess {
 	public abstract void kill(Object[] subs);
 
 	public abstract boolean isEmpty();
-	
-	public final void merge(Object[] dest, Object[] orig){
+
+	public final void merge(Object[] dest, Object[] orig) {
 		mVariables.merge(dest, orig);
 	}
 
