@@ -78,10 +78,6 @@ public class Node implements Comparable<Node> {
 		return key;
 	}
 
-	public Object[] getSubsExceptFirst() {
-		return Arrays.copyOfRange(subs, 1, subs.length);
-	}
-
 	public Object getSubscript() {
 		return susbscript;
 	}
@@ -139,10 +135,6 @@ public class Node implements Comparable<Node> {
 		newSubnode.parent = this;
 	}
 
-	public Node findPrevious() {
-		return findPrevious(parent.subnode, this);
-	}
-
 	public Node findPrevious(Node previous, Node subnode) {
 		if (previous.compareTo(subnode) > 0) {
 			if (previous.hasPrevious()
@@ -167,10 +159,8 @@ public class Node implements Comparable<Node> {
 	}
 
 	public boolean isFirstSubnode() {
-		if (parent != null && parent.hasSubnodes()) {
-			return parent.getSubnode().equals(this);
-		}
-		return false;
+		return parent != null && parent.hasSubnodes()
+				&& parent.getSubnode().equals(this);
 	}
 
 	public boolean isAfter(Node node) {
@@ -187,10 +177,6 @@ public class Node implements Comparable<Node> {
 
 	public boolean hasSubnodes() {
 		return subnode != null;
-	}
-
-	public boolean isLeaf() {
-		return !isRoot() && !hasSubnodes();
 	}
 
 	public Object getValue() {
