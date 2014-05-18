@@ -104,7 +104,7 @@ public class MergeFunctionTest {
 	}
 	
 	@Test 
-	public void testSimlpeMergeBetweenTwoDifferentTypesOfVariablesWithoutHead(){
+	public void testSimpleMergeBetweenTwoDifferentTypesOfVariablesWithoutHead(){
 		mContext m$ = new mContext();
 		m$.var("%a", "1", "1").set("1");
 		m$.var("b").set("10");
@@ -113,6 +113,48 @@ public class MergeFunctionTest {
 		assertEquals("This subscripts was not merged and must be the same before the merge", "10", m$.var("b").get());
 		assertEquals("This subscripts was merged and must be the same", m$.var("b", "1", "1").get(), m$.var("%a", "1", "1").get());
 		assertEquals("This subscripts was not merged and should be undefined, i.e, does have anyone value", null, m$.var("b", "1").get());
+	}
+	
+	@Test 
+	public void testMergeUndefinedVariable(){
+		mContext m$ = new mContext();
+		// We have a defined variable.
+		m$.var("b").set("10");
+		m$.var("b", "1").set("20");
+		// We have some undefined variable which will be merged.
+		m$.merge(m$.var("b"), m$.var("%a", "1", "2"));
+		
+		assertEquals("This subscripts was not merged and must be the same before the merge", "10", m$.var("b").get());
+		assertEquals("This subscripts was not merged and must be the same before the merge", "20", m$.var("b", "1").get());
+		assertEquals("This subscripts is undefined and was not merged, then, it must be the undefined", null, m$.var("b", "1", "2").get());
+	}
+	
+	@Test 
+	public void testCreatingDifferentTypesVariablesThroughtMergeOperation(){
+		mContext m$ = new mContext();
+		m$.var("%a").set("10");
+		m$.var("%a", "1").set("1");
+		m$.var("%a", "1", "2").set("2");
+		// We have some undefined variable which will be merged.
+		m$.merge(m$.var("b"), m$.var("%a"));
+		
+		assertEquals("This subscripts merged and must be the same value", "10", m$.var("b").get());
+		assertEquals("This subscripts merged and must be the same value", "1", m$.var("b", "1").get());
+		assertEquals("This subscripts merged and must be the same value", "2", m$.var("b", "1", "2").get());
+	}
+	
+	@Test 
+	public void testCreatingVariablesOfTheSameTypeThroughtMergeOperation(){
+		mContext m$ = new mContext();
+		m$.var("%a").set("10");
+		m$.var("%a", "1").set("1");
+		m$.var("%a", "1", "2").set("2");
+		// We have some undefined variable which will be merged.
+		m$.merge(m$.var("%b"), m$.var("%a"));
+		
+		assertEquals("This subscripts merged and must be the same value", "10", m$.var("%b").get());
+		assertEquals("This subscripts merged and must be the same value", "1", m$.var("%b", "1").get());
+		assertEquals("This subscripts merged and must be the same value", "2", m$.var("%b", "1", "2").get());
 	}
 	
 	@Test 

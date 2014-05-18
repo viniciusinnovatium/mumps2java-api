@@ -41,4 +41,18 @@ public class MContextUsingInMemoryAccessTest {
 		m$.var("%x").set("publica");
 		assertEquals("publica", m$.var("%x").get());
 	}
+	
+	@Test
+	public void testKillingVariable() {
+		m$.var("%y").set("teste");
+		assertEquals("teste", m$.var("%y").get());
+		m$.var("%y").kill();
+		assertEquals("This variable was removed and should not be present into the context", null, m$.var("%y").get());
+	}
+	
+	@Test
+	public void testKillingUndefinedVariable() {
+		m$.var("%w").kill();
+		assertEquals("This variable was undefined and should not be present into the context", null, m$.var("%w").get());
+	}
 }

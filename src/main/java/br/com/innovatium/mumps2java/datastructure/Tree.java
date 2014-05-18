@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
-import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
-	private StackNode stack;
+	private final StackNode stack = new StackNode();
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 	private KillOperationOverNodes killSubnodesOperation = new KillOperationOverNodes();
 	private AddOnTreeOperationOverNodes addSubnodesOperation = new AddOnTreeOperationOverNodes();
@@ -25,9 +24,6 @@ public final class Tree extends Node {
 	}
 
 	public void stacking(Object... variables) {
-		if (stack == null) {
-			stack = new StackNode();
-		}
 		currentStackLevel++;
 		Node node = null;
 		/*
@@ -46,9 +42,6 @@ public final class Tree extends Node {
 	}
 
 	public void unstacking() {
-		if (stack == null) {
-			stack = new StackNode();
-		}
 		final List<Node> stackedNodes = stack.pull(currentStackLevel);
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
 			for (Node stackedNode : stackedNodes) {
@@ -69,9 +62,6 @@ public final class Tree extends Node {
 	}
 
 	public void stackingExcept(Object... variables) {
-		if (stack == null) {
-			stack = new StackNode();
-		}
 		currentStackLevel++;
 		List<Node> nodes = findSubnodeExcepts(variables);
 		if (nodes != null) {
@@ -101,14 +91,6 @@ public final class Tree extends Node {
 			cod = 11;
 		}
 		return cod;
-	}
-
-	public Object[] generateSubs(String key) {
-		return DataStructureUtil.generateSubs(key);
-	}
-
-	public Object[] generateSubs(String tableName, String key) {
-		return DataStructureUtil.generateSubs(tableName, key);
 	}
 
 	public void set(Object[] subs, Object value) {
@@ -143,8 +125,9 @@ public final class Tree extends Node {
 
 		final Node node = findNode(subs);
 		if (isEmptyLastSubs && isFoward && node != null) {
-			subscript = node.hasSubnodes() ? node.getSubnode().getSubscript()
-					: "";
+			if (node.hasSubnodes()) {
+				subscript = node.getSubnode().getSubscript();
+			}
 		} else if (isEmptyLastSubs && !isFoward && node != null) {
 			subscript = node.hasSubnodes() ? findLastNode(node.getSubnode())
 					.getSubscript() : "";
@@ -183,24 +166,6 @@ public final class Tree extends Node {
 
 	}
 
-	// The method which returns the sub nodes of the node should be enhanced.
-	@TODO
-	public boolean hasPopulatedSubnode(Node node, boolean found) {
-
-		if (!found && node.hasSubnodes()) {
-			Node subnode = node.getSubnode();
-			if (subnode.getValue() != null) {
-				found = true;
-			}
-			found = hasPopulatedSubnode(subnode, found);
-		} else if (!found && node.isLeaf() && node.getValue() != null) {
-			found = true;
-		} else if (!found && node.hasNext()) {
-			found = hasPopulatedSubnode(node.getNext(), found);
-		}
-		return found;
-	}
-
 	public Node findNode(Object[] subs) {
 		return findNodeByKey(generateKey(subs));
 	}
@@ -227,33 +192,11 @@ public final class Tree extends Node {
 		return !this.hasSubnodes();
 	}
 
-	public void merge(final Object[] destSubs, final Object[] origSubs) {
-		Node origNode = findNode(origSubs);
-		Node destNode = findNode(destSubs);
-
-		if (destNode == null) {
-			destNode = setting(destSubs, null);
-		}
-
-		if (origNode == null) {
-			origNode = setting(origSubs, null);
-		}
-
-		if (origNode.getValue() != null) {
-			destNode.setValue(origNode.getValue());
-		}
-
-		if (origNode.hasSubnodes()) {
-			mergeSubnodesOperation.set(destSubs, origSubs);
-			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
-		}
-	}
-	
 	public void merge(final Object[] destSubs, final Node origNode) {
-		if(origNode == null) {
+		if (origNode == null) {
 			return;
 		}
-		
+
 		Node destNode = findNode(destSubs);
 
 		if (destNode == null) {
@@ -268,10 +211,6 @@ public final class Tree extends Node {
 			mergeSubnodesOperation.set(destSubs, origNode.getSubs());
 			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
 		}
-	}
-
-	public Object order(Object... subs) {
-		return order(subs, 1);
 	}
 
 	/*
@@ -490,133 +429,4 @@ public final class Tree extends Node {
 		return keyValue.get(key);
 	}
 
-	public static void main(String[] asd) {
-		teste1();
-	}
-
-	private static void teste3() {
-		Tree tree = new Tree();
-		tree.set(new Object[] { "x" }, "teste");
-		tree.set(new Object[] { "y" }, "1");
-		tree.merge(new Object[] { "x" }, new Object[] { "y" });
-		System.out.println("depois:\n" + tree.dump());
-	}
-
-	private static void teste1() {
-
-		Tree tree = new Tree();
-		tree.set(new Object[] { "x", "10" }, "dec");
-		tree.set(new Object[] { "x", "2" }, "seg");
-		tree.set(new Object[] { "x", "1" }, "pri");
-
-		System.out.println("first node of the tree: " + tree.order(""));
-		System.out.println("first node of the tree: "
-				+ tree.order(new Object[] { "" }, -1));
-
-		Object order = "1";
-		int i = 0;
-		System.out.println("ordering----------");
-		while (++i < 10) {
-			order = tree.order(new Object[] { "x", order }, 1);
-			System.out.println("forward: " + order);
-		}
-		i = 0;
-		System.out.println("ordering----------");
-		while (++i < 10) {
-			order = tree.order(new Object[] { "x", order }, 0);
-			System.out.println("backward: " + order);
-		}
-
-		tree.set(new Object[] { "y", "elemento2" }, "e1");
-		tree.set(new Object[] { "y", "elemento1" }, "e1");
-		tree.set(new Object[] { "y", "aelemento1" }, "a1");
-
-		order = "";
-		i = 0;
-		while (++i < 4) {
-			order = tree.order(new Object[] { "y", order }, 1);
-			System.out.println("subscritp: " + order + " value: "
-					+ tree.get(new Object[] { "y", order }));
-		}
-
-		tree.set(new Object[] { "w", "1" }, "1");
-		tree.set(new Object[] { "w", "2" }, "2");
-		tree.set(new Object[] { "w", "3" }, "3");
-		tree.set(new Object[] { "w", "1", "1" }, "11");
-		tree.set(new Object[] { "w", "1", "2" }, "12");
-		tree.set(new Object[] { "w", "1", "3" }, "13");
-
-		System.out.println("\n----- dumping -----");
-		System.out.println(tree.dump());
-
-		System.out.println("pegando: "
-				+ tree.get(new Object[] { "w", "1", "2" }));
-		System.out.println("matou: " + tree.kill(new Object[] { "w", "1" }));
-
-		System.out.println("\n----- dumping -----");
-		System.out.println(tree.dump());
-
-		tree.set(new Object[] { "1" }, 1);
-		tree.set(new Object[] { "1", "11" }, null);
-		tree.set(new Object[] { "1", "12" }, 12);
-		tree.set(new Object[] { "1", "3" }, null);
-		tree.set(new Object[] { "1", "3", "33" }, 33);
-		tree.set(new Object[] { "1", "4" }, 4);
-		tree.set(new Object[] { "2" }, null);
-		System.out.println(tree.get(new Object[] { "1", "3", "33" }));
-
-		System.out
-				.println("Funcao data deve ser igual a 0 valor: false subnodes: false => "
-						+ tree.data(new Object[] { "2" }));
-		System.out
-				.println("Funcao data deve ser igual a 0 valor: false subnodes: false => "
-						+ tree.data(new Object[] { "1", "11" }));
-		System.out
-				.println("Funcao data deve ser igual a 1 valor: true subnodes: false => "
-						+ tree.data(new Object[] { "1", "4" }));
-		System.out
-				.println("Funcao data deve ser igual a 10 valor: false subnodes: true => "
-						+ tree.data(new Object[] { "1", "3" }));
-		System.out
-				.println("Funcao data deve ser igual a 11 valor: true subnodes: true => "
-						+ tree.data(new Object[] { "1" }));
-
-	}
-
-	private static void teste2() {
-
-		Tree tree = new Tree();
-		tree.set(new Object[] { "a1" }, 1);
-		tree.set(new Object[] { "e10" }, 1);
-		tree.set(new Object[] { "e" }, 1);
-		tree.set(new Object[] { "d" }, 1);
-		tree.set(new Object[] { "b" }, 2);
-		tree.set(new Object[] { "c" }, 3);
-
-		tree.set(new Object[] { "a" }, 2);
-
-		System.out.println("antes do stack.....");
-		System.out.println(tree.dump());
-		tree.stacking("b", "a");
-		System.out.println("depois do stack.....");
-		System.out.println(tree.dump());
-
-		tree.set(new Object[] { "b" }, "novo valor para b");
-		System.out.println("recuperando: " + tree.get("a"));
-		System.out.println("recuperando: " + tree.get("b"));
-		System.out.println("recuperando: " + tree.get("c"));
-		System.out.println("unstacking: " + tree.get("a1"));
-		System.out.println("unstacking: " + tree.get("a2"));
-
-		tree.unstacking();
-		System.out.println("depois do unstack.....");
-		System.out.println(tree.dump());
-		System.out.println("unstacking: " + tree.get("a"));
-		System.out.println("unstacking: " + tree.get("b"));
-		System.out.println("unstacking: " + tree.get("c"));
-		System.out.println("unstacking: " + tree.get("a1"));
-		System.out.println("unstacking: " + tree.get("a2"));
-
-		System.out.println("comparando: " + "a2".compareTo("a1"));
-	}
 }

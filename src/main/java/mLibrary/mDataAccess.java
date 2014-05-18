@@ -10,10 +10,6 @@ public abstract class mDataAccess {
 	final Tree tree;
 	final mVariables mVariables;
 	
-	public static final int PUBLIC = 1;
-	public static final int GLOBAL = 2;
-	public static final int LOCAL = 3;
-	
 	public mDataAccess(mVariables mVariables, int type) {
 		this.mVariables = mVariables;
 		this.tree = mVariables.getVariables(type);

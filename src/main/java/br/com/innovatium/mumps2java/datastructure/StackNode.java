@@ -11,7 +11,7 @@ final class StackNode {
 	private Map<Integer, Deque<Node>> mapLevel;
 
 	public StackNode() {
-		mapLevel = new HashMap<Integer, Deque<Node>>();
+		mapLevel = new HashMap<Integer, Deque<Node>>(100);
 	}
 
 	public Node push(Node node) {

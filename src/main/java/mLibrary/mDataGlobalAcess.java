@@ -4,6 +4,7 @@ import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyOfParent;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyToLikeQuery;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyWithoutVarName;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateSubs;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateTableName;
 
 import java.util.HashSet;
@@ -12,13 +13,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import br.com.innovatium.mumps2java.dataaccess.DAO;
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
 public class mDataGlobalAcess extends mDataAccess {
 	private DAO dao;
 	final Set<String> cacheOrderFunction = new HashSet<String>(50);
 	
 	public mDataGlobalAcess(mVariables mVariables){
-		super(mVariables, mDataAccess.GLOBAL);
+		super(mVariables, DataStructureUtil.GLOBAL);
 	}
 
 	public Object get(Object... subs) {
@@ -144,7 +146,7 @@ public class mDataGlobalAcess extends mDataAccess {
 			for (Entry<String, String> entry : result) {
 				// Here we have to include variable or table name into the key
 				// because this is part of the subscripts.
-				tree.set(tree.generateSubs(tableName, entry.getKey()),
+				tree.set(generateSubs(tableName, entry.getKey()),
 						entry.getValue());
 			}
 		}

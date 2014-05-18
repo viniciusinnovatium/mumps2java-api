@@ -4,6 +4,9 @@ import mLibrary.mFncUtil;
 
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
+	public static final int PUBLIC = 1;
+	public static final int GLOBAL = 2;
+	public static final int LOCAL = 3;
 
 	private DataStructureUtil() {
 	}
@@ -12,11 +15,11 @@ public final class DataStructureUtil {
 		String name = subs[0].toString();
 		final boolean isEmpty = name.length() == 0;
 		if (!isEmpty && '%' == name.charAt(0)) {
-			return 1;
+			return PUBLIC;
 		} else if (!isEmpty && '^' == name.charAt(0)) {
-			return 2;
+			return GLOBAL;
 		} else {
-			return 3;
+			return LOCAL;
 		}
 	}
 

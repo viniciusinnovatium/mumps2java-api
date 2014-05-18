@@ -1,6 +1,7 @@
 package com.disclinc.netmanager.variable.test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -56,6 +57,12 @@ public class DataStructureUtilTest {
 	}
 
 	@Test
+	public void testGenerateKeyWithoutVariableName() {
+		assertEquals("x~1~2~3",
+				DataStructureUtil.generateKeyWithoutVarName(query));
+	}
+
+	@Test
 	public void testVariableTypes() {
 		Object[] x = new Object[] { "%x", 2 };
 		Object[] y = new Object[] { "^y", 3 };
@@ -71,6 +78,51 @@ public class DataStructureUtilTest {
 		assertEquals("This mustbe a local variable", 3,
 				DataStructureUtil.getVariableType(w));
 
+	}
+
+	@Test
+	public void testGenerationKeyNullPointer() {
+		try {
+			assertEquals(null, DataStructureUtil.generateKey(null));
+			assertFalse(
+					"We have to get a null pointer because we avoided check null pointer to enhance performance on execution",
+					true);
+		} catch (NullPointerException e) {
+			assertTrue(
+					"We have to get a null pointer because we avoided null references checking to enhance performance on execution",
+					true);
+		}
+	}
+
+	@Test
+	public void testGenerationKeyEmpty() {
+
+		assertEquals("", DataStructureUtil.generateKey(new Object[] { "" }));
+	}
+
+	@Test
+	public void testGenerationSubscripts() {
+		String key = "x~1~2";
+		Object[] subs = new Object[] { "x", "1", "2" };
+		assertTrue(Arrays.equals(subs, DataStructureUtil.generateSubs(key)));
+	}
+
+	@Test
+	public void testGenerationNullSubscripts() {
+		assertEquals(null, DataStructureUtil.generateSubs(null));
+	}
+
+	@Test
+	public void testGenerationSubscriptsWithTableName() {
+		String key = "x~1~2";
+		Object[] subs = new Object[] { "^www001", "x", "1", "2" };
+		assertTrue(Arrays.equals(subs, DataStructureUtil.generateSubs("www001", key)));
+	}
+	
+	@Test
+	public void testGenerationTableName() {
+		Object[] subs = new Object[] { "^www001", "x", "1", "2" };
+		assertEquals("www001", DataStructureUtil.generateTableName(subs));
 	}
 
 }
