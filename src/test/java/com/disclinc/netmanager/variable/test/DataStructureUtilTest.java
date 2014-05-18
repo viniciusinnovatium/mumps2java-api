@@ -82,16 +82,15 @@ public class DataStructureUtilTest {
 
 	@Test
 	public void testGenerationKeyNullPointer() {
+		boolean hasNullPointer = false;
 		try {
-			assertEquals(null, DataStructureUtil.generateKey(null));
-			assertFalse(
-					"We have to get a null pointer because we avoided check null pointer to enhance performance on execution",
-					true);
+			DataStructureUtil.generateKey(null);
 		} catch (NullPointerException e) {
-			assertTrue(
-					"We have to get a null pointer because we avoided null references checking to enhance performance on execution",
-					true);
+			hasNullPointer = true;			
 		}
+		assertTrue(
+				"We have to get a null pointer because we avoided null references checking to enhance performance on execution",
+				hasNullPointer);
 	}
 
 	@Test
