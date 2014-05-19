@@ -23,9 +23,9 @@ public class mCmd extends mParent {
 		if (methodName == null) {
 			return null;
 		}
-		final String[] method = methodName.split("^");
+		final String[] method = methodName.split("\\^");
 		if (method.length > 1) {
-			return method[1] + "." + method[0];
+			return method[1] + "." + (method[0].isEmpty() ? "main" : method[0]);
 		} else if (method.length == 1) {
 			return method[0] + ".main";
 		} else {
@@ -58,7 +58,11 @@ public class mCmd extends mParent {
 				Do(methodName, var.getParameters());
 			}
 		} else {
-			m$.fnc$(methodName);
+			if (isMethodExecution(methodName)) {
+				Do(defineMethodName(methodName), (Object[]) null);
+			} else {
+				m$.fnc$(methodName);
+			}
 		}
 	}
 
@@ -209,22 +213,7 @@ public class mCmd extends mParent {
 	public void Xecute(Object object) {
 		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(object.toString());
 		if (String.valueOf(object).startsWith("do ")) {
-			String methodName = String.valueOf(object);
-			String methodSrc = String.valueOf(object).replaceAll("do ", "");
-			if (object.equals("do ^WWWFORM")) {
-				methodName = "WWWFORM.main";
-			} else {
-				if (methodSrc.contains("^")) {
-					String[] methodSplit = methodSrc.split("\\^");
-					if (methodSplit.length == 2) {
-						methodName = methodSplit[1].concat(".").concat(
-								methodSplit[0]);
-					} else if (methodSplit.length == 1) {
-						methodName = methodSplit[0];
-					}
-				}
-			}
-			Do(methodName);
+			Do(String.valueOf(object).replaceAll("do ", ""));
 		} else if (String.valueOf(object).toUpperCase().startsWith("U ")
 				|| String.valueOf(object).toUpperCase().startsWith("USER ")) {
 		} else if (String.valueOf(object).toUpperCase().startsWith("SET ")) {
