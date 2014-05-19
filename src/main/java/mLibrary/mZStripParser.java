@@ -154,7 +154,7 @@ public class mZStripParser {
 		}else{
 			_target = _target.replaceAll(pattern, "");
 		}
-		return _action.concat(" -> ").concat(pattern).concat("\n").concat(_target);
+		return _target;
 	}
 		
 	private void normalizeAdditionalChars() {

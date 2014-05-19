@@ -52,7 +52,11 @@ public class mVar {
 	}
 
 	public Object get() {
-		return mData.get(subs);
+		Object val = mData.get(subs);
+		if(String.valueOf(val).contains("Cód. Paciente")){
+			System.out.print("");
+		}
+		return val;
 	}
 
 	public void kill() {

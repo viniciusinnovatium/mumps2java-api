@@ -223,7 +223,9 @@ public class mCmd extends mParent {
 				}
 			}
 			Do(methodName);
-		} else if (String.valueOf(object).startsWith("U ") || String.valueOf(object).startsWith("USER ")) {
+		} else if (String.valueOf(object).toUpperCase().startsWith("U ") || String.valueOf(object).toUpperCase().startsWith("USER ")) {
+			
+		} else if (String.valueOf(object).toUpperCase().startsWith("SET ")) {
 			
 		} else {
 			throw new UnsupportedOperationException();
@@ -248,7 +250,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Job(String string) {
-		throw new UnsupportedOperationException();
+		Do(string);//TODO REVISAR IMPLEMENTAÇÃO
 		
 	}
 }
