@@ -32,7 +32,7 @@ public abstract class mDataAccess {
 	public abstract Object order(Object[] subs, int direction);
 
 	public Object orderVars(Object[] subs, int direction) {
-		return this.mVariables.order(subs, direction);
+		return this.mVariables.orderVariables(subs, direction);
 	}
 
 	public abstract Object order(Object... subs);

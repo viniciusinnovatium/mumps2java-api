@@ -36,7 +36,7 @@ public final class mVariables {
 		destTree.merge(dest, origNode);
 	}
 
-	public Object order(Object[] subs, int direction) {
+	public Object orderVariables(Object[] subs, int direction) {
 		final int type = getVariableType(subs);
 		Object next = null;
 		final boolean isEmpty = subs.length == 1 && subs[0].toString().length() == 0;
