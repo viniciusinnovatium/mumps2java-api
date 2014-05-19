@@ -16,7 +16,7 @@ import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
-	//TODO remover
+	// TODO remover
 	public int xecuteCount;
 	private mData mDataPublic;
 	private mData mDataGlobal;
@@ -239,7 +239,8 @@ public class mContext {
 	public mVar lastVar(Object... subs) {
 		final String varName = mFncUtil.castString(subs[0]);
 		mData mData = generateMData(varName);
-		Object[] concat = mFncUtil.concatSinceLastSubscript(mData.getCurrentSubs(), subs);
+		Object[] concat = mFncUtil.concatSinceLastSubscript(
+				mData.getCurrentSubs(), subs);
 		return var(concat);
 	}
 

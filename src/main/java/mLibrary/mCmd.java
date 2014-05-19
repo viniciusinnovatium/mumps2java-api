@@ -189,7 +189,7 @@ public class mCmd extends mParent {
 			Writer writer = m$.getWriter();
 			for (Object str : string) {
 				try {
-					writer.write(str.toString());
+					writer.write(String.valueOf(str));
 					System.out.print(mFncUtil.toString(str));
 				} catch (IOException e) {
 					throw new IllegalArgumentException(
@@ -239,8 +239,20 @@ public class mCmd extends mParent {
 		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
-	public void Job(String string) {
-		Do(string);// TODO REVISAR IMPLEMENTAÇÃO
+	public void Job(String methodName) {
+		new Thread(new JobCmd(methodName)).start();
+	}
+
+	private class JobCmd implements Runnable {
+		private String methodName;
+
+		public JobCmd(final String methodName) {
+			this.methodName = methodName;
+		}
+
+		public void run() {
+			m$.Cmd.Do(methodName);
+		}
 
 	}
 }
