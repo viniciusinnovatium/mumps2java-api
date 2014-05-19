@@ -248,7 +248,6 @@ public class mCmd extends mParent {
 	}
 
 	public void Job(String string) {
-		throw new UnsupportedOperationException();
-		
+		Do(string);
 	}
 }
