@@ -505,8 +505,8 @@ public final class mFnc extends mParent {
 		return new Random().nextInt(mFncUtil.numberConverter(range).intValue());
 	}
 
-	public static Object $replace(Object object, String oldSubstring,
-			String newSubstring) {
+	public static Object $replace(Object object, Object object2,
+			Object object3) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}

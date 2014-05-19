@@ -32,6 +32,9 @@ public final class DataStructureUtil {
 
 	public static String generateKeyWithoutVarName(Object[] subs) {
 		int delimiterOccurece = subs.length - 2;
+		if(subs.length == 1){
+			return " ";
+		}
 		return generateKey(1, subs.length, delimiterOccurece, subs);
 	}
 
