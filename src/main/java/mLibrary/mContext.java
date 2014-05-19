@@ -16,6 +16,8 @@ import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
+	//TODO remover
+	public int xecuteCount;
 	private mData mDataPublic;
 	private mData mDataGlobal;
 	private mData mDataLocal;

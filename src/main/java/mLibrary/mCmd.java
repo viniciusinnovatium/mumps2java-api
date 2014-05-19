@@ -40,24 +40,24 @@ public class mCmd extends mParent {
 
 	public void Do(Object object, String methodName, Object object2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void Do(Object methodName) {
 		Do(mFncUtil.castString(methodName));
 	}
-	
+
 	public void Do(String methodName) {
 		if (isIndirectionExecution(methodName)) {
 			mVar var = m$.indirectVar(methodName);
 			methodName = var.getName();
-			
+
 			if (isMethodExecution(methodName)) {
 				Do(defineMethodName(methodName), var.getParameters());
 			} else {
 				Do(methodName, var.getParameters());
 			}
-		}else{
+		} else {
 			m$.fnc$(methodName);
 		}
 	}
@@ -104,11 +104,11 @@ public class mCmd extends mParent {
 	}
 
 	public void Lock(String string, String string2, String string3) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void LockInc(mVar var, int i) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Merge(mVar target, mVar source) {
@@ -160,15 +160,15 @@ public class mCmd extends mParent {
 	}
 
 	public void Unlock(mVar var) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Unlock(mVar var, String str) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Unlock(String string) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Use(Object $$$OprLog) {
@@ -188,9 +188,10 @@ public class mCmd extends mParent {
 					writer.write(str.toString());
 					System.out.print(mFncUtil.toString(str));
 				} catch (IOException e) {
-					throw new IllegalArgumentException("Fail to write the string HTML "+str.toString());
+					throw new IllegalArgumentException(
+							"Fail to write the string HTML " + str.toString());
 				}
-				
+
 			}
 		} catch (NullPointerException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
@@ -206,12 +207,13 @@ public class mCmd extends mParent {
 	}
 
 	public void Xecute(Object object) {
+		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(object.toString());
 		if (String.valueOf(object).startsWith("do ")) {
 			String methodName = String.valueOf(object);
 			String methodSrc = String.valueOf(object).replaceAll("do ", "");
 			if (object.equals("do ^WWWFORM")) {
 				methodName = "WWWFORM.main";
-			}else {
+			} else {
 				if (methodSrc.contains("^")) {
 					String[] methodSplit = methodSrc.split("\\^");
 					if (methodSplit.length == 2) {
@@ -223,13 +225,13 @@ public class mCmd extends mParent {
 				}
 			}
 			Do(methodName);
-		} else if (String.valueOf(object).toUpperCase().startsWith("U ") || String.valueOf(object).toUpperCase().startsWith("USER ")) {
-			
+		} else if (String.valueOf(object).toUpperCase().startsWith("U ")
+				|| String.valueOf(object).toUpperCase().startsWith("USER ")) {
 		} else if (String.valueOf(object).toUpperCase().startsWith("SET ")) {
-			
 		} else {
 			throw new UnsupportedOperationException();
 		}
+
 	}
 
 	/*
@@ -237,20 +239,19 @@ public class mCmd extends mParent {
 	 */
 	@TODO
 	public void Lock(mVar var) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
-	
 
 	/*
 	 * Revisar implementacao
 	 */
 	@TODO
 	public void Lock(mVar var, int index) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Job(String string) {
-		Do(string);//TODO REVISAR IMPLEMENTAÇÃO
-		
+		Do(string);// TODO REVISAR IMPLEMENTAÇÃO
+
 	}
 }
