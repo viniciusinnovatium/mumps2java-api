@@ -2,6 +2,7 @@ package mLibrary;
 
 import java.util.Arrays;
 
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 import br.com.innovatium.mumps2java.todo.TODO;
 public class mVar {
 	/*
@@ -49,6 +50,9 @@ public class mVar {
 	}
 	
 	public mVar lastVar(Object... subs) {
+		if(!DataStructureUtil.isGlobal(this.subs)){
+			throw new UnsupportedOperationException();
+		}
 		return new mVar(mFncUtil.concatSinceLastSubscript(this.subs, subs), mData);  
 	} 
 

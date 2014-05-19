@@ -61,6 +61,13 @@ public class DataStructureUtilTest {
 		assertEquals("x~1~2~3",
 				DataStructureUtil.generateKeyWithoutVarName(query));
 	}
+	
+	@Test
+	public void testGenerateKeyWithoutVariableNameOfSingleSubs() {
+		Object[] x = new Object[]{"x"};
+		assertEquals(" ",
+				DataStructureUtil.generateKeyWithoutVarName(x));
+	}
 
 	@Test
 	public void testVariableTypes() {
@@ -86,7 +93,7 @@ public class DataStructureUtilTest {
 		try {
 			DataStructureUtil.generateKey(null);
 		} catch (NullPointerException e) {
-			hasNullPointer = true;			
+			hasNullPointer = true;
 		}
 		assertTrue(
 				"We have to get a null pointer because we avoided null references checking to enhance performance on execution",
@@ -115,13 +122,38 @@ public class DataStructureUtilTest {
 	public void testGenerationSubscriptsWithTableName() {
 		String key = "x~1~2";
 		Object[] subs = new Object[] { "^www001", "x", "1", "2" };
-		assertTrue(Arrays.equals(subs, DataStructureUtil.generateSubs("www001", key)));
+		assertTrue(Arrays.equals(subs,
+				DataStructureUtil.generateSubs("www001", key)));
 	}
-	
+
 	@Test
 	public void testGenerationTableName() {
 		Object[] subs = new Object[] { "^www001", "x", "1", "2" };
 		assertEquals("www001", DataStructureUtil.generateTableName(subs));
+	}
+
+	@Test
+	public void testIsGlobalVariable() {
+		Object[] subs = new Object[] { "^www001", "x", "1", "2" };
+		assertTrue(DataStructureUtil.isGlobal(subs));
+		assertFalse(DataStructureUtil.isLocal(subs));
+		assertFalse(DataStructureUtil.isPublic(subs));
+	}
+	
+	@Test
+	public void testIsLocalVariable() {
+		Object[] subs = new Object[] { "www001", "x", "1", "2" };
+		assertFalse(DataStructureUtil.isGlobal(subs));
+		assertTrue(DataStructureUtil.isLocal(subs));
+		assertFalse(DataStructureUtil.isPublic(subs));
+	}
+	
+	@Test
+	public void testIsPublicVariable() {
+		Object[] subs = new Object[] { "%www001", "x", "1", "2" };
+		assertFalse(DataStructureUtil.isGlobal(subs));
+		assertFalse(DataStructureUtil.isLocal(subs));
+		assertTrue(DataStructureUtil.isPublic(subs));
 	}
 
 }

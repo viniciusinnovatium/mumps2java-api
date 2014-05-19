@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mSystem.mSystem;
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
@@ -31,19 +32,33 @@ public class mContext {
 	private Writer writer;
 
 	public mContext(Writer writer) {
-		this();
-		this.writer = writer;
+		this(true, writer);
 	}
 
-	public mContext() {
+	public mContext(boolean hasDatabaseAcces, Writer writer) {
 		this.mVariables = new mVariables();
 		this.mDataPublic = new mDataAccessPublic(mVariables);
-		this.mDataGlobal = new mDataGlobalAcess(mVariables);
 		this.mDataLocal = new mDataAccessLocal(mVariables);
+		if (hasDatabaseAcces) {
+			this.mDataGlobal = new mDataGlobalAcess(mVariables);
+		} else {
+			this.mDataGlobal = new mDataAccessMemory(mVariables,
+					DataStructureUtil.GLOBAL);
+		}
 
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
 		this.system = new mSystem(this);
+
+		this.writer = writer;
+	}
+
+	/*
+	 * This constructor was created to implement JUnit execution, because we
+	 * have to mock the database access.
+	 */
+	public mContext() {
+		this(false, null);
 	}
 
 	public Writer getWriter() {
@@ -233,28 +248,15 @@ public class mContext {
 	}
 
 	public mVar lastVar(Object... subs) {
+		if (!DataStructureUtil.isGlobal(getmDataGlobal().getCurrentSubs())) {
+			throw new UnsupportedOperationException();
+		}
 		// Because the lastVar operator will be able to global variables only.
 		Object[] concat = mFncUtil.concatSinceLastSubscript(getmDataGlobal()
 				.getCurrentSubs(), subs);
 		return var(concat);
 	}
 
-	/*
-	 * @TODO public void merge(mVar dest, mVar orig) { Object valOrig =
-	 * orig.get(); if (valOrig != null) { dest.set(valOrig); } Object obj =
-	 * String.valueOf(""); for (;;) { ArrayList<Object> subL = new
-	 * ArrayList<Object>(Arrays.asList(orig .getSubs())); subL.add(obj);
-	 * 
-	 * obj = mFnc.$order(var(subL.toArray())); if
-	 * (String.valueOf(obj).isEmpty()) { break; } ArrayList<Object> subDest =
-	 * new ArrayList<Object>( Arrays.asList(dest.getSubs())); subDest.add(obj);
-	 * 
-	 * ArrayList<Object> subOrig = new ArrayList<Object>(
-	 * Arrays.asList(orig.getSubs())); subOrig.add(obj);
-	 * merge(var(subDest.toArray()), var(subOrig.toArray())); } }
-	 */
-
-	@TODO
 	public void merge(mVar dest, mVar orig) {
 		dest.merge(orig);
 	}

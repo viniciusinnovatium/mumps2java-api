@@ -95,4 +95,16 @@ public class OrderFunctionTest {
 		assertEquals("Fail to find first public variable on memory.", "%",
 				mFnc.$order(m$.var("")));
 	}
+	
+	@Test
+	public void testOrderOnDatabaseAccessVariable() {
+		m$.var("^www001", "pai", "filho1").set("1");
+		m$.var("^www001", "pai", "filho2").set("12");
+		m$.var("^www001", "pai", "filho3").set("13");
+		
+		assertEquals("Fail to find the next node on the tree through order function", "filho2", m$.var("^www001", "pai", "filho1").order());
+		assertEquals("Fail to find the next node on the tree through order function", "filho3", m$.var("^www001", "pai", "filho2").order());
+		assertEquals("Fail to find the next node on the tree through order function", "", m$.var("^www001", "pai", "filho3").order());
+		assertEquals("Fail to find the next node on the tree through order function", "filho1", m$.var("^www001", "pai", "").order());
+	}
 }

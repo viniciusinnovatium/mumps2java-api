@@ -11,6 +11,18 @@ public final class DataStructureUtil {
 	private DataStructureUtil() {
 	}
 
+	public static boolean isGlobal(Object[] subs) {
+		return GLOBAL == getVariableType(subs);
+	}
+
+	public static boolean isLocal(Object[] subs) {
+		return LOCAL == getVariableType(subs);
+	}
+
+	public static boolean isPublic(Object[] subs) {
+		return PUBLIC == getVariableType(subs);
+	}
+
 	public static int getVariableType(Object[] subs) {
 		String name = subs[0].toString();
 		final boolean isEmpty = name.length() == 0;
@@ -47,6 +59,10 @@ public final class DataStructureUtil {
 	}
 
 	public static String generateKeyWithoutVarName(Object[] subs) {
+		// This code is dedicated to global variable generation key.
+		if(subs.length <= 1) {
+			return " ";
+		}
 		int delimiterOccurece = subs.length - 2;
 		return generateKey(1, subs.length, delimiterOccurece, subs);
 	}
