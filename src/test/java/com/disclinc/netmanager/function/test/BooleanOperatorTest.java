@@ -21,7 +21,8 @@ public class BooleanOperatorTest {
 		assertFalse(mOp.And(1, "teste"));
 		assertTrue(mOp.And(1, "1teste"));
 		assertFalse(mOp.And(0, "teste"));
-		assertFalse(mOp.And("+1", "1"));
+		assertTrue(mOp.And("+1", "1"));
+		assertTrue(mOp.And("+1", "---+++1"));		
 	}
 
 	@Test
