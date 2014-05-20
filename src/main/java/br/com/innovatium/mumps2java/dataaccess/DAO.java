@@ -16,7 +16,7 @@ public class DAO {
 	public DAO() {
 		this(ConnectionType.DATASOURCE);
 	}
-
+	
 	public DAO(ConnectionType connectionType) {
 		try {
 			con = ConnectionFactory.getConnection(connectionType);

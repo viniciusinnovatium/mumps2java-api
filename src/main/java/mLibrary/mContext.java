@@ -250,12 +250,9 @@ public class mContext {
 	}
 
 	public mVar lastVar(Object... subs) {
-		if (!DataStructureUtil.isGlobal(getmDataGlobal().getCurrentSubs())) {
-			throw new UnsupportedOperationException();
-		}
 		// Because the lastVar operator will be able to global variables only.
-		Object[] concat = mFncUtil.concatSinceLastSubscript(getmDataGlobal()
-				.getCurrentSubs(), subs);
+		Object[] concat = mFncUtil.concatSinceLastSubscript(
+				mDataGlobal.getCurrentSubs(), subs);
 		return var(concat);
 	}
 

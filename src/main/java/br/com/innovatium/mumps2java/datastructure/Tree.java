@@ -41,6 +41,10 @@ public final class Tree extends Node {
 		}
 	}
 
+	public boolean contains(Object[] subs) {
+		return findNode(subs) != null;
+	}
+	
 	public void unstacking() {
 		final List<Node> stackedNodes = stack.pull(currentStackLevel);
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
@@ -211,6 +215,11 @@ public final class Tree extends Node {
 			mergeSubnodesOperation.set(destSubs, origNode.getSubs());
 			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
 		}
+
+	}
+	
+	public Object order(Object... subs) {
+		return order(subs, 1);
 	}
 
 	/*
