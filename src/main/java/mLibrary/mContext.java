@@ -1,6 +1,5 @@
 package mLibrary;
 
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -17,6 +16,8 @@ import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
+	// TODO remover
+	public int xecuteCount;
 	private mData mDataPublic;
 	private mData mDataGlobal;
 	private mData mDataLocal;
@@ -235,15 +236,12 @@ public class mContext {
 		return var(parseVarSubs(val.toString()));
 	}
 
-	@REMOVE
-	public mVar lastvar(int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public mVar lastVar(Object... subs) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		final String varName = mFncUtil.castString(subs[0]);
+		mData mData = generateMData(varName);
+		Object[] concat = mFncUtil.concatSinceLastSubscript(
+				mData.getCurrentSubs(), subs);
+		return var(concat);
 	}
 
 	@TODO

@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
+	
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -505,8 +506,8 @@ public final class mFnc extends mParent {
 		return new Random().nextInt(mFncUtil.numberConverter(range).intValue());
 	}
 
-	public static Object $replace(Object object, Object object2,
-			Object object3) {
+	public static Object $replace(Object object, Object oldSubstring,
+			Object newSubstring) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
@@ -1278,5 +1279,16 @@ public final class mFnc extends mParent {
 	public Object $query(mVar indirectVar, Object negative) {
 		throw new UnsupportedOperationException();
 	}
-
+	
+	public Object $zf(Object x, Object y){
+		throw new UnsupportedOperationException();
+	}
+	
+	public Object $ztime(Object value, int index){
+		throw new UnsupportedOperationException();
+	}
+	
+	public Object $ztimeh(Object value, int index, Object defaultValue){
+		throw new UnsupportedOperationException();
+	}
 }

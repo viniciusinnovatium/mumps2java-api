@@ -2,7 +2,6 @@ package br.com.innovatium.mumps2java.datastructure.util;
 
 import mLibrary.mFncUtil;
 
-
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
 
@@ -10,15 +9,11 @@ public final class DataStructureUtil {
 	}
 
 	public static Object[] concat(Object[] first, Object[] second) {
-		Object[] copy = new Object[first.length + second.length];
-		for (int i = 0; i < first.length; i++) {
-			copy[i] = first[i];
-		}
+		return concat(first, second, first.length, 0);
+	}
 
-		for (int i = 0; i < second.length; i++) {
-			copy[i + first.length] = second[i];
-		}
-		return copy;
+	public static Object[] concatSinceLast(Object[] first, Object[] second) {
+		return concat(first, second, first.length - 1, 0);
 	}
 
 	public static Object[] concat(Object[] dest, Object orig) {
@@ -28,6 +23,12 @@ public final class DataStructureUtil {
 	public static String generateKey(Object[] subs) {
 		int delimiterOccurece = subs.length - 1;
 		return generateKey(0, subs.length, delimiterOccurece, subs);
+	}
+
+	public static String generateKeyOfParent(Object[] subs) {
+		int end = subs.length - 1;
+		int delimiterOccurece = end - 1;
+		return generateKey(0, end, delimiterOccurece, subs);
 	}
 
 	public static String generateKeyWithoutVarName(Object[] subs) {
@@ -77,5 +78,18 @@ public final class DataStructureUtil {
 
 	public static String generateTableName(Object... subs) {
 		return subs[0].toString().replace("^", "");
+	}
+
+	private static Object[] concat(Object[] first, Object[] second,
+			int lastIndexOfFirst, int startIndexOfSecond) {
+		Object[] copy = new Object[lastIndexOfFirst + second.length];
+		for (int i = 0; i < lastIndexOfFirst; i++) {
+			copy[i] = first[i];
+		}
+
+		for (int i = startIndexOfSecond; i < second.length; i++) {
+			copy[i + lastIndexOfFirst] = second[i];
+		}
+		return copy;
 	}
 }
