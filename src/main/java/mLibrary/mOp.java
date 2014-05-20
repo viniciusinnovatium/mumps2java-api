@@ -160,9 +160,9 @@ public final class mOp {
 	}
 
 	public static boolean Or(Object x, Object y) {
-		double a = mFncUtil.numberConverter(x);
-		double b = mFncUtil.numberConverter(y);
-		return 0 != a | 0 != b; 
+		boolean a = mFncUtil.booleanConverter(x);
+		boolean b = mFncUtil.booleanConverter(y);
+		return a | b; 
 	}
 
 	public static boolean NotContains(Object str1, Object str2) {
@@ -170,9 +170,9 @@ public final class mOp {
 	}
 
 	public static boolean And(Object x, Object y) {
-		double a = mFncUtil.numberConverter(x);
-		double b = mFncUtil.numberConverter(y);
-		return 0 != a & 0 != b; 
+		boolean a = mFncUtil.booleanConverter(x);
+		boolean b = mFncUtil.booleanConverter(y);
+		return a & b; 
 	}
 
 }
