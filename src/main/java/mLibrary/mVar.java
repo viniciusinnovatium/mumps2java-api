@@ -45,7 +45,7 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-		if (generateKey(subs).contains("YLFN")) {
+		if (generateKey(subs).contains("YSATZ")) {
 			System.out.print("");
 		}
 		mData.subs(subs).set(value);
@@ -53,7 +53,7 @@ public class mVar {
 
 	public Object get() {
 		Object val = mData.get(subs);
-		if(String.valueOf(val).contains("Cód. Paciente")){
+		if(String.valueOf(val).contains("Prontuário")){
 			System.out.print("");
 		}
 		return val;
