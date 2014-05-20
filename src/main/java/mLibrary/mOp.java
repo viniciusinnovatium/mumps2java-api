@@ -42,6 +42,12 @@ public final class mOp {
 		if (y instanceof Double && (((Double) y) % 1 == 0)) {
 			y = ((Double) y).longValue();
 		}
+		if(x instanceof Boolean){
+			x = ((Boolean)x)?1:0;
+		}
+		if(y instanceof Boolean){
+			y = ((Boolean)y)?1:0;
+		}		
 		if (String.valueOf(x).equals(String.valueOf(y))) {
 			return true;
 		} else {
