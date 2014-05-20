@@ -45,6 +45,10 @@ public final class Tree extends Node {
 		}
 	}
 
+	public boolean contains(Object[] subs) {
+		return findNode(subs) != null;
+	}
+	
 	public void unstacking() {
 		if (stack == null) {
 			stack = new StackNode();
@@ -101,14 +105,6 @@ public final class Tree extends Node {
 			cod = 11;
 		}
 		return cod;
-	}
-
-	public Object[] generateSubs(String key) {
-		return DataStructureUtil.generateSubs(key);
-	}
-
-	public Object[] generateSubs(String tableName, String key) {
-		return DataStructureUtil.generateSubs(tableName, key);
 	}
 
 	public void set(Object[] subs, Object value) {
@@ -249,36 +245,7 @@ public final class Tree extends Node {
 		}
 
 	}
-
-	private void mergeSubnodes(final Object[] dest, final Object[] orig,
-			Node node) {
-
-		Object[] concatSubs = null;
-		boolean hasSubnodes = node.hasSubnodes();
-		boolean subnodeHasNext = hasSubnodes && node.getSubnode().hasNext();
-
-		Object subnodeValue = node.getValue();
-		concatSubs = DataStructureUtil.concat(dest, node.getSubs(orig.length));
-		Node destNode = findNode(concatSubs);
-		if (destNode == null) {
-			set(concatSubs, subnodeValue);
-		} else if (subnodeValue != null) {
-			destNode.setValue(subnodeValue);
-		}
-
-		if (hasSubnodes) {
-			mergeSubnodes(dest, orig, node.getSubnode());
-		}
-
-		if (subnodeHasNext) {
-			mergeSubnodes(dest, orig, node.getSubnode().getNext());
-		}
-
-		if (node.hasNext()) {
-			mergeSubnodes(dest, orig, node.getNext());
-		}
-	}
-
+	
 	public Object order(Object... subs) {
 		return order(subs, 1);
 	}

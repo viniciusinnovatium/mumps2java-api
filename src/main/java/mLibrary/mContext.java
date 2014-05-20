@@ -237,10 +237,8 @@ public class mContext {
 	}
 
 	public mVar lastVar(Object... subs) {
-		final String varName = mFncUtil.castString(subs[0]);
-		mData mData = generateMData(varName);
 		Object[] concat = mFncUtil.concatSinceLastSubscript(
-				mData.getCurrentSubs(), subs);
+				mDataGlobal.getCurrentSubs(), subs);
 		return var(concat);
 	}
 
@@ -369,7 +367,7 @@ public class mContext {
 		return simulatingVariableThroughReference(name, ref, valueDefault,
 				false);
 	}
-
+	
 	/**
 	 * This method was created to play a role of mumps usage variable through
 	 * reference or value scheme

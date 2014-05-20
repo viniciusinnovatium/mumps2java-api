@@ -4,6 +4,7 @@ import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyOfParent;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyToLikeQuery;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyWithoutVarName;
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateSubs;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateTableName;
 
 import java.util.HashSet;
@@ -11,7 +12,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.disclinc.netmanager.variable.test.OrderCacheTest;
+
 import br.com.innovatium.mumps2java.dataaccess.DAO;
+import br.com.innovatium.mumps2java.datastructure.OrderDataCache;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class mData {
@@ -20,44 +24,42 @@ public class mData {
 	DAO dao;
 	final Tree tree = new Tree();
 	final Set<String> cacheOrderFunction = new HashSet<String>(50);
+	final OrderDataCache orderDataCache = new OrderDataCache();
 
 	public Object get(Object... subs) {
-		if (isDiskAccess(subs)) {
+		Object value = tree.get(subs);
+		if (isDiskAccess(subs) && value == null) {
 			initDAO();
 			final String tableName = generateTableName(subs);
-			return dao.find(tableName, generateKeyWithoutVarName(subs));
-		} else {
-			return tree.get(subs);
+			value = dao.find(tableName, generateKeyWithoutVarName(subs));
+			tree.set(subs, value);
 		}
-
+		return value;
 	}
 
 	/*
 	 * This method was create to support lastVar function and should not remove.
 	 */
-	public Object[] getCurrentSubs(){
+	public Object[] getCurrentSubs() {
 		return currentSubs;
 	}
-	
+
 	public boolean isEmpty() {
 		return tree.isEmpty();
 	}
 
 	public void set(Object value) {
-
 		if (isDiskAccess(currentSubs)) {
 			if (currentSubs != null) {
 				initDAO();
 				final String tableName = generateTableName(currentSubs);
 				// Here we have calling toString method because ListObject
 				// should be persisted as string
-				dao.insert(tableName,
-						generateKeyWithoutVarName(currentSubs),
+				dao.insert(tableName, generateKeyWithoutVarName(currentSubs),
 						value != null ? value.toString() : null);
 			}
-		} else {
-			tree.set(currentSubs, value);
 		}
+		tree.set(currentSubs, value);
 	}
 
 	public void merge(Object[] dest, Object[] orig) {
@@ -90,6 +92,7 @@ public class mData {
 		if (isDiskAccess(subs)) {
 			initDAO();
 			dao.remove(generateTableName(subs), generateKey(subs));
+			tree.kill(subs);
 		} else {
 			tree.kill(subs);
 		}
@@ -117,13 +120,15 @@ public class mData {
 	}
 
 	private void populateTree() {
-		String key = null;
-		if (isDiskAccess(currentSubs)
-				&& !cacheOrderFunction.contains(key = generateKeyOfParent(currentSubs))) {
+		if (isDiskAccess(currentSubs)) {
+			if (!orderDataCache.isCached(currentSubs)) {
+				orderDataCache.add(currentSubs);
+				initDAO();
+				findDataOnDisk();
+			} else {
+				int i = 0;
+			}
 
-			cacheOrderFunction.add(key);
-			initDAO();
-			findDataOnDisk();
 		}
 	}
 
@@ -144,16 +149,17 @@ public class mData {
 
 	private void findDataOnDisk() {
 
-		final String tableName = generateTableName(currentSubs);
+		String tableName = generateTableName(currentSubs);
 
 		Map<String, String> map = dao.like(tableName,
 				generateKeyToLikeQuery(currentSubs));
+
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {
 				// Here we have to include variable or table name into the key
 				// because this is part of the subscripts.
-				tree.set(tree.generateSubs(tableName, entry.getKey()),
+				tree.set(generateSubs(tableName, entry.getKey()),
 						entry.getValue());
 			}
 		}
