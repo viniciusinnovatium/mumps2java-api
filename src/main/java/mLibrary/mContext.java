@@ -21,6 +21,8 @@ public class mContext {
 	private final mDataAccess mDataGlobal;
 	private final mDataAccess mDataLocal;
 	private final mVariables mVariables;
+	// TODO remover
+	public int xecuteCount;
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
 

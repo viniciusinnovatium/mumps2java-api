@@ -1,6 +1,5 @@
 package mLibrary;
 
-import java.math.BigDecimal;
 
 public final class mOp {
 	private mOp() {
@@ -42,6 +41,12 @@ public final class mOp {
 		if (y instanceof Double && (((Double) y) % 1 == 0)) {
 			y = ((Double) y).longValue();
 		}
+		if(x instanceof Boolean){
+			x = ((Boolean)x)?1:0;
+		}
+		if(y instanceof Boolean){
+			y = ((Boolean)y)?1:0;
+		}		
 		if (String.valueOf(x).equals(String.valueOf(y))) {
 			return true;
 		} else {
@@ -154,8 +159,10 @@ public final class mOp {
 		return !Less(object, object2);
 	}
 
-	public static boolean Or(boolean bool1, boolean bool2) {
-		return bool1 || bool2;
+	public static boolean Or(Object x, Object y) {
+		double a = mFncUtil.numberConverter(x);
+		double b = mFncUtil.numberConverter(y);
+		return 0 != a | 0 != b; 
 	}
 
 	public static boolean NotContains(Object str1, Object str2) {
@@ -165,7 +172,8 @@ public final class mOp {
 	public static boolean And(Object x, Object y) {
 		double a = mFncUtil.numberConverter(x);
 		double b = mFncUtil.numberConverter(y);
-		return 0 != a && 0 != b; 
+
+		return 0 != a & 0 != b; 
 	}
 
 }

@@ -199,7 +199,7 @@ public final class mFncUtil {
 
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
 
-		Double days = numberConverter(internalDate);
+		Double days = Double.valueOf(String.valueOf(numberConverter(internalDate)));
 		Double dateMilli = days * 24d * 60d * 60d * 1000d - dateDif;
 		
 		return dateMilli;

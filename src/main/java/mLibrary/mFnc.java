@@ -82,10 +82,10 @@ public final class mFnc extends mParent {
 				throw new IllegalArgumentException(
 						"This method requires at least one pair of condition and value that returns as true.");
 			}
-			String target = String.valueOf(args[0]);
+			Object target = args[0];
 			for (int i = 1; i < args.length; i++) {
 				if (i % 2 != 0) {
-					if (target.equals(args[i])) {
+					if (mOp.Equal(target, args[i])) {
 						hasTrue = true;
 						returnObj = args[i + 1];
 						break;

@@ -1,5 +1,7 @@
 package mLibrary;
 
+import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
+
 import java.util.Arrays;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
@@ -26,11 +28,18 @@ public class mVar {
 	}
 
 	public void set(Object value) {
+		if (generateKey(subs).contains("YSATZ")) {
+			System.out.print("");
+		}
 		mData.subs(subs).set(value);
 	}
 
 	public Object get() {
-		return mData.get(subs);
+		Object val = mData.get(subs);
+		if(String.valueOf(val).contains("Prontuário")){
+			System.out.print("");
+		}
+		return val;
 	}
 
 	public void kill() {

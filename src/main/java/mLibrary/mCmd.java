@@ -23,9 +23,9 @@ public class mCmd extends mParent {
 		if (methodName == null) {
 			return null;
 		}
-		final String[] method = methodName.split("^");
+		final String[] method = methodName.split("\\^");
 		if (method.length > 1) {
-			return method[1] + "." + method[0];
+			return method[1] + "." + (method[0].isEmpty() ? "main" : method[0]);
 		} else if (method.length == 1) {
 			return method[0] + ".main";
 		} else {
@@ -40,25 +40,29 @@ public class mCmd extends mParent {
 
 	public void Do(Object object, String methodName, Object object2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void Do(Object methodName) {
 		Do(mFncUtil.castString(methodName));
 	}
-	
+
 	public void Do(String methodName) {
 		if (isIndirectionExecution(methodName)) {
 			mVar var = m$.indirectVar(methodName);
 			methodName = var.getName();
-			
+
 			if (isMethodExecution(methodName)) {
 				Do(defineMethodName(methodName), var.getParameters());
 			} else {
 				Do(methodName, var.getParameters());
 			}
-		}else{
-			m$.fnc$(methodName);
+		} else {
+			if (isMethodExecution(methodName)) {
+				Do(defineMethodName(methodName), (Object[]) null);
+			} else {
+				m$.fnc$(methodName);
+			}
 		}
 	}
 
@@ -104,11 +108,11 @@ public class mCmd extends mParent {
 	}
 
 	public void Lock(String string, String string2, String string3) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void LockInc(mVar var, int i) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Merge(mVar target, mVar source) {
@@ -160,15 +164,15 @@ public class mCmd extends mParent {
 	}
 
 	public void Unlock(mVar var) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Unlock(mVar var, String str) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Unlock(String string) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
 	public void Use(Object $$$OprLog) {
@@ -185,12 +189,13 @@ public class mCmd extends mParent {
 			Writer writer = m$.getWriter();
 			for (Object str : string) {
 				try {
-					writer.write(str.toString());
+					writer.write(String.valueOf(str));
 					System.out.print(mFncUtil.toString(str));
 				} catch (IOException e) {
-					throw new IllegalArgumentException("Fail to write the string HTML "+str.toString());
+					throw new IllegalArgumentException(
+							"Fail to write the string HTML " + str.toString());
 				}
-				
+
 			}
 		} catch (NullPointerException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
@@ -206,28 +211,16 @@ public class mCmd extends mParent {
 	}
 
 	public void Xecute(Object object) {
+		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(object.toString());
 		if (String.valueOf(object).startsWith("do ")) {
-			String methodName = String.valueOf(object);
-			String methodSrc = String.valueOf(object).replaceAll("do ", "");
-			if (object.equals("do ^WWWFORM")) {
-				methodName = "WWWFORM.main";
-			}else {
-				if (methodSrc.contains("^")) {
-					String[] methodSplit = methodSrc.split("\\^");
-					if (methodSplit.length == 2) {
-						methodName = methodSplit[1].concat(".").concat(
-								methodSplit[0]);
-					} else if (methodSplit.length == 1) {
-						methodName = methodSplit[0];
-					}
-				}
-			}
-			Do(methodName);
-		} else if (String.valueOf(object).startsWith("U ") || String.valueOf(object).startsWith("USER ")) {
-			
+			Do(String.valueOf(object).replaceAll("do ", ""));
+		} else if (String.valueOf(object).toUpperCase().startsWith("U ")
+				|| String.valueOf(object).toUpperCase().startsWith("USER ")) {
+		} else if (String.valueOf(object).toUpperCase().startsWith("SET ")) {
 		} else {
 			throw new UnsupportedOperationException();
 		}
+
 	}
 
 	/*
@@ -235,19 +228,31 @@ public class mCmd extends mParent {
 	 */
 	@TODO
 	public void Lock(mVar var) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
-	
 
 	/*
 	 * Revisar implementacao
 	 */
 	@TODO
 	public void Lock(mVar var, int index) {
-		// TODO REVISAR IMPLEMENTAÇÃO	
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
-	public void Job(String string) {
-		Do(string);
+	public void Job(String methodName) {
+		new Thread(new JobCmd(methodName)).start();
+	}
+
+	private class JobCmd implements Runnable {
+		private String methodName;
+
+		public JobCmd(final String methodName) {
+			this.methodName = methodName;
+		}
+
+		public void run() {
+			m$.Cmd.Do(methodName);
+		}
+
 	}
 }
