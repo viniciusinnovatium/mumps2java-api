@@ -229,15 +229,12 @@ public final class Tree extends Node {
 	 */
 	private void operateOverSubnodes(Node node, OperationOverNodes operation) {
 		if (node != null) {
-			Node next = node;
-			do {
-				operation.operate(next);
-
-				if (next.hasSubnodes()) {
-					operateOverSubnodes(next.getSubnode(), operation);
-				}
-
-			} while ((next = next.getNext()) != null);
+			operation.operate(node);
+			Node next = node.getSubnode();
+			while (next != null) {
+				operateOverSubnodes(next, operation);
+				next = next.getNext();
+			}
 		}
 	}
 
@@ -431,11 +428,9 @@ public final class Tree extends Node {
 		public void operate(Node node) {
 			dump.append(node).append("\n");
 		}
-
 	}
 
 	private Node findNodeByKey(String key) {
 		return keyValue.get(key);
 	}
-
 }

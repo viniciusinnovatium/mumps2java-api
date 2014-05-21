@@ -16,7 +16,7 @@ public class DAO {
 	public DAO() {
 		this(ConnectionType.DATASOURCE);
 	}
-	
+
 	public DAO(ConnectionType connectionType) {
 		try {
 			con = ConnectionFactory.getConnection(connectionType);
@@ -39,8 +39,8 @@ public class DAO {
 		ResultSet result = null;
 		try {
 
-			String like = "select key_, value_ from \"" + tableName
-					+ "\" where key_ like ? order by key_ asc";
+			String like = "select key_, value_ from " + tableName
+					+ " where key_ like ? order by key_ asc";
 
 			select = con.prepareStatement(like);
 			select.setString(1, key + "%");
@@ -67,8 +67,7 @@ public class DAO {
 	public void remove(String tableName, String key) {
 		PreparedStatement delete = null;
 		try {
-			String string = "delete from \"" + tableName
-					+ "\" where key_ like ?";
+			String string = "delete from " + tableName + " where key_ like ?";
 			delete = con.prepareStatement(string);
 			delete.setString(1, key + "%");
 			delete.execute();
@@ -92,12 +91,12 @@ public class DAO {
 		ResultSet result = null;
 		try {
 
-			String selectOne = "select key_, value_ from \""
-					+ tableName.toUpperCase() + "\" where key_ = ?";
+			String selectOne = "select key_, value_ from " + tableName
+					+ " where key_ = ?";
 			ps = con.prepareStatement(selectOne);
 			ps.setObject(1, key);
 			result = ps.executeQuery();
-			
+
 			if (!result.next()) {
 				releaseResouce(ps);
 				String insertQuery = "insert into " + tableName.toUpperCase()
@@ -135,15 +134,10 @@ public class DAO {
 		ResultSet rs = null;
 		try {
 			DatabaseMetaData metaData = con.getMetaData();
-			rs = metaData.getTables(null, null, tableName.toUpperCase(), null);
+			rs = metaData.getTables(null, null, tableName, null);
 			if (rs.next()) {
 				hasTable = true;
-				/*
-				 * ResultSetMetaData rsMetaData = rs.getMetaData(); int
-				 * columnCount = rsMetaData.getColumnCount(); for (int i = 1; i
-				 * <= columnCount; i++) {
-				 * if(rsMetaData.getTableName(i).equals(tableName)){ break; } }
-				 */
+
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -169,8 +163,8 @@ public class DAO {
 
 		try {
 			final StringBuilder selectOne = new StringBuilder(
-					"select key_, value_ from \"").append(tableName.toUpperCase()).append(
-					"\" where key_ = ?");
+					"select key_, value_ from ").append(tableName).append(
+					" where key_ = ?");
 			ps = con.prepareStatement(selectOne.toString());
 			ps.setString(1, key);
 			result = ps.executeQuery();
@@ -192,10 +186,10 @@ public class DAO {
 	}
 
 	public boolean createTable(String tableName) {
-		PreparedStatement ps =null;
+		PreparedStatement ps = null;
 		try {
 			final StringBuilder selectOne = new StringBuilder("CREATE TABLE "
-					+ tableName.toUpperCase()
+					+ tableName
 					+ "( \"KEY_\" VARCHAR2(4000 BYTE) NOT NULL ENABLE,"
 					+ "\"VALUE_\" VARCHAR2(4000 BYTE))");
 			ps = con.prepareStatement(selectOne.toString());
@@ -204,21 +198,21 @@ public class DAO {
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to create table " + tableName, e);
-		}finally{
+		} finally {
 			releaseResouce(ps);
 		}
 	}
-	
+
 	private void releaseResouce(PreparedStatement ps) {
+
 		try {
 			if (ps != null && !ps.isClosed()) {
-				ps.close();			
+				ps.close();
 			}
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to close prepare statement",
 					e);
 		}
 	}
-	
-	
+
 }
