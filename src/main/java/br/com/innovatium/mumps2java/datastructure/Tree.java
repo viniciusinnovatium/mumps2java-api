@@ -213,7 +213,7 @@ public final class Tree extends Node {
 
 		if (origNode.hasSubnodes()) {
 			mergeSubnodesOperation.set(destSubs, origNode.getSubs());
-			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
+			operateOverSubnodes(origNode, mergeSubnodesOperation);
 		}
 
 	}
