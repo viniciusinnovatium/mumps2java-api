@@ -190,6 +190,9 @@ public class mCmd extends mParent {
 			for (Object str : string) {
 				try {
 					writer.write(String.valueOf(str));
+					if(String.valueOf(str).contains("<HR")){
+						System.out.print("");
+					}
 					System.out.print(mFncUtil.toString(str));
 				} catch (IOException e) {
 					throw new IllegalArgumentException(

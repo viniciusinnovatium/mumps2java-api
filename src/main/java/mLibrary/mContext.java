@@ -491,4 +491,18 @@ public class mContext {
 		map.put(this.mDataLocal, locals.toArray());
 		return map;
 	}
+
+	public mParameter param(mClass instanceMClas, String parameterName){
+		mParameter parameter;
+		try {
+			 parameter = new mParameter(instanceMClas.getClass().getField(parameterName));
+		} catch (NoSuchFieldException e) {
+			parameter = null;
+		} catch (SecurityException e) {
+			parameter = null;
+		}
+		return parameter;
+	}
+	
+	
 }

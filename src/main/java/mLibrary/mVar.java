@@ -36,9 +36,12 @@ public class mVar {
 
 	public Object get() {
 		Object val = mData.get(subs);
-		if(String.valueOf(val).contains("Prontuário")){
+		if(String.valueOf(val).contains("Data de Nascimento")){
 			System.out.print("");
 		}
+		if(generateKey(subs).contains("1.0")){
+			System.out.print("");
+		}		
 		return val;
 	}
 

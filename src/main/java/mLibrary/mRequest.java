@@ -82,5 +82,15 @@ public class mRequest {
 	public mContent getContent() {
 		// TODO Auto-generated method stub
 		return content;
+	}
+
+	public Object getURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object getCgiEnv(Object string, Object pDefault) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }
