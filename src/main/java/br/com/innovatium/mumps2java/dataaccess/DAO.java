@@ -39,8 +39,8 @@ public class DAO {
 		ResultSet result = null;
 		try {
 
-			String like = "select key_, value_ from \"" + tableName
-					+ "\" where key_ like ? order by key_ asc";
+			String like = "select key_, value_ from " + tableName
+					+ " where key_ like ? order by key_ asc";
 
 			select = con.prepareStatement(like);
 			select.setString(1, key + "%");
