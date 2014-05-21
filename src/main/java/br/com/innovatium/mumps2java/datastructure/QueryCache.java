@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.*;
 
-public class OrderDataCache {
+public class QueryCache {
 	final Set<String> cache = new HashSet<String>();
 
-	public OrderDataCache() {
+	public QueryCache() {
 	}
 
 	public boolean isCached(Object[] subs) {

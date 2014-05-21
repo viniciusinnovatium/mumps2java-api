@@ -42,7 +42,7 @@ public class mContext {
 		this.mDataPublic = new mDataAccessPublic(mVariables);
 		this.mDataLocal = new mDataAccessLocal(mVariables);
 		if (hasDatabaseAcces) {
-			this.mDataGlobal = new mDataGlobalAcess(mVariables);
+			this.mDataGlobal = new mDataGlobalAccess(mVariables);
 		} else {
 			this.mDataGlobal = new mDataAccessMemory(mVariables,
 					DataStructureUtil.GLOBAL);

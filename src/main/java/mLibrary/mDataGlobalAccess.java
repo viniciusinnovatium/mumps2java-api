@@ -12,20 +12,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.disclinc.netmanager.variable.test.OrderCacheTest;
+
 import br.com.innovatium.mumps2java.dataaccess.DAO;
+import br.com.innovatium.mumps2java.datastructure.QueryCache;
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
-public class mDataGlobalAcess extends mDataAccess {
+public class mDataGlobalAccess extends mDataAccess {
 	private DAO dao = new DAO();
-	final Set<String> cacheOrderFunction = new HashSet<String>(50);
+	private QueryCache cache = new QueryCache();
 
-	public mDataGlobalAcess(mVariables mVariables) {
+	public mDataGlobalAccess(mVariables mVariables) {
 		super(mVariables, DataStructureUtil.GLOBAL);
 	}
 
 	public Object get(Object... subs) {
-		return dao.find(generateTableName(subs),
-				generateKeyWithoutVarName(subs));
+		Object value = tree.get(subs);
+		if(value == null) {
+			value = dao.find(generateTableName(subs),
+					generateKeyWithoutVarName(subs));
+			tree.set(subs, value);
+		}
+		return value;
 	}
 
 	/*
@@ -45,6 +53,7 @@ public class mDataGlobalAcess extends mDataAccess {
 		// should be persisted as string
 		dao.insert(tableName, generateKeyWithoutVarName(currentSubs),
 				value != null ? value.toString() : null);
+		tree.set(currentSubs, value);
 	}
 
 	public void stacking(Object... variables) {
@@ -89,11 +98,8 @@ public class mDataGlobalAcess extends mDataAccess {
 	}
 
 	private void populateTree() {
-		String key = null;
-		if (!cacheOrderFunction
-				.contains(key = generateKeyOfParent(currentSubs))) {
-
-			cacheOrderFunction.add(key);
+		if (!cache.isCached(currentSubs)) {
+			cache.add(currentSubs);
 			findDataOnDisk();
 		}
 	}
