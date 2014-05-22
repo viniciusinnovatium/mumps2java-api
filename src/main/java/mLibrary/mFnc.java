@@ -890,4 +890,8 @@ public final class mFnc extends mParent {
 		// TODO REVISAR IMPLEMENTAÇÃO PROVISÓRIA
 		return "NetManager Java Version 1.0";
 	}
+
+	public Object $ztrap() {
+		return m$.var("$ZTRAP").get();
+	}
 }
