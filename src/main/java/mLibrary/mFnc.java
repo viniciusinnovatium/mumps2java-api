@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
-	
+
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -265,19 +265,6 @@ public final class mFnc extends mParent {
 		return 1;
 	}
 
-	public static boolean $isNumber(Object numStr) {
-		boolean isNumber = true;
-		try {
-			Double dbl = mFncUtil.numberConverter(numStr);
-			if (dbl == 0d && !String.valueOf(dbl).equals("0.0")) {
-				isNumber = false;
-			}
-		} catch (NumberFormatException nfe) {
-			isNumber = false;
-		}
-		return isNumber;
-	}
-
 	public static boolean $isNumber2(Object numStr) {
 		boolean isNumber = true;
 		try {
@@ -301,16 +288,12 @@ public final class mFnc extends mParent {
 		return isObject;
 	}
 
-	public static Object $isvalidnum(Object num) {
-		boolean isNum = false;
-		try {
-			Double.valueOf(String.valueOf(num));
-			isNum = true;
-		} catch (NumberFormatException e) {
-			throw new UnsupportedOperationException();
+	public static boolean $isvalidnum(Object num) {
+		if(num == null) {
+			return false;
 		}
-		return isNum;
-
+		return num.toString().matches(
+				"[\\+{0,1}\\-{0,1}]{0,1}\\d+(\\.{0,1}\\d+E{0,1}\\d+){0,1}");
 	}
 
 	public static Object $job() {
@@ -1279,16 +1262,20 @@ public final class mFnc extends mParent {
 	public Object $query(mVar indirectVar, Object negative) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public Object $zf(Object x, Object y){
+
+	public Object $zf(Object x, Object y) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztime(Object value, int index) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztimeh(Object value, int index, Object defaultValue) {
 		throw new UnsupportedOperationException();
 	}
 	
-	public Object $ztime(Object value, int index){
-		throw new UnsupportedOperationException();
-	}
-	
-	public Object $ztimeh(Object value, int index, Object defaultValue){
-		throw new UnsupportedOperationException();
+	public static void main(String...asd) {
+		System.out.println("22.56".matches("[\\+{0,1}\\-{0,1}]{0,1}\\d+\\.{0,1}\\d+E{0,1}\\d+"));
 	}
 }
