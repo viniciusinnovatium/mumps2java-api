@@ -69,8 +69,8 @@ public final class mOp {
 
 		String var1 = String.valueOf(object);
 		String var2 = String.valueOf(object2);
-		boolean isNumVar1 = mFnc.$isNumber(var1);
-		boolean isNumVar2 = mFnc.$isNumber(var2);
+		boolean isNumVar1 = mFnc.$isvalidnum(var1);
+		boolean isNumVar2 = mFnc.$isvalidnum(var2);
 
 		boolean isAfter = false;
 

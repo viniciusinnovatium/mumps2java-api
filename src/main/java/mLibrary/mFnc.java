@@ -75,7 +75,7 @@ public final class mFnc extends mParent {
 	 * @return Object
 	 */
 	public static Object $case(Object... args) {
-		Boolean hasTrue = false;
+		Boolean found = false;
 		Object returnObj = null;
 		if (args != null) {
 			if (args.length < 3) {
@@ -86,13 +86,13 @@ public final class mFnc extends mParent {
 			for (int i = 1; i < args.length; i++) {
 				if (i % 2 != 0) {
 					if (mOp.Equal(target, args[i])) {
-						hasTrue = true;
+						found = true;
 						returnObj = args[i + 1];
 						break;
 					}
 				}
 			}
-			if (!hasTrue) {
+			if (!found) {
 				if (args.length % 2 != 0) {
 					throw new IllegalArgumentException(
 							"This method requires at least one pair of condition and value.");
@@ -142,8 +142,40 @@ public final class mFnc extends mParent {
 	}
 
 	public static String $extract(Object string, Object from, Object to) {
-		return mFncUtil.extractImpl(mFncUtil.castString(string),
-				mFncUtil.castInt(from), mFncUtil.castInt(to));
+		if (string == null) {
+			return null;
+		}
+
+		int start = -1;
+		int end = -1;
+		start = mFncUtil.integerConverter(from);
+		if (from.equals(to)) {
+			end = start;
+		} else {
+			end = mFncUtil.integerConverter(to);
+		}
+
+		if (end <= 0) {
+			return "";
+		} else if (start <= 0 && end > 0) {
+			start = 1;
+		} else if (start > end) {
+			return "";
+		}
+		String value = string.toString();
+
+		try {
+			if (end > value.length()) {
+				to = value.length();
+			}
+			if (start > value.length()) {
+				return "";
+			}
+			return value.substring(start - 1, end);
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	public static int $find(Object string, Object substring) {
@@ -265,34 +297,6 @@ public final class mFnc extends mParent {
 		return 1;
 	}
 
-	public static boolean $isNumber(Object numStr) {
-		boolean isNumber = true;
-		try {
-			Double dbl = mFncUtil.numberConverter(numStr);
-			if (dbl == 0d && !String.valueOf(dbl).equals("0.0")) {
-				isNumber = false;
-			}
-		} catch (NumberFormatException nfe) {
-			isNumber = false;
-		}
-		return isNumber;
-	}
-
-	public static boolean $isNumber2(Object numStr) {
-		boolean isNumber = true;
-		try {
-			if (String.valueOf(numStr).startsWith("0")
-					|| String.valueOf(numStr).contains(" ")) {
-				isNumber = false;
-			} else {
-				Double.valueOf(String.valueOf(numStr));
-			}
-		} catch (NumberFormatException nfe) {
-			isNumber = false;
-		}
-		return isNumber;
-	}
-
 	public static Object $isobject(Object object) {
 		int isObject = 0;
 		if (object != null && object instanceof Object) {
@@ -301,16 +305,12 @@ public final class mFnc extends mParent {
 		return isObject;
 	}
 
-	public static Object $isvalidnum(Object num) {
-		boolean isNum = false;
-		try {
-			Double.valueOf(String.valueOf(num));
-			isNum = true;
-		} catch (NumberFormatException e) {
-			throw new UnsupportedOperationException();
+	public static boolean $isvalidnum(Object num) {
+		if (num == null) {
+			return false;
 		}
-		return isNum;
-
+		return num.toString().matches(
+				"[\\+{0,1}\\-{0,1}]{0,1}\\d+(\\.{0,1}\\d+E{0,1}\\d+){0,1}");
 	}
 
 	public static Object $job() {
@@ -338,20 +338,24 @@ public final class mFnc extends mParent {
 	 *         expression that evaluates to a positive integer.
 	 */
 	public static Object $justify(Object expression, int width, Object decimal) {
-		if (decimal != null) {
-			expression = $fnumber(expression, ",", decimal);
+		if (expression == null) {
+			return null;
 		}
-		expression = mFncUtil.toString(expression);
-		width = width > expression.toString().length() ? width : expression
-				.toString().length();
-		String strFormated = new String(new char[width
-				- expression.toString().length()]).replace("\0", " ").concat(
-				String.valueOf(expression));
+		if (decimal != null) {
+			expression = mFncUtil.round(mFnc.numberConverter(expression),
+					mFnc.integerConverter(decimal));
+		}
+		String result = String.valueOf(expression);
+		int length = result.length();
+
+		width = width > length ? width : length;
+		String strFormated = new String(new char[width - length]).replace("\0",
+				" ").concat(result);
 		return strFormated;
 	}
 
 	public static Object $justify(Object expression, Object width) {
-		int widthInt = mFncUtil.numberConverter(width).intValue();
+		int widthInt = mFncUtil.integerConverter(width);
 		return $justify(expression, widthInt, null);
 	}
 
@@ -405,6 +409,23 @@ public final class mFnc extends mParent {
 			return ((ListObject) list).length();
 		} else {
 			return null;
+		}
+	}
+
+	/**
+	 * Determines if an expression is a list.
+	 * 
+	 * @param object
+	 * @return $LISTVALID determines whether exp is a list, and returns a
+	 *         Boolean value: If exp is a list, $LISTVALID returns 1; if exp is
+	 *         not a list, $LISTVALID returns 0. <br>
+	 *         exp Any valid expression.
+	 */
+	public static Object $listvalid(Object object) {
+		if (object instanceof ListObject) {
+			return 1;
+		} else {
+			return 0;
 		}
 	}
 
@@ -561,8 +582,9 @@ public final class mFnc extends mParent {
 
 	public static Object $setpiece(Object string, Object delimiter,
 			Object position, Object value) {
-		return setPieceImpl(castString(string), castString(delimiter),
-				castInt(position), value);
+		return mFncUtil.setPieceImpl(mFncUtil.castString(string),
+				mFncUtil.castString(delimiter), mFncUtil.castInt(position),
+				value);
 	}
 
 	public static Object $stack(Object... objs) {
@@ -986,6 +1008,10 @@ public final class mFnc extends mParent {
 		return elemet != null && !"".equals(elemet.toString().trim());
 	}
 
+	public static Integer integerConverter(Object number) {
+		return numberConverter(number).intValue();
+	}
+
 	public static Object list(ListObject list) {
 		return list.firstElement();
 	}
@@ -1163,25 +1189,17 @@ public final class mFnc extends mParent {
 
 	public mFnc(mContext m$) {
 		super(m$);
-		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * Determines if an expression is a list.
-	 * 
-	 * @param object
-	 * @return $LISTVALID determines whether exp is a list, and returns a
-	 *         Boolean value: If exp is a list, $LISTVALID returns 1; if exp is
-	 *         not a list, $LISTVALID returns 0. <br>
-	 *         exp Any valid expression.
-	 */
-	public static Object $listvalid(Object object) {
-		if (object instanceof ListObject) {
-			return 1;
-		} else {
-			return 0;
-		}
+
+	public Object $query(mVar indirectVar, Object negative) {
+		throw new UnsupportedOperationException();
 	}
+
+	public Object $text(Object add) {
+		throw new UnsupportedOperationException();
+	}
+
 
 	public Object $view(Object $zutil, Object negative, int i) {
 		// TODO Auto-generated method stub
@@ -1190,6 +1208,31 @@ public final class mFnc extends mParent {
 
 	public Object $zbitget(Object concat, int i) {
 		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zboolean(Object object, int i, int j) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zf(Object x, Object y) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zobjclassmethod(Object object, String string, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zobjproperty(Object object, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztime(Object value, int index) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztimeh(Object value, int index, Object defaultValue) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -1232,38 +1275,5 @@ public final class mFnc extends mParent {
 
 	public String pieceImpl(String string, String delimiter) {
 		return $piece(string, delimiter, 1);
-	}
-
-	public Object $zobjproperty(Object object, Object object2) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $zboolean(Object object, int i, int j) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $zobjclassmethod(Object object, String string, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $text(Object add) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $query(mVar indirectVar, Object negative) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $zf(Object x, Object y) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $ztime(Object value, int index) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $ztimeh(Object value, int index, Object defaultValue) {
-		throw new UnsupportedOperationException();
 	}
 }

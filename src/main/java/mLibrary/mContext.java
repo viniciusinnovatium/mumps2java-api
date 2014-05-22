@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +33,8 @@ public class mContext {
 	public mCmd Cmd;
 	private mSystem system;
 	private Writer writer;
+
+	private Map<String, Class> stackedClasses = new HashMap<String, Class>(30);
 
 	public mContext(Writer writer) {
 		this(true, writer);
@@ -198,21 +201,25 @@ public class mContext {
 				thr.fillInStackTrace();
 				StackTraceElement[] ste = thr.getStackTrace();
 				String className = null;
+				Class clazz = null;
 				for (int i = 0; i < ste.length; i++) {
 					className = ste[i].getClassName();
-					try {
-						if (mClass.class.isAssignableFrom(Class
-								.forName(className))) {
-							methodName = className.concat(".").concat(
-									methodName);
-							break;
+					clazz = stackedClasses.get(className);
+					if (clazz == null) {
+						try {
+							clazz = Class.forName(className);
+						} catch (ClassNotFoundException e) {
+							throw new IllegalArgumentException(
+									"Can not execute the method "
+											+ methodName
+											+ " because there is no one classe implementing it.",
+									e);
 						}
-					} catch (ClassNotFoundException e) {
-						throw new IllegalArgumentException(
-								"Can not execute the method "
-										+ methodName
-										+ " because there is no one classe implementing it.",
-								e);
+						stackedClasses.put(className, clazz);
+					}
+					if (mClass.class.isAssignableFrom(clazz)) {
+						methodName = className.concat(".").concat(methodName);
+						break;
 					}
 				}
 
@@ -492,10 +499,11 @@ public class mContext {
 		return map;
 	}
 
-	public mParameter param(mClass instanceMClas, String parameterName){
+	public mParameter param(mClass instanceMClas, String parameterName) {
 		mParameter parameter;
 		try {
-			 parameter = new mParameter(instanceMClas.getClass().getField(parameterName));
+			parameter = new mParameter(instanceMClas.getClass().getField(
+					parameterName));
 		} catch (NoSuchFieldException e) {
 			parameter = null;
 		} catch (SecurityException e) {
@@ -503,6 +511,5 @@ public class mContext {
 		}
 		return parameter;
 	}
-	
-	
+
 }
