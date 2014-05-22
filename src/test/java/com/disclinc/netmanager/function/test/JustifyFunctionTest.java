@@ -109,5 +109,14 @@ public class JustifyFunctionTest {
 		assertEquals("Fail on justify with some string", expected, actual);
 	}
 	
+	@Test
+	public void testJustifyAlphaNumeric() {
+		Object expression = "x2";
+		int width = 5;
+		String expected = "   x2";
+		Object actual = mFnc.$justify(expression, width);
+		assertEquals("Fail on justify with some string", expected, actual);
+	}
+	
 
 }

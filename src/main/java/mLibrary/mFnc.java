@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
-	
+
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -342,15 +343,15 @@ public final class mFnc extends mParent {
 			return null;
 		}
 		if (decimal != null) {
-			expression = $fnumber(expression, ",", decimal);
-			//expression = mFnc.numberConverter(expression);
+			expression = mFncUtil.round(mFnc.numberConverter(expression),
+					mFnc.integerConverter(decimal));
 		}
-		expression = mFncUtil.toString(expression);
-		width = width > expression.toString().length() ? width : expression
-				.toString().length();
-		String strFormated = new String(new char[width
-				- expression.toString().length()]).replace("\0", " ").concat(
-				String.valueOf(expression));
+		String result = String.valueOf(expression);
+		int length = result.length();
+
+		width = width > length ? width : length;
+		String strFormated = new String(new char[width - length]).replace("\0",
+				" ").concat(result);
 		return strFormated;
 	}
 
@@ -607,8 +608,9 @@ public final class mFnc extends mParent {
 
 	public static Object $setpiece(Object string, Object delimiter,
 			Object position, Object value) {
-		return mFncUtil.setPieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
-				mFncUtil.castInt(position), value);
+		return mFncUtil.setPieceImpl(mFncUtil.castString(string),
+				mFncUtil.castString(delimiter), mFncUtil.castInt(position),
+				value);
 	}
 
 	public static Object $stack(Object... objs) {

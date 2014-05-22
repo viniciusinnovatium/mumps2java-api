@@ -16,7 +16,7 @@ public final class mFncUtil {
 	public static Object[] concatSinceLastSubscript(Object[] dest, Object[] orig) {
 		return DataStructureUtil.concatSinceLast(dest, orig);
 	}
-	
+
 	public static Boolean booleanConverter(Object obj) {
 		Boolean bool = false;
 		if (obj instanceof Boolean) {
@@ -29,7 +29,7 @@ public final class mFncUtil {
 		}
 		return bool;
 	}
-	
+
 	public static Integer integerConverter(Object number) {
 		return numberConverter(number).intValue();
 	}
@@ -37,22 +37,22 @@ public final class mFncUtil {
 	public static Double castDouble(Object obj) {
 		try {
 			return Double.valueOf(String.valueOf(obj));
-		}catch(java.lang.NumberFormatException e){
+		} catch (java.lang.NumberFormatException e) {
 			return null;
-		}catch (ClassCastException e) {		
+		} catch (ClassCastException e) {
 			return null;
 		}
 	}
 
 	public static Integer castInt(Object obj) {
 		try {
-			if(obj.toString().isEmpty()) {
+			if (obj.toString().isEmpty()) {
 				return 0;
 			}
 			return castDouble(obj).intValue();
-		} catch(java.lang.NullPointerException e){
+		} catch (java.lang.NullPointerException e) {
 			return null;
-		}catch (ClassCastException e) {		
+		} catch (ClassCastException e) {
 			return null;
 		}
 	}
@@ -72,10 +72,10 @@ public final class mFncUtil {
 	}
 
 	public static String castString(Object obj) {
-		if(obj == null) {
+		if (obj == null) {
 			return "";
 		}
-		return obj.toString(); 
+		return obj.toString();
 	}
 
 	public static String characterImpl(Integer... codes) {
@@ -140,7 +140,7 @@ public final class mFncUtil {
 		for (int i = 0; i < array.length; i++) {
 			if (avoidNull && array[i] == null) {
 				continue;
-			
+
 			}
 			result.append(array[i]);
 			if (delimiter != null && i < indexToInsert) {
@@ -185,13 +185,14 @@ public final class mFncUtil {
 
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
 
-		Double days = Double.valueOf(String.valueOf(numberConverter(internalDate)));
+		Double days = Double.valueOf(String
+				.valueOf(numberConverter(internalDate)));
 		Double dateMilli = days * 24d * 60d * 60d * 1000d - dateDif;
-		
+
 		return dateMilli;
 
 	}
-	
+
 	public static Double dateJavaToMumps(Object internalDate) {
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(1840, 12, 31);
@@ -202,13 +203,13 @@ public final class mFncUtil {
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
 
 		Long millis = Long.valueOf(String.valueOf(internalDate));
-		Double days = (millis+dateDif) / 24d / 60d / 60d /1000d;
-		
+		Double days = (millis + dateDif) / 24d / 60d / 60d / 1000d;
+
 		return days;
 
-	}	
-	
-	public static String dateCodeFormatMumpsToJava(Object dFormat){
+	}
+
+	public static String dateCodeFormatMumpsToJava(Object dFormat) {
 		String dFormatStr = "MM/dd/yy";
 		if (dFormat.equals("-1")) {
 			// dFormatStr = "";
@@ -242,15 +243,15 @@ public final class mFncUtil {
 			dFormatStr = "ddd";
 		} else if (dFormat.equals("14")) {
 			dFormatStr = "D";
-		}		
+		}
 		return dFormatStr;
 	}
 
 	public static Double numberConverter(Object obj) {
-		if(obj == null) {
+		if (obj == null) {
 			return 0d;
 		}
-		
+
 		Double dbl = null;
 		try {
 			dbl = Double.valueOf(String.valueOf(obj));
@@ -290,7 +291,7 @@ public final class mFncUtil {
 			}
 			if (result.isEmpty() || !startNumber) {
 				result = "0";
-			}			
+			}
 			dbl = Double.valueOf(result);
 		}
 		return dbl;
@@ -306,10 +307,10 @@ public final class mFncUtil {
 			return null;
 		}
 		String[] splitStr = string.split(Pattern.quote(delimiter));
-		if(splitStr.length>=index && index>0){
-			return splitStr[index - 1];			
-		}else{
-			return "";		
+		if (splitStr.length >= index && index > 0) {
+			return splitStr[index - 1];
+		} else {
+			return "";
 		}
 	}
 
@@ -322,12 +323,12 @@ public final class mFncUtil {
 		if (from > to) {
 			return null;
 		}
-		
-		if(from>string.length()){
+
+		if (from > string.length()) {
 			return "";
 		}
 		String[] strSplit = string.split(Pattern.quote(delimiter));
-		if(to>strSplit.length){
+		if (to > strSplit.length) {
 			to = strSplit.length;
 		}
 		final String[] array = Arrays.copyOfRange(strSplit, from - 1, to);
@@ -349,7 +350,7 @@ public final class mFncUtil {
 
 		return generateString(array, delimiter);
 	}
-	
+
 	public static String setPieceImpl(String string, String delimiter,
 			Integer position, Object value) {
 		Object[] array = string == null ? new Object[position] : string
@@ -365,7 +366,7 @@ public final class mFncUtil {
 
 		return generateString(array, delimiter);
 	}
-	
+
 	public static String translateImpl(String string, String oldCharsequence,
 			String newCharsequence) {
 
@@ -464,14 +465,37 @@ public final class mFncUtil {
 		return string.split(Pattern.quote(delimiter)).length;
 	}
 
-
 	public static String toString(Object expression) {
 		String str = String.valueOf(expression);
-		if(expression instanceof Double){
-			Double dbl = (Double)expression;
-			str = BigDecimal.valueOf(dbl).setScale(dbl%1==0?0:2,BigDecimal.ROUND_HALF_UP).toString();
+		if (expression instanceof Double) {
+			Double dbl = (Double) expression;
+			str = BigDecimal.valueOf(dbl)
+					.setScale(dbl % 1 == 0 ? 0 : 2, BigDecimal.ROUND_HALF_UP)
+					.toString();
 		}
 		return str;
 	}
 
+	public static String round(Double value, int scale) {
+		String digit[] = String.valueOf(value).split("\\.");
+		int length = digit.length;
+		if (length <= 1) {
+			StringBuilder build = new StringBuilder(digit[0]).append(".");
+				for (int i = 0; i < scale; i++) {
+					build.append("0");
+			}
+			return build.toString();
+		} else if (digit.length == 2 && (length = digit[1].length()) < scale) {
+			StringBuilder build = new StringBuilder(digit[0]).append(".")
+					.append(digit[1]);
+			scale = scale - length;
+			for (int i = 0; i < scale; i++) {
+				build.append("0");
+			}
+			return build.toString();
+		}
+
+		return BigDecimal.valueOf(value)
+				.setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
+	}
 }
