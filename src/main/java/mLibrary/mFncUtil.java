@@ -29,6 +29,10 @@ public final class mFncUtil {
 		}
 		return bool;
 	}
+	
+	public static Integer integerConverter(Object number) {
+		return numberConverter(number).intValue();
+	}
 
 	public static Double castDouble(Object obj) {
 		try {
@@ -42,6 +46,9 @@ public final class mFncUtil {
 
 	public static Integer castInt(Object obj) {
 		try {
+			if(obj.toString().isEmpty()) {
+				return 0;
+			}
 			return castDouble(obj).intValue();
 		} catch(java.lang.NullPointerException e){
 			return null;
@@ -80,33 +87,15 @@ public final class mFncUtil {
 			return null;
 		}
 
-		final Character[] chars = new Character[codes.length];
+		final String[] chars = new String[codes.length];
 		for (int i = 0; i < codes.length; i++) {
 			// Apenas os inteiros nao-negativos deve ser convertidos.
-			if (codes[i] != null && codes[i] > 0) {
-				chars[i] = Character.toChars(codes[i])[0];
+			if (codes[i] != null && codes[i] >= 0) {
+				chars[i] = String.valueOf(Character.toChars(codes[i])[0]);
 			}
 		}
 
 		return generateString(chars, null, true);
-	}
-
-	public static String extractImpl(String string, Integer from, Integer to) {
-		if (string == null) {
-			return null;
-		}
-		try {
-			if(to>string.length()){
-				to = string.length();
-			}
-			if(from>string.length()){
-				return "";
-			}
-			return string.substring(from - 1, to);
-		} catch (Exception e) {
-			return null;
-		}
-
 	}
 
 	public static int findImpl(String string, String substring, int start) {
@@ -151,6 +140,7 @@ public final class mFncUtil {
 		for (int i = 0; i < array.length; i++) {
 			if (avoidNull && array[i] == null) {
 				continue;
+			
 			}
 			result.append(array[i]);
 			if (delimiter != null && i < indexToInsert) {

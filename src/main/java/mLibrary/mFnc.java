@@ -75,7 +75,7 @@ public final class mFnc extends mParent {
 	 * @return Object
 	 */
 	public static Object $case(Object... args) {
-		Boolean hasTrue = false;
+		Boolean found = false;
 		Object returnObj = null;
 		if (args != null) {
 			if (args.length < 3) {
@@ -86,13 +86,13 @@ public final class mFnc extends mParent {
 			for (int i = 1; i < args.length; i++) {
 				if (i % 2 != 0) {
 					if (mOp.Equal(target, args[i])) {
-						hasTrue = true;
+						found = true;
 						returnObj = args[i + 1];
 						break;
 					}
 				}
 			}
-			if (!hasTrue) {
+			if (!found) {
 				if (args.length % 2 != 0) {
 					throw new IllegalArgumentException(
 							"This method requires at least one pair of condition and value.");
@@ -142,8 +142,40 @@ public final class mFnc extends mParent {
 	}
 
 	public static String $extract(Object string, Object from, Object to) {
-		return mFncUtil.extractImpl(mFncUtil.castString(string),
-				mFncUtil.castInt(from), mFncUtil.castInt(to));
+		if (string == null) {
+			return null;
+		}
+
+		int start = -1;
+		int end = -1;
+		start = mFncUtil.integerConverter(from);
+		if (from.equals(to)) {
+			end = start;
+		} else {
+			end = mFncUtil.integerConverter(to);
+		}
+
+		if (end <= 0) {
+			return "";
+		} else if (start <= 0 && end > 0) {
+			start = 1;
+		} else if (start > end) {
+			return "";
+		}
+		String value = string.toString();
+
+		try {
+			if (end > value.length()) {
+				to = value.length();
+			}
+			if (start > value.length()) {
+				return "";
+			}
+			return value.substring(start - 1, end);
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	public static int $find(Object string, Object substring) {
@@ -265,21 +297,6 @@ public final class mFnc extends mParent {
 		return 1;
 	}
 
-	public static boolean $isNumber2(Object numStr) {
-		boolean isNumber = true;
-		try {
-			if (String.valueOf(numStr).startsWith("0")
-					|| String.valueOf(numStr).contains(" ")) {
-				isNumber = false;
-			} else {
-				Double.valueOf(String.valueOf(numStr));
-			}
-		} catch (NumberFormatException nfe) {
-			isNumber = false;
-		}
-		return isNumber;
-	}
-
 	public static Object $isobject(Object object) {
 		int isObject = 0;
 		if (object != null && object instanceof Object) {
@@ -289,7 +306,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static boolean $isvalidnum(Object num) {
-		if(num == null) {
+		if (num == null) {
 			return false;
 		}
 		return num.toString().matches(
@@ -321,8 +338,12 @@ public final class mFnc extends mParent {
 	 *         expression that evaluates to a positive integer.
 	 */
 	public static Object $justify(Object expression, int width, Object decimal) {
+		if (expression == null) {
+			return null;
+		}
 		if (decimal != null) {
 			expression = $fnumber(expression, ",", decimal);
+			//expression = mFnc.numberConverter(expression);
 		}
 		expression = mFncUtil.toString(expression);
 		width = width > expression.toString().length() ? width : expression
@@ -334,7 +355,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $justify(Object expression, Object width) {
-		int widthInt = mFncUtil.numberConverter(width).intValue();
+		int widthInt = mFncUtil.integerConverter(width);
 		return $justify(expression, widthInt, null);
 	}
 
@@ -1061,6 +1082,10 @@ public final class mFnc extends mParent {
 		return dbl;
 	}
 
+	private static Integer integerConverter(Object number) {
+		return numberConverter(number).intValue();
+	}
+
 	public static String pieceImpl(String string, String delimiter, int index) {
 
 		if (string == null) {
@@ -1274,8 +1299,10 @@ public final class mFnc extends mParent {
 	public Object $ztimeh(Object value, int index, Object defaultValue) {
 		throw new UnsupportedOperationException();
 	}
-	
-	public static void main(String...asd) {
-		System.out.println("22.56".matches("[\\+{0,1}\\-{0,1}]{0,1}\\d+\\.{0,1}\\d+E{0,1}\\d+"));
+
+	public static void main(String... asd) {
+		System.out.println("22.56"
+				.matches("[\\+{0,1}\\-{0,1}]{0,1}\\d+\\.{0,1}\\d+E{0,1}\\d+"));
 	}
+
 }

@@ -38,6 +38,17 @@ public class CharacterFunctionTest {
 	
 	@Test
 	public void testEmptyCharSequence() {
-		assertEquals("Fail to generate char from empty integer sequence", "", $char(new int[]{}));
+		assertEquals("Fail to generate char from empty integer sequence", null, $char(new int[]{}));
+	}
+	
+	@Test
+	public void testConcatingEmptyChar() {
+		assertEquals("Fail to generate char from empty integer sequence", "1"+$char(""), $char("49", ""));
+		
+	}
+	
+	@Test
+	public void testAlphaAChar() {
+		assertEquals("Fail to generate char from empty integer sequence", "A", $char("65"));
 	}
 }

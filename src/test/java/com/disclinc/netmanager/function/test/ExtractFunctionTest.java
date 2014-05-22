@@ -25,7 +25,27 @@ public class ExtractFunctionTest {
 	}
 	
 	@Test
+	public void testExtractNegativeStart() {
+		assertEquals("Fail to extract string as default value", "1234Alabama",  $extract(stringTest, -5, 11));
+	}
+	
+	@Test
+	public void testExtractNegativeStartAndEnd() {
+		assertEquals("Fail to extract string as default value", "",  $extract(stringTest, -5, -11));
+	}
+	
+	@Test
+	public void testExtractInvalidInterval() {
+		assertEquals("Fail to extract string as default value", "",  $extract(stringTest, 50, 11));
+	}
+	
+	@Test
 	public void testNonPresenteElement() {
-		assertEquals("Fail to extract string a non present element", null,  $extract(stringTest, 50));
+		assertEquals("Fail to extract string a non present element", "",  $extract(stringTest, 50));
+	}
+	
+	@Test
+	public void testNonPresenteElementWithNegativeIndex() {
+		assertEquals("Fail to extract string a non present element", "",  $extract(stringTest, -9));
 	}
 }
