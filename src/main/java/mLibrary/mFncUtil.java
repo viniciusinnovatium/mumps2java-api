@@ -326,7 +326,7 @@ public final class mFncUtil {
 		if(from>string.length()){
 			return "";
 		}
-		String[] strSplit = string.split(delimiter);
+		String[] strSplit = string.split(Pattern.quote(delimiter));
 		if(to>strSplit.length){
 			to = strSplit.length;
 		}
@@ -341,7 +341,7 @@ public final class mFncUtil {
 			return string;
 		}
 
-		final String[] array = string.split(delimiter);
+		final String[] array = string.split(Pattern.quote(delimiter));
 		if (value == null) {
 			value = "";
 		}
@@ -349,7 +349,23 @@ public final class mFncUtil {
 
 		return generateString(array, delimiter);
 	}
+	
+	public static String setPieceImpl(String string, String delimiter,
+			Integer position, Object value) {
+		Object[] array = string == null ? new Object[position] : string
+				.toString().split(Pattern.quote(delimiter));
+		if (position > array.length) {
+			array = Arrays.copyOfRange(array, 0, position);
+		}
+		if (value == null) {
+			value = "";
+		}
 
+		array[position - 1] = value.toString();
+
+		return generateString(array, delimiter);
+	}
+	
 	public static String translateImpl(String string, String oldCharsequence,
 			String newCharsequence) {
 
@@ -445,7 +461,7 @@ public final class mFncUtil {
 			return 1;
 		}
 
-		return string.split(delimiter).length;
+		return string.split(Pattern.quote(delimiter)).length;
 	}
 
 

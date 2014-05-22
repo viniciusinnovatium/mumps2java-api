@@ -53,7 +53,7 @@ public class mVar {
 
 	public Object get() {
 		Object val = mData.get(subs);
-		if(String.valueOf(val).contains("Data de Nascimento")){
+		if(String.valueOf(val).contains("Sexo")){
 			System.out.print("");
 		}
 		if(generateKey(subs).contains("1.0")){

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
-
+	
 	/**
 	 * Converts a character to a numeric code.
 	 * 
@@ -412,6 +412,23 @@ public final class mFnc extends mParent {
 		}
 	}
 
+	/**
+	 * Determines if an expression is a list.
+	 * 
+	 * @param object
+	 * @return $LISTVALID determines whether exp is a list, and returns a
+	 *         Boolean value: If exp is a list, $LISTVALID returns 1; if exp is
+	 *         not a list, $LISTVALID returns 0. <br>
+	 *         exp Any valid expression.
+	 */
+	public static Object $listvalid(Object object) {
+		if (object instanceof ListObject) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
 	public static Object $name(Object object, Object object2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -590,8 +607,8 @@ public final class mFnc extends mParent {
 
 	public static Object $setpiece(Object string, Object delimiter,
 			Object position, Object value) {
-		return setPieceImpl(castString(string), castString(delimiter),
-				castInt(position), value);
+		return mFncUtil.setPieceImpl(mFncUtil.castString(string), mFncUtil.castString(delimiter),
+				mFncUtil.castInt(position), value);
 	}
 
 	public static Object $stack(Object... objs) {
@@ -1015,6 +1032,10 @@ public final class mFnc extends mParent {
 		return elemet != null && !"".equals(elemet.toString().trim());
 	}
 
+	public static Integer integerConverter(Object number) {
+		return numberConverter(number).intValue();
+	}
+
 	public static Object list(ListObject list) {
 		return list.firstElement();
 	}
@@ -1080,10 +1101,6 @@ public final class mFnc extends mParent {
 			dbl = Double.valueOf(result);
 		}
 		return dbl;
-	}
-
-	private static Integer integerConverter(Object number) {
-		return numberConverter(number).intValue();
 	}
 
 	public static String pieceImpl(String string, String delimiter, int index) {
@@ -1196,24 +1213,14 @@ public final class mFnc extends mParent {
 
 	public mFnc(mContext m$) {
 		super(m$);
-		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * Determines if an expression is a list.
-	 * 
-	 * @param object
-	 * @return $LISTVALID determines whether exp is a list, and returns a
-	 *         Boolean value: If exp is a list, $LISTVALID returns 1; if exp is
-	 *         not a list, $LISTVALID returns 0. <br>
-	 *         exp Any valid expression.
-	 */
-	public static Object $listvalid(Object object) {
-		if (object instanceof ListObject) {
-			return 1;
-		} else {
-			return 0;
-		}
+	public Object $query(mVar indirectVar, Object negative) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $text(Object add) {
+		throw new UnsupportedOperationException();
 	}
 
 	public Object $view(Object $zutil, Object negative, int i) {
@@ -1223,6 +1230,31 @@ public final class mFnc extends mParent {
 
 	public Object $zbitget(Object concat, int i) {
 		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zboolean(Object object, int i, int j) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zf(Object x, Object y) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zobjclassmethod(Object object, String string, Object object2) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zobjproperty(Object object, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztime(Object value, int index) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztimeh(Object value, int index, Object defaultValue) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -1266,43 +1298,4 @@ public final class mFnc extends mParent {
 	public String pieceImpl(String string, String delimiter) {
 		return $piece(string, delimiter, 1);
 	}
-
-	public Object $zobjproperty(Object object, Object object2) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $zboolean(Object object, int i, int j) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $zobjclassmethod(Object object, String string, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $text(Object add) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $query(mVar indirectVar, Object negative) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $zf(Object x, Object y) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $ztime(Object value, int index) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Object $ztimeh(Object value, int index, Object defaultValue) {
-		throw new UnsupportedOperationException();
-	}
-
-	public static void main(String... asd) {
-		System.out.println("22.56"
-				.matches("[\\+{0,1}\\-{0,1}]{0,1}\\d+\\.{0,1}\\d+E{0,1}\\d+"));
-	}
-
 }
