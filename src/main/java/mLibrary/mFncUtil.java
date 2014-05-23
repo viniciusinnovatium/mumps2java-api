@@ -142,6 +142,9 @@ public final class mFncUtil {
 				continue;
 
 			}
+			if (array[i] == null) {
+				array[i] = "";
+			}
 			result.append(array[i]);
 			if (delimiter != null && i < indexToInsert) {
 				result.append(delimiter);
@@ -481,8 +484,8 @@ public final class mFncUtil {
 		int length = digit.length;
 		if (length <= 1) {
 			StringBuilder build = new StringBuilder(digit[0]).append(".");
-				for (int i = 0; i < scale; i++) {
-					build.append("0");
+			for (int i = 0; i < scale; i++) {
+				build.append("0");
 			}
 			return build.toString();
 		} else if (digit.length == 2 && (length = digit[1].length()) < scale) {
