@@ -28,21 +28,30 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-		if (generateKey(subs).contains("YSATZ")) {
+		if (generateKey(subs).contains("^WWWSOR")) {
 			System.out.print("");
+			if(String.valueOf(value).contains("null")){
+				System.out.print("");
+			}		
 		}
+		if (generateKey(subs).contains("^YSATZ")) {
+			System.out.print("");
+			if(String.valueOf(value).contains("null")){
+				System.out.print("");
+			}		
+		}		
 		mData.subs(subs).set(value);
 	}
 
 	public Object get() {
-		Object val = mData.get(subs);
-		if(String.valueOf(val).contains("Sexo")){
+		Object value = mData.get(subs);
+		if(String.valueOf(value).contains("Sexo")){
 			System.out.print("");
 		}
-		if(generateKey(subs).contains("1.0")){
+		if(generateKey(subs).contains("YSATZ")){
 			System.out.print("");
 		}		
-		return val;
+		return value;
 	}
 
 	public void kill() {

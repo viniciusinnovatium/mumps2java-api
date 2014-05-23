@@ -441,8 +441,8 @@ public class mContext {
 				}
 			}
 		}
-		if ((x - 1) > y) {
-			_result.add(_content.substring(y, x - 1));
+		if (x > y) {
+			_result.add(_content.substring(y, x));
 		}
 		return _result.toArray();
 	}
@@ -462,7 +462,7 @@ public class mContext {
 		} else {
 			_result = var(parseVarSubs(_content)).get();
 		}
-		return _result;
+		return ((_result==null)?"":_result);
 	}
 
 	private mDataAccess getMDataAccess(Object[] subs) {
