@@ -48,4 +48,16 @@ public class ExtractFunctionTest {
 	public void testNonPresenteElementWithNegativeIndex() {
 		assertEquals("Fail to extract string a non present element", "",  $extract(stringTest, -9));
 	}
+	
+	@Test
+	public void testEndIndexLargerThantValueLength() {
+		String x = "x";
+		assertEquals("Fail to extract string a non present element", "x",  $extract(x, 1, 10));
+	}
+	
+	@Test
+	public void testEndIndexEqualValueLength() {
+		String x = "x";
+		assertEquals("Fail to extract string a non present element", "x",  $extract(x, 1, 1));
+	}
 }
