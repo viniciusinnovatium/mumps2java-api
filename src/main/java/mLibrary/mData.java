@@ -88,7 +88,7 @@ public class mData {
 		currentSubs = null;
 		if (isDiskAccess(subs)) {
 			initDAO();
-			dao.remove(generateTableName(subs), generateKey(subs));
+			dao.remove(generateTableName(subs), generateKeyWithoutVarName(subs));
 			tree.kill(subs);
 		} else {
 			tree.kill(subs);
