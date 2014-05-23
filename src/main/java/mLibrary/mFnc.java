@@ -509,9 +509,74 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $query(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $query(mVar reference) {
+		return $query(reference,1,null);
+	}
+
+	public static Object $query(mVar reference, Object direction) {
+		return $query(reference,direction,null);
+	}
+
+	public static Object $query(mVar reference, Object direction, mVar target) {
+		int _direction = (mFncUtil.numberConverter(direction)==-1)?-1:1;
+		mVar qreference = reference;
+		Object[] qsubscripts = reference.getSubs();
+		Object qorder = qsubscripts[qsubscripts.length-1];
+		boolean first = true;
+		while (true) {
+			if ((qorder == null) || (qorder.equals(""))) {
+				if (!first) {
+					if (qsubscripts.length <= 1) {
+						return "";
+					}
+					Object[] qnewsubscripts = new Object[qsubscripts.length-1];
+					for (int i=0;i<qsubscripts.length-1;i++) {
+						qnewsubscripts[i] = qsubscripts[i]; 
+					}
+					qsubscripts = qnewsubscripts;
+					qreference = new mVar(qsubscripts,reference.getmData());
+				}
+				if (qsubscripts.length <= 1) {
+					return "";
+				}
+				qorder = $order(qreference,direction);
+				qsubscripts[qsubscripts.length-1] = qorder;
+			}
+			else {
+				qreference = qreference.var("");
+				qsubscripts = qreference.getSubs();
+				qorder = $order(qreference,_direction);
+				qsubscripts[qsubscripts.length-1] = qorder;
+			}
+			first = false;
+			if ((qorder == null) || (qorder.equals(""))) {
+				continue;
+			}
+			qreference = new mVar(qsubscripts,reference.getmData());
+			if (qreference.get() == null) {
+				continue;
+			}
+			break;
+		}
+		String result = mFncUtil.toString(qsubscripts[0]);
+		if (qsubscripts.length > 1) {
+			result = result+"(";
+			String strsub; 
+			for (int i=1;i<qsubscripts.length;i++) {
+				strsub = mFncUtil.toString(qsubscripts[i]);
+				if (Character.isDigit(strsub.charAt(0))) {
+					result = result+((i>1)?",":"")+strsub;
+				}
+				else {
+					result = result+((i>1)?",":"")+"\""+strsub+"\"";
+				}
+			}
+			result = result+")";
+		}
+		if (target != null) {
+			target.set(m$.indirectVar(result));
+		}
+		return result;
 	}
 
 	/**
@@ -793,9 +858,8 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Object $zorder(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zorder(mVar reference) {
+		return $query(reference);
 	}
 
 	public static Object $zsearch(Object string) {
@@ -875,9 +939,12 @@ public final class mFnc extends mParent {
 		}
 	}
 
-	public static Object $zutil(Object obj1, Object... obj) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zutil(int i, Object... obj) {
+		if(i == 139){
+			return null;
+		}else{
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public static Object $zutil(Object obj1, Object obj2, Object obj3,
@@ -893,5 +960,49 @@ public final class mFnc extends mParent {
 
 	public Object $ztrap() {
 		return m$.var("$ZTRAP").get();
+	}
+
+	public Object $zversion(int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zbitget(Object $zversion, int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zboolean(Object object, int i, int j) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztime(String $piece, int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $text(Object object) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zf(Object negative, Object concat) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zobjproperty(Object object, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $zobjclassmethod(Object object, String string, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztime(Object object, int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $view(Object $zutil, Object negative, int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $ztimeh(Object object, int i, String string) {
+		throw new UnsupportedOperationException();
 	}
 }
