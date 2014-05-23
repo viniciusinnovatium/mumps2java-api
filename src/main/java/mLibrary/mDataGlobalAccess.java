@@ -1,18 +1,14 @@
 package mLibrary;
 
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
-import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyOfParent;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyToLikeQuery;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyWithoutVarName;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateSubs;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateTableName;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.disclinc.netmanager.variable.test.OrderCacheTest;
 
 import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.datastructure.QueryCache;
