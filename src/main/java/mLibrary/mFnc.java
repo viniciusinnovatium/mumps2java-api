@@ -547,6 +547,7 @@ public final class mFnc extends mParent {
 			}
 			result = result + ")";
 		}
+		
 		if (target != null) {
 			target.set(m$.indirectVar(result));
 		}

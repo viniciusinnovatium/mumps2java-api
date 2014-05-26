@@ -1,6 +1,5 @@
 package mLibrary;
 
-
 class mDataAccessMemory extends mDataAccess {
 
 	public mDataAccessMemory(mVariables mVariables, int type) {
@@ -23,8 +22,20 @@ class mDataAccessMemory extends mDataAccess {
 		tree.stackingExcept(variables);
 	}
 
+	public void stackingBlock(int indexBlock, Object... variables) {
+		tree.stackingBlock(indexBlock, variables);
+	}
+
+	public void stackingBlockExcept(int indexBlock, Object... variables) {
+		tree.stackingBlockExcept(indexBlock, variables);
+	}
+
 	public void unstacking() {
 		tree.unstacking();
+	}
+
+	public void unstackingBlock(int indexBlock) {
+		tree.unstackingBlock(indexBlock);
 	}
 
 	public String dump() {

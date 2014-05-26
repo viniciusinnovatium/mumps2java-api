@@ -24,7 +24,7 @@ public class mDataGlobalAccess extends mDataAccess {
 
 	public Object get(Object... subs) {
 		Object value = tree.get(subs);
-		if(value == null) {
+		if (value == null) {
 			value = dao.find(generateTableName(subs),
 					generateKeyWithoutVarName(subs));
 			tree.set(subs, value);
@@ -115,5 +115,23 @@ public class mDataGlobalAccess extends mDataAccess {
 						entry.getValue());
 			}
 		}
+	}
+
+	@Override
+	public void stackingBlock(int indexBlock, Object... variables) {
+		throw new UnsupportedOperationException(
+				"Stacking variable into a block is not supported to access data on disk");
+	}
+
+	@Override
+	public void stackingBlockExcept(int indexBlock, Object... variables) {
+		throw new UnsupportedOperationException(
+				"Stacking variable into a block is not supported to access data on disk");
+	}
+
+	@Override
+	public void unstackingBlock(int indexBlock) {
+		throw new UnsupportedOperationException(
+				"Stacking variable into a block is not supported to access data on disk");
 	}
 }

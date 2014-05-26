@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -288,6 +287,26 @@ public class mContext {
 		countNewOperator++;
 	}
 
+	public void newVarBlock(int indexBlock, mVar... vars) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
+			entry.getKey().stackingBlock(indexBlock, entry.getValue());
+		}
+	}
+	
+	public void newVarBlockExcept(int indexBlock, mVar... vars) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
+			entry.getKey().stackingBlockExcept(indexBlock, entry.getValue());
+		}
+	}
+
+	public void restoreVarBlock(int indexBlock) {
+		mDataLocal.unstackingBlock(indexBlock);
+	}
+
 	/**
 	 * This method was created to play a role of mumps usage variable through
 	 * reference or value scheme
@@ -322,7 +341,6 @@ public class mContext {
 			return;
 		}
 		while (totalLevel-- > 0) {
-			// mDataPublic.unstacking();
 			mDataLocal.unstacking();
 		}
 	}
@@ -462,7 +480,7 @@ public class mContext {
 		} else {
 			_result = var(parseVarSubs(_content)).get();
 		}
-		return ((_result==null)?"":_result);
+		return ((_result == null) ? "" : _result);
 	}
 
 	private mDataAccess getMDataAccess(Object[] subs) {
@@ -485,7 +503,7 @@ public class mContext {
 		String name = null;
 		for (mVar var : variables) {
 			name = var.getName();
-			final char type = name.charAt(0);
+			final char type = name.length() == 0 ? ' ' : name.charAt(0);
 			if (type == '%') {
 				publics.add(name);
 			} else if (type == '^') {

@@ -27,6 +27,11 @@ public abstract class mDataAccess {
 
 	public abstract void stackingExcept(Object... variables);
 
+	public abstract void stackingBlock(int indexBlock, Object... variables);
+
+	public abstract void stackingBlockExcept(int indexBlock,
+			Object... variables);
+
 	public abstract int data(Object... subs);
 
 	public abstract Object order(Object[] subs, int direction);
@@ -43,6 +48,8 @@ public abstract class mDataAccess {
 	}
 
 	public abstract void unstacking();
+
+	public abstract void unstackingBlock(int indexBlock);
 
 	public abstract void kill(Object[] subs);
 

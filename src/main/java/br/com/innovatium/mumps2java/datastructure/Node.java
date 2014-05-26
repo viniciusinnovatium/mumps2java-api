@@ -249,6 +249,10 @@ public class Node implements Comparable<Node> {
 		this.stackLevel = stackLevel;
 	}
 
+	public boolean isLeaf() {
+		return !isRoot() && !hasSubnodes();
+	}
+
 	private Integer isNumber(String string) {
 		try {
 			return Integer.parseInt(string);
