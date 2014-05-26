@@ -276,6 +276,7 @@ public class mContext {
 		}
 	}
 
+	@TODO
 	public void newVar(mVar... vars) {
 		Map<mData, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mData, Object[]>> set = maps.entrySet();
@@ -286,6 +287,7 @@ public class mContext {
 		countNewOperator++;
 	}
 
+	@TODO
 	public void newVarExcept(mVar... vars) {
 		Map<mData, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mData, Object[]>> set = maps.entrySet();
@@ -293,6 +295,18 @@ public class mContext {
 			entry.getKey().stackingExcept(entry.getValue());
 		}
 		countNewOperator++;
+	}
+
+	public void newVarBlock(int indexBlock, mVar... vars) {
+		Map<mData, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mData, Object[]>> set = maps.entrySet();
+		for (Entry<mData, Object[]> entry : set) {
+			entry.getKey().stackingBlock(indexBlock, entry.getValue());
+		}
+	}
+	
+	public void restoreVarBlock(int indexBlock) {
+		mDataLocal.unstackingBlock(indexBlock);
 	}
 
 	/**
@@ -329,7 +343,6 @@ public class mContext {
 			return;
 		}
 		while (totalLevel-- > 0) {
-			// mDataPublic.unstacking();
 			mDataLocal.unstacking();
 		}
 	}
@@ -470,7 +483,7 @@ public class mContext {
 		} else {
 			_result = var(parseVarSubs(_content)).get();
 		}
-		return ((_result==null)?"":_result);
+		return ((_result == null) ? "" : _result);
 	}
 
 	private mData generateMData(String variableName) {

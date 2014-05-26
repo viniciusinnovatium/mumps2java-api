@@ -71,6 +71,15 @@ public class mData {
 					"Stacking variable is not supported to access data on disk");
 		}
 	}
+	
+	public void stackingBlock(int indexBlock, Object... variables){
+		if (!isDiskAccess(variables)) {
+			tree.stackingBlock(indexBlock, variables);
+		} else {
+			throw new UnsupportedOperationException(
+					"Stacking variable in block is not supported to access data on disk");
+		}
+	}
 
 	public void stackingExcept(Object... variables) {
 		tree.stackingExcept(variables);
@@ -78,6 +87,10 @@ public class mData {
 
 	public void unstacking() {
 		tree.unstacking();
+	}
+	
+	public void unstackingBlock(int indexBlock){
+		tree.unstackingBlock(indexBlock);
 	}
 
 	public String dump() {
