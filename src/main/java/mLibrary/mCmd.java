@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
@@ -189,11 +190,12 @@ public class mCmd extends mParent {
 			Writer writer = m$.getWriter();
 			for (Object str : string) {
 				try {
-					writer.write(String.valueOf(str));
+					String strWr = mFncUtil.toString(str);
+					writer.write(strWr);
 					if(String.valueOf(str).contains("<HR")){
 						System.out.print("");
 					}
-					System.out.print(mFncUtil.toString(str));
+					System.out.print(strWr);
 				} catch (IOException e) {
 					throw new IllegalArgumentException(
 							"Fail to write the string HTML " + str.toString());

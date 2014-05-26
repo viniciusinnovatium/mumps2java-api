@@ -15,6 +15,10 @@ import java.util.Random;
 import java.util.SimpleTimeZone;
 import java.util.regex.Pattern;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
@@ -732,10 +736,106 @@ public final class mFnc extends mParent {
 		return zconverted;
 	}
 
-	public static Object $zconvert(Object object, String string, String string2) {
-		// TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO throw new
-		// UnsupportedOperationException();
-		return object;
+	public static Object $zconvert(Object string, String mode, String trantable) {
+		// TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO 
+		if(trantable.equals("JS")){
+	        if (string == null)
+	        {
+	            return null;
+	        }
+	        String str = String.valueOf(string);
+	        StringBuffer writer = new StringBuffer(str.length() * 2);
+
+	        int sz = str.length();
+	        for (int i = 0; i < sz; i++)
+	        {
+	            char ch = str.charAt(i);
+
+	            // handle unicode
+	            if (ch > 0xfff)
+	            {
+	                writer.append("\\u");
+	                writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
+	            }
+	            else if (ch > 0xff)
+	            {
+	                writer.append("\\u0");
+	                writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
+	            }
+	            else if (ch > 0x7f)
+	            {
+	                writer.append("\\u00");
+	                writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
+	            }
+	            else if (ch < 32)
+	            {
+	                switch (ch)
+	                {
+	                case '\b':
+	                    writer.append('\\');
+	                    writer.append('b');
+	                    break;
+	                case '\n':
+	                    writer.append('\\');
+	                    writer.append('n');
+	                    break;
+	                case '\t':
+	                    writer.append('\\');
+	                    writer.append('t');
+	                    break;
+	                case '\f':
+	                    writer.append('\\');
+	                    writer.append('f');
+	                    break;
+	                case '\r':
+	                    writer.append('\\');
+	                    writer.append('r');
+	                    break;
+	                default:
+	                    if (ch > 0xf)
+	                    {
+	                        writer.append("\\u00");
+	                        writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
+	                    }
+	                    else
+	                    {
+	                        writer.append("\\u000");
+	                        writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
+	                    }
+	                    break;
+	                }
+	            }
+	            else
+	            {
+	                switch (ch)
+	                {
+	                case '\'':
+	                    // If we wanted to escape for Java strings then we would
+	                    // not need this next line.
+	                    writer.append('\\');
+	                    writer.append('\'');
+	                    break;
+	                case '"':
+	                    writer.append('\\');
+	                    writer.append('"');
+	                    break;
+	                case '\\':
+	                    writer.append('\\');
+	                    writer.append('\\');
+	                    break;
+	                default:
+	                    writer.append(ch);
+	                    break;
+	                }
+	            }
+	        }			
+	        
+				return writer;
+		}else if(trantable.equals("HTML")){
+			return string;
+		}else{		
+			throw new UnsupportedOperationException();			
+		}
 	}
 
 	public static Object $zcrc(Object object, int i) {
