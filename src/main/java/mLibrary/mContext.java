@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -276,6 +275,7 @@ public class mContext {
 		}
 	}
 
+	@TODO
 	public void newVar(mVar... vars) {
 		Map<mData, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mData, Object[]>> set = maps.entrySet();
@@ -286,6 +286,7 @@ public class mContext {
 		countNewOperator++;
 	}
 
+	@TODO
 	public void newVarExcept(mVar... vars) {
 		Map<mData, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mData, Object[]>> set = maps.entrySet();
@@ -293,6 +294,26 @@ public class mContext {
 			entry.getKey().stackingExcept(entry.getValue());
 		}
 		countNewOperator++;
+	}
+
+	public void newVarBlock(int indexBlock, mVar... vars) {
+		Map<mData, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mData, Object[]>> set = maps.entrySet();
+		for (Entry<mData, Object[]> entry : set) {
+			entry.getKey().stackingBlock(indexBlock, entry.getValue());
+		}
+	}
+	
+	public void newVarBlockExcept(int indexBlock, mVar... vars) {
+		Map<mData, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mData, Object[]>> set = maps.entrySet();
+		for (Entry<mData, Object[]> entry : set) {
+			entry.getKey().stackingBlockExcept(indexBlock, entry.getValue());
+		}
+	}
+
+	public void restoreVarBlock(int indexBlock) {
+		mDataLocal.unstackingBlock(indexBlock);
 	}
 
 	/**
@@ -329,7 +350,6 @@ public class mContext {
 			return;
 		}
 		while (totalLevel-- > 0) {
-			// mDataPublic.unstacking();
 			mDataLocal.unstacking();
 		}
 	}
@@ -470,7 +490,7 @@ public class mContext {
 		} else {
 			_result = var(parseVarSubs(_content)).get();
 		}
-		return ((_result==null)?"":_result);
+		return ((_result == null) ? "" : _result);
 	}
 
 	private mData generateMData(String variableName) {
@@ -493,7 +513,7 @@ public class mContext {
 		String name = null;
 		for (mVar var : variables) {
 			name = var.getName();
-			final char type = name.charAt(0);
+			final char type = name.length() == 0 ? ' ' : name.charAt(0);
 			if (type == '%') {
 				publics.add(name);
 			} else if (type == '^') {

@@ -2,6 +2,7 @@ package br.com.innovatium.mumps2java.datastructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,9 @@ import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
-	private StackNode stack;
+	private final StackVariables stackVariables = new StackVariables();
+	private final StackVariables stackBlockVariables = new StackBlockVariables();
+
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 	private KillOperationOverNodes killSubnodesOperation = new KillOperationOverNodes();
 	private AddOnTreeOperationOverNodes addSubnodesOperation = new AddOnTreeOperationOverNodes();
@@ -24,67 +27,41 @@ public final class Tree extends Node {
 		super(new Object[] { "@" }, null, "@");
 	}
 
+	public void stackingBlock(int blockIndex, Object... variables) {
+		pushNodesToStack(blockIndex, stackBlockVariables,
+				findSubnodesByVarName(variables));
+	}
+
+	public void unstackingBlock(int indexBlock) {
+		final List<Node> stackedNodes = stackBlockVariables.pull(indexBlock);
+		killStackedVariables(stackedNodes);
+	}
+
 	public void stacking(Object... variables) {
-		if (stack == null) {
-			stack = new StackNode();
-		}
 		currentStackLevel++;
-		Node node = null;
-		/*
-		 * Iterating over variable names collection. Here we suppose the
-		 * variable name is the first subscript of the array.
-		 */
-		for (Object variableName : variables) {
-			node = findNode(variableName.toString());
-			// Avoid some variables which does not exist into the tree.
-			if (node != null) {
-				node.setStackLevel(currentStackLevel);
-				stack.push(node);
-				kill(node);
-			}
-		}
+		pushNodesToStack(currentStackLevel, stackVariables,
+				findSubnodesByVarName(variables));
 	}
 
 	public boolean contains(Object[] subs) {
 		return findNode(subs) != null;
 	}
-	
+
 	public void unstacking() {
-		if (stack == null) {
-			stack = new StackNode();
-		}
-		final List<Node> stackedNodes = stack.pull(currentStackLevel);
-		if (stackedNodes != null && !stackedNodes.isEmpty()) {
-			for (Node stackedNode : stackedNodes) {
-				/*
-				 * First of all, we are to looking for some node with the same
-				 * subscritps of the stacked node, then remove it from the tree
-				 * and add the stacked node there. At second, we suppose that
-				 * each stacked variable has the key as they variable name, for
-				 * instance: subs = [%x] has the name variable as %x, then, it
-				 * is identical to its generated key.
-				 */
-				Node nodeOnTheTree = findNode(stackedNode.getKey());
-				replaceNode(stackedNode, nodeOnTheTree);
-				stackedNode.setStackLevel(0);
-			}
-		}
+		final List<Node> stackedNodes = stackVariables.pull(currentStackLevel);
+		killStackedVariables(stackedNodes);
 		currentStackLevel--;
 	}
 
 	public void stackingExcept(Object... variables) {
-		if (stack == null) {
-			stack = new StackNode();
-		}
 		currentStackLevel++;
-		List<Node> nodes = findSubnodeExcepts(variables);
-		if (nodes != null) {
-			for (Node node : nodes) {
-				node.setStackLevel(currentStackLevel);
-				stack.push(node);
-				kill(node);
-			}
-		}
+		pushNodesToStack(currentStackLevel, stackVariables,
+				findSubnodesExceptsByVarName(variables));
+	}
+
+	public void stackingBlockExcept(int blockIndex, Object... variables) {
+		pushNodesToStack(blockIndex, stackBlockVariables,
+				findSubnodesExceptsByVarName(variables));
 	}
 
 	public int data(Object[] subs) {
@@ -158,7 +135,7 @@ public final class Tree extends Node {
 		return DataStructureUtil.generateKey(subs);
 	}
 
-		public boolean hasPopulatedSubnode(Node node) {
+	public boolean hasPopulatedSubnode(Node node) {
 
 		boolean isPreenchido = false;
 		if (node.hasSubnodes()) {
@@ -197,7 +174,7 @@ public final class Tree extends Node {
 		return found;
 	}
 
-	public Node findNode(Object[] subs) {
+	public Node findNode(Object... subs) {
 		return findNodeByKey(generateKey(subs));
 	}
 
@@ -245,7 +222,7 @@ public final class Tree extends Node {
 		}
 
 	}
-	
+
 	public Object order(Object... subs) {
 		return order(subs, 1);
 	}
@@ -270,31 +247,40 @@ public final class Tree extends Node {
 		return node == null || !node.hasParent();
 	}
 
-	private List<Node> findSubnodeExcepts(Object... subs) {
-		if (subs == null) {
+	private List<Node> findSubnodesExceptsByVarName(Object... variables) {
+		if (variables == null) {
 			return null;
 		}
 
-		List<Node> variables = this.getFirstLevelSubnodes();
-		if (variables == null || variables.isEmpty()) {
+		List<Node> subnodes = this.getFirstLevelSubnodes();
+		if (subnodes == null || subnodes.isEmpty()) {
 			return null;
 		}
 
-		List<Node> list = null;
-		subnodes: for (Node node : variables) {
-			for (int i = 0; i < subs.length; i++) {
-				if (subs[i] != null
-						&& subs[i].equals(node.getSubscriptAsString())) {
+		final List<Node> list = new ArrayList<Node>(30);
+		subnodes: for (Node node : subnodes) {
+			for (int i = 0; i < variables.length; i++) {
+				if (variables[i] != null
+						&& variables[i].equals(node.getSubscriptAsString())) {
 					continue subnodes;
 				}
-			}
-			if (list == null) {
-				list = new ArrayList<Node>(30);
 			}
 			list.add(node);
 
 		}
 		return list;
+	}
+
+	private List<Node> findSubnodesByVarName(Object... variables) {
+		if (variables == null) {
+			return null;
+		}
+
+		List<Node> subnodes = new ArrayList<Node>(30);
+		for (Object name : variables) {
+			subnodes.add(findNode(name));
+		}
+		return subnodes;
 	}
 
 	private Node setting(Object[] subs, Object value) {
@@ -461,4 +447,39 @@ public final class Tree extends Node {
 	private Node findNodeByKey(String key) {
 		return keyValue.get(key);
 	}
+
+	private void killStackedVariables(Collection<Node> stackedNodes) {
+		if (stackedNodes != null && !stackedNodes.isEmpty()) {
+			for (Node stackedNode : stackedNodes) {
+				/*
+				 * First of all, we are to looking for some node with the same
+				 * subscritps of the stacked node, then remove it from the tree
+				 * and add the stacked node there. At second, we suppose that
+				 * each stacked variable has the key as they variable name, for
+				 * instance: subs = [%x] has the name variable as %x, then, it
+				 * is identical to its generated key.
+				 */
+				Node nodeOnTheTree = findNode(stackedNode.getKey());
+				replaceNode(stackedNode, nodeOnTheTree);
+				stackedNode.setStackLevel(0);
+			}
+		}
+	}
+
+	private void pushNodesToStack(int stackLevel, StackVariables stack,
+			List<Node> nodes) {
+		/*
+		 * Iterating over variable names collection. Here we suppose the
+		 * variable name is the first subscript of the array.
+		 */
+		for (Node node : nodes) {
+			// Avoid some variables which does not exist into the tree.
+			if (node != null) {
+				node.setStackLevel(stackLevel);
+				stack.push(node);
+				kill(node);
+			}
+		}
+	}
+
 }
