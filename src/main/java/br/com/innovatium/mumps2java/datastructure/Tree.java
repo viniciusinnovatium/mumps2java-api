@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
-import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class Tree extends Node {
 	private int currentStackLevel = 0;
@@ -156,24 +155,6 @@ public final class Tree extends Node {
 
 		return isPreenchido;
 
-	}
-
-	// The method which returns the sub nodes of the node should be enhanced.
-	@TODO
-	public boolean hasPopulatedSubnode(Node node, boolean found) {
-
-		if (!found && node.hasSubnodes()) {
-			Node subnode = node.getSubnode();
-			if (subnode.getValue() != null) {
-				found = true;
-			}
-			found = hasPopulatedSubnode(subnode, found);
-		} else if (!found && node.isLeaf() && node.getValue() != null) {
-			found = true;
-		} else if (!found && node.hasNext()) {
-			found = hasPopulatedSubnode(node.getNext(), found);
-		}
-		return found;
 	}
 
 	public Node findNode(Object... subs) {
