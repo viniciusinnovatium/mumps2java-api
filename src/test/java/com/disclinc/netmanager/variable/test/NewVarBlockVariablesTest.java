@@ -264,10 +264,11 @@ public class NewVarBlockVariablesTest {
 		assertEquals(
 				"This variable was removed through new var operator and must not be into the tree",
 				null, m$.var("w").get());
-		
-		// Setting a new value to variable x which will no be present into the tree after restore variables.
+
+		// Setting a new value to variable x which will no be present into the
+		// tree after restore variables.
 		m$.var("x").set(888);
-		
+
 		// Restoring variables of the first block.
 		m$.restoreVarBlock(firsBlock);
 		assertEquals(
@@ -284,6 +285,67 @@ public class NewVarBlockVariablesTest {
 				"This variable was removed through new var operator and must not be into the tree",
 				66, m$.var("w").get());
 
+	}
+
+	@Test
+	public void testNewVarExceptsAndRestoreValues() {
+		init();
+		int firstBlock = 1;
+		m$.newVarBlockExcept(firstBlock, m$.var("x"));
+
+		assertEquals(
+				"This variable was not removed through new var except operator and must be into the tree",
+				1, m$.var("x").get());
+		assertEquals(
+				"This variable was removed through new var except operator and must not be into the tree",
+				null, m$.var("y").get());
+		assertEquals(
+				"This variable was removed through new var except operator and must not be into the tree",
+				null, m$.var("z").get());
+
+		m$.restoreVarBlock(firstBlock);
+
+		assertEquals(
+				"This variable was not removed through new var except operator and must be into the tree",
+				1, m$.var("x").get());
+		assertEquals(
+				"This variable was restore through restore new var except operator and must be into the tree",
+				2, m$.var("y").get());
+		assertEquals(
+				"This variable was restore through restore new var except operator and must be into the tree",
+				3, m$.var("z").get());
+	}
+
+	@Test
+	public void testNewVarExceptsAndRestoreValuesIntoALoop() {
+		init();
+		int firstBlock = 1;
+		for (int i = 0; i < 2; i++) {
+			m$.newVarBlockExcept(firstBlock, m$.var("x"));
+
+			assertEquals(
+					"This variable was not removed through new var except operator and must be into the tree",
+					1, m$.var("x").get());
+			assertEquals(
+					"This variable was removed through new var except operator and must not be into the tree",
+					null, m$.var("y").get());
+			assertEquals(
+					"This variable was removed through new var except operator and must not be into the tree",
+					null, m$.var("z").get());
+
+		}
+
+		m$.restoreVarBlock(firstBlock);
+
+		assertEquals(
+				"This variable was not removed through new var except operator and must be into the tree",
+				1, m$.var("x").get());
+		assertEquals(
+				"This variable was restore through restore new var except operator and must be into the tree",
+				2, m$.var("y").get());
+		assertEquals(
+				"This variable was restore through restore new var except operator and must be into the tree",
+				3, m$.var("z").get());
 	}
 
 	private void init() {

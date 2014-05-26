@@ -14,7 +14,7 @@ public final class Tree extends Node {
 	private int currentStackLevel = 0;
 	private final StackVariables stackVariables = new StackVariables();
 	private final StackVariables stackBlockVariables = new StackBlockVariables();
-	
+
 	private Map<String, Node> keyValue = new HashMap<String, Node>(100);
 	private KillOperationOverNodes killSubnodesOperation = new KillOperationOverNodes();
 	private AddOnTreeOperationOverNodes addSubnodesOperation = new AddOnTreeOperationOverNodes();
@@ -28,9 +28,10 @@ public final class Tree extends Node {
 	}
 
 	public void stackingBlock(int blockIndex, Object... variables) {
-		createStackedVariables(blockIndex, stackBlockVariables, variables);
+		pushNodesToStack(blockIndex, stackBlockVariables,
+				findSubnodesByVarName(variables));
 	}
-	
+
 	public void unstackingBlock(int indexBlock) {
 		final List<Node> stackedNodes = stackBlockVariables.pull(indexBlock);
 		killStackedVariables(stackedNodes);
@@ -38,7 +39,8 @@ public final class Tree extends Node {
 
 	public void stacking(Object... variables) {
 		currentStackLevel++;
-		createStackedVariables(currentStackLevel, stackVariables, variables);
+		pushNodesToStack(currentStackLevel, stackVariables,
+				findSubnodesByVarName(variables));
 	}
 
 	public boolean contains(Object[] subs) {
@@ -53,14 +55,13 @@ public final class Tree extends Node {
 
 	public void stackingExcept(Object... variables) {
 		currentStackLevel++;
-		List<Node> nodes = findSubnodeExcepts(variables);
-		if (nodes != null) {
-			for (Node node : nodes) {
-				node.setStackLevel(currentStackLevel);
-				stackVariables.push(node);
-				kill(node);
-			}
-		}
+		pushNodesToStack(currentStackLevel, stackVariables,
+				findSubnodesExceptsByVarName(variables));
+	}
+
+	public void stackingBlockExcept(int blockIndex, Object... variables) {
+		pushNodesToStack(blockIndex, stackBlockVariables,
+				findSubnodesExceptsByVarName(variables));
 	}
 
 	public int data(Object[] subs) {
@@ -173,7 +174,7 @@ public final class Tree extends Node {
 		return found;
 	}
 
-	public Node findNode(Object[] subs) {
+	public Node findNode(Object... subs) {
 		return findNodeByKey(generateKey(subs));
 	}
 
@@ -246,31 +247,40 @@ public final class Tree extends Node {
 		return node == null || !node.hasParent();
 	}
 
-	private List<Node> findSubnodeExcepts(Object... subs) {
-		if (subs == null) {
+	private List<Node> findSubnodesExceptsByVarName(Object... variables) {
+		if (variables == null) {
 			return null;
 		}
 
-		List<Node> variables = this.getFirstLevelSubnodes();
-		if (variables == null || variables.isEmpty()) {
+		List<Node> subnodes = this.getFirstLevelSubnodes();
+		if (subnodes == null || subnodes.isEmpty()) {
 			return null;
 		}
 
-		List<Node> list = null;
-		subnodes: for (Node node : variables) {
-			for (int i = 0; i < subs.length; i++) {
-				if (subs[i] != null
-						&& subs[i].equals(node.getSubscriptAsString())) {
+		final List<Node> list = new ArrayList<Node>(30);
+		subnodes: for (Node node : subnodes) {
+			for (int i = 0; i < variables.length; i++) {
+				if (variables[i] != null
+						&& variables[i].equals(node.getSubscriptAsString())) {
 					continue subnodes;
 				}
-			}
-			if (list == null) {
-				list = new ArrayList<Node>(30);
 			}
 			list.add(node);
 
 		}
 		return list;
+	}
+
+	private List<Node> findSubnodesByVarName(Object... variables) {
+		if (variables == null) {
+			return null;
+		}
+
+		List<Node> subnodes = new ArrayList<Node>(30);
+		for (Object name : variables) {
+			subnodes.add(findNode(name));
+		}
+		return subnodes;
 	}
 
 	private Node setting(Object[] subs, Object value) {
@@ -437,7 +447,7 @@ public final class Tree extends Node {
 	private Node findNodeByKey(String key) {
 		return keyValue.get(key);
 	}
-	
+
 	private void killStackedVariables(Collection<Node> stackedNodes) {
 		if (stackedNodes != null && !stackedNodes.isEmpty()) {
 			for (Node stackedNode : stackedNodes) {
@@ -455,15 +465,14 @@ public final class Tree extends Node {
 			}
 		}
 	}
-	
-	private void createStackedVariables(int stackLevel, StackVariables stack, Object...variables){
-		Node node = null;
+
+	private void pushNodesToStack(int stackLevel, StackVariables stack,
+			List<Node> nodes) {
 		/*
 		 * Iterating over variable names collection. Here we suppose the
 		 * variable name is the first subscript of the array.
 		 */
-		for (Object variableName : variables) {
-			node = findNode(variableName.toString());
+		for (Node node : nodes) {
 			// Avoid some variables which does not exist into the tree.
 			if (node != null) {
 				node.setStackLevel(stackLevel);
@@ -472,4 +481,5 @@ public final class Tree extends Node {
 			}
 		}
 	}
+
 }
