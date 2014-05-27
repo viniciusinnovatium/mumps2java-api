@@ -34,12 +34,18 @@ public class mVar {
 				System.out.print("");
 			}		
 		}
-		if (generateKey(subs).contains("^YSATZ")) {
+		if (generateKey(subs).contains("YSATZ")) {
 			System.out.print("");
 			if(String.valueOf(value).contains("null")){
 				System.out.print("");
 			}		
 		}		
+		if (generateKey(subs).contains("objWWW122")) {
+			System.out.print("");
+			if(String.valueOf(value).contains("null")){
+				System.out.print("");
+			}		
+		}			
 		mData.subs(subs).set(value);
 	}
 

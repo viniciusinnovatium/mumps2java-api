@@ -146,6 +146,9 @@ public final class mFncUtil {
 				continue;
 
 			}
+			if (array[i] == null) {
+				array[i] = "";
+			}
 			result.append(array[i]);
 			if (delimiter != null && i < indexToInsert) {
 				result.append(delimiter);
@@ -215,37 +218,38 @@ public final class mFncUtil {
 
 	public static String dateCodeFormatMumpsToJava(Object dFormat) {
 		String dFormatStr = "MM/dd/yy";
-		if (dFormat.equals("-1")) {
+		String dFormatCod = String.valueOf(dFormat);
+		if (dFormatCod.equals("-1")) {
 			// dFormatStr = "";
-		} else if (dFormat.equals("0")) {
+		} else if (dFormatCod.equals("0")) {
 			dFormatStr = "dd MMM yy";
-		} else if (dFormat.equals("1")) {
+		} else if (dFormatCod.equals("1")) {
 			dFormatStr = "MM/dd/yy";
-		} else if (dFormat.equals("2")) {
+		} else if (dFormatCod.equals("2")) {
 			dFormatStr = "dd MMM yy";
-		} else if (dFormat.equals("3")) {
+		} else if (dFormatCod.equals("3")) {
 			dFormatStr = "yyyy-MM-dd";
-		} else if (dFormat.equals("4")) {
+		} else if (dFormatCod.equals("4")) {
 			dFormatStr = "dd/MM/yy";
-		} else if (dFormat.equals("5")) {
+		} else if (dFormatCod.equals("5")) {
 			dFormatStr = "MMM d, yyyy";
-		} else if (dFormat.equals("6")) {
+		} else if (dFormatCod.equals("6")) {
 			dFormatStr = "MMM d yyyy";
-		} else if (dFormat.equals("7")) {
+		} else if (dFormatCod.equals("7")) {
 			dFormatStr = "MMM dd yy";
-		} else if (dFormat.equals("8")) {
+		} else if (dFormatCod.equals("8")) {
 			dFormatStr = "yyyyMMdd";
-		} else if (dFormat.equals("9")) {
+		} else if (dFormatCod.equals("9")) {
 			dFormatStr = "MMMM d, yyyy";
-		} else if (dFormat.equals("10")) {
+		} else if (dFormatCod.equals("10")) {
 			dFormatStr = "F";
-		} else if (dFormat.equals("11")) {
+		} else if (dFormatCod.equals("11")) {
 			dFormatStr = "EEE";
-		} else if (dFormat.equals("12")) {
+		} else if (dFormatCod.equals("12")) {
 			dFormatStr = "EEEE";
-		} else if (dFormat.equals("13")) {
+		} else if (dFormatCod.equals("13")) {
 			dFormatStr = "ddd";
-		} else if (dFormat.equals("14")) {
+		} else if (dFormatCod.equals("14")) {
 			dFormatStr = "D";
 		}
 		return dFormatStr;
@@ -485,8 +489,8 @@ public final class mFncUtil {
 		int length = digit.length;
 		if (length <= 1) {
 			StringBuilder build = new StringBuilder(digit[0]).append(".");
-				for (int i = 0; i < scale; i++) {
-					build.append("0");
+			for (int i = 0; i < scale; i++) {
+				build.append("0");
 			}
 			return build.toString();
 		} else if (digit.length == 2 && (length = digit[1].length()) < scale) {
