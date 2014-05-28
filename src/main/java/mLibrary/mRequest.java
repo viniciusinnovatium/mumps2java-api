@@ -27,16 +27,10 @@ public class mRequest {
 		}
 	}	
 	
-	public mVar getCgiEnvs(Object key){			
-		mVar var = varData(String.valueOf(key),1);
-		return var;
+	public Object getCgiEnvs(Object key){			
+		return getCgiEnv(key, "");
 	}
 	
-	public mVar getCgiEnvs(Object key, Object idx){			
-		mVar var = varData(String.valueOf(key),Integer.parseInt(String.valueOf(idx)));
-		return var;
-	}
-		
 	
 	public Map<String, String[]> getCgiEnvs() {
 		return cgiEnvs;
@@ -88,9 +82,11 @@ public class mRequest {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	public Object getCgiEnv(Object string, Object pDefault) {
-		// TODO Auto-generated method stub
+		//TODO
+		//mFnc.$get(string,pDefault);
+		//return "";
+		// referencia: http://www.stephenwithington.com/blog/index.cfm/2008/8/26/CGI-Variables-and-Their-Respective-ColdFusionJava-Servlet-Alternative-Methods
 		return null;
 	}	
 }

@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +20,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import br.com.innovatium.mumps2java.todo.REVIEW;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public final class mFnc extends mParent {
@@ -408,16 +410,29 @@ public final class mFnc extends mParent {
 		}
 	}
 
-	public static Object $listget(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $listget(Object list) {
+		return $listget(list,1);
 	}
 
-	public static Object $listget(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $listget(Object list, Object position) {
+		return $listget(list, position, "");
 	}
 
+	public static Object $listget(Object list, Object position, Object defaultValue) {
+		// TODO Auto-generated method stub
+		// position convert to integer
+		Object result = defaultValue;
+		if (list instanceof ListObject)	{
+			
+			int positionValue = mFncUtil.integerConverter(position);
+			ListObject listValue = (ListObject) list;
+			if (positionValue<=listValue.length()){
+				result = listValue.element(positionValue);
+			}
+		}
+		return result;
+	}
+	
 	public static Object $listlength(Object list) {
 		if (Boolean.valueOf(String.valueOf($listvalid(list)))) {
 			return ((ListObject) list).length();
@@ -963,9 +978,11 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
+	@REVIEW(description="Esclarecer conceito de namespace.")
 	public static Object $znspace() {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		//throw new UnsupportedOperationException();
+		return "default";
 	}
 
 	public static Object $zorder(mVar reference) {
