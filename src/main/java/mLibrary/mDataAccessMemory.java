@@ -26,8 +26,8 @@ class mDataAccessMemory extends mDataAccess {
 		tree.stackingBlock(indexBlock, variables);
 	}
 
-	public void stackingBlockExcept(int indexBlock, Object... variables) {
-		tree.stackingBlockExcept(indexBlock, variables);
+	public void stackingExceptBlock(int indexBlock, Object... variables) {
+		tree.stackingExceptBlock(indexBlock, variables);
 	}
 
 	public void unstacking() {

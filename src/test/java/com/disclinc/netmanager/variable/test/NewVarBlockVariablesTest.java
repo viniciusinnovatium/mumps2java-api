@@ -291,7 +291,7 @@ public class NewVarBlockVariablesTest {
 	public void testNewVarExceptsAndRestoreValues() {
 		init();
 		int firstBlock = 1;
-		m$.newVarBlockExcept(firstBlock, m$.var("x"));
+		m$.newVarExceptBlock(firstBlock, m$.var("x"));
 
 		assertEquals(
 				"This variable was not removed through new var except operator and must be into the tree",
@@ -321,7 +321,7 @@ public class NewVarBlockVariablesTest {
 		init();
 		int firstBlock = 1;
 		for (int i = 0; i < 2; i++) {
-			m$.newVarBlockExcept(firstBlock, m$.var("x"));
+			m$.newVarExceptBlock(firstBlock, m$.var("x"));
 
 			assertEquals(
 					"This variable was not removed through new var except operator and must be into the tree",

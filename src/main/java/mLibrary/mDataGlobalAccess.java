@@ -124,7 +124,7 @@ public class mDataGlobalAccess extends mDataAccess {
 	}
 
 	@Override
-	public void stackingBlockExcept(int indexBlock, Object... variables) {
+	public void stackingExceptBlock(int indexBlock, Object... variables) {
 		throw new UnsupportedOperationException(
 				"Stacking variable into a block is not supported to access data on disk");
 	}

@@ -29,7 +29,7 @@ public abstract class mDataAccess {
 
 	public abstract void stackingBlock(int indexBlock, Object... variables);
 
-	public abstract void stackingBlockExcept(int indexBlock,
+	public abstract void stackingExceptBlock(int indexBlock,
 			Object... variables);
 
 	public abstract int data(Object... subs);
