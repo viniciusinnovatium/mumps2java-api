@@ -192,6 +192,14 @@ public final class mFnc extends mParent {
 		return mFncUtil.findImpl(mFncUtil.castString(string),
 				mFncUtil.castString(substring), mFncUtil.castInt(start));
 	}
+	
+	public static int $f(Object string, Object substring, Object start) {
+		return $find(string, substring, start);
+	}
+	
+	public static int $f(Object string, Object substring) {
+		return $find(string, substring);
+	}
 
 	public static Object $fnumber(Object inumber, String format) {
 		return $fnumber(inumber, format, null);

@@ -81,9 +81,9 @@ public class mData {
 		}
 	}
 	
-	public void stackingBlockExcept(int indexBlock, Object... variables){
+	public void stackingExceptBlock(int indexBlock, Object... variables){
 		if (!isDiskAccess(variables)) {
-			tree.stackingBlockExcept(indexBlock, variables);
+			tree.stackingExceptBlock(indexBlock, variables);
 		} else {
 			throw new UnsupportedOperationException(
 					"Stacking variable in block is not supported to access data on disk");

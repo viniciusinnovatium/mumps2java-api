@@ -59,7 +59,7 @@ public final class Tree extends Node {
 				findSubnodesExceptsByVarName(variables));
 	}
 
-	public void stackingBlockExcept(int blockIndex, Object... variables) {
+	public void stackingExceptBlock(int blockIndex, Object... variables) {
 		pushNodesToStack(blockIndex, stackBlockVariables,
 				findSubnodesExceptsByVarName(variables));
 	}
@@ -277,8 +277,12 @@ public final class Tree extends Node {
 		}
 
 		List<Node> subnodes = new ArrayList<Node>(30);
+		Node node = null;
 		for (Object name : variables) {
-			subnodes.add(findNode(name));
+			node = findNode(name);
+			if (node != null) {
+				subnodes.add(node);
+			}
 		}
 		return subnodes;
 	}
