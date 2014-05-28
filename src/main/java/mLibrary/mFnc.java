@@ -412,15 +412,15 @@ public final class mFnc extends mParent {
 		return $listget(list, position, "");
 	}
 
-	public static Object $listget(Object list, Object index,
-			Object defaultValue) {
-		if(defaultValue == null) {
-			throw new IllegalArgumentException("Default value is required to get list function.");
+	public static Object $listget(Object list, Object index, Object defaultValue) {
+		if (defaultValue == null) {
+			throw new IllegalArgumentException(
+					"Default value is required to get list function.");
 		}
 		// position convert to integer
 		Object result = defaultValue;
 		if (list instanceof ListObject) {
-			
+
 			int position = mFncUtil.integerConverter(index);
 			ListObject listValue = (ListObject) list;
 			if (position <= listValue.length()) {
@@ -440,11 +440,11 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $listlength(Object list) {
-		if (Boolean.valueOf(String.valueOf($listvalid(list)))) {
+		if (list instanceof ListObject) {
 			return ((ListObject) list).length();
-		} else {
-			return null;
 		}
+		throw new IllegalArgumentException(
+				"Arguments must be a listObject and it was " + list.getClass());
 	}
 
 	/**

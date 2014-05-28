@@ -28,6 +28,9 @@ public final class ListObject {
 
 	static ListObject add(Object... elements) {
 		ListObject l = new ListObject();
+		if (elements == null) {
+			return l;
+		}
 		l.list.addAll(Arrays.asList(elements));
 		return l;
 	}
@@ -87,7 +90,13 @@ public final class ListObject {
 	}
 
 	public int length() {
-		return list.size();
+		int length = list.size();
+		if (length == 1) {
+			if ("".equals(list.get(0))) {
+				return 0;
+			}
+		}
+		return length;
 	}
 
 	public String toString() {
