@@ -395,10 +395,14 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $listfind(Object $listbuild, Object object) {
-		// TODO Auto-generated method stub
+		return $listfind($listbuild, object, 0);
+	}
+
+	public static Object $listfind(Object $listbuild, Object object,
+			Object startAfter) {
 		if ($listbuild instanceof ListObject) {
 			ListObject lo = (ListObject) $listbuild;
-			return lo.find(object);
+			return lo.find(object, startAfter);
 		} else {
 			return 0;
 		}
