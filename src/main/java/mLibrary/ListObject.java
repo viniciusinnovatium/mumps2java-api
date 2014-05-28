@@ -1,7 +1,6 @@
 package mLibrary;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -72,8 +71,11 @@ public final class ListObject {
 	}
 
 	public Object element(int position) {
-		if (position <= 0) {
-			position = 0;
+		if (position == 0) {
+			return "";
+		}
+		if (position < 0) {
+			position = list.size() - 1;
 		} else {
 			position = position - 1;
 		}
