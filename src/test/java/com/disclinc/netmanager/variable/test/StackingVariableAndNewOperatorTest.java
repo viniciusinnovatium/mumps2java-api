@@ -210,7 +210,7 @@ public class StackingVariableAndNewOperatorTest {
 	@Test
 	public void testStackingVariableThroughNewOperator() {
 		stackingVariables();
-		
+
 		assertEquals(
 				"After calling new operator variables should be removed from the tree, therefore, they have not be present into that",
 				null, m$.var("pedido").get());
@@ -378,6 +378,35 @@ public class StackingVariableAndNewOperatorTest {
 				"Fail to recover value from the tree after unstacking variable after calling old operator",
 				"mm77", m$.var("contrato", "clausula").get());
 
+	}
+
+	@Test
+	public void testStackingVariableAndCreatingAnotherUsingSameName() {
+		m$.var("p").set(6);
+		m$.newVar(m$.var("p"));
+		assertEquals(
+				"This variable was stacked and must not be into the context",
+				null, m$.var("p").get());
+
+		// Creating another variable with sub levels
+		m$.var("p").set(6);
+		m$.var("p", "1").set(1);
+		m$.var("p", "1", "2").set(2);
+
+		// Unstacking last variable and its subscripts which must not be present
+		// into the context
+		m$.oldvar();
+		assertEquals(
+				"This variable was removed from the stacked and must be the same as before new var method execution",
+				6, m$.var("p").get());
+		
+		assertEquals(
+				"This variable was removed from the stacked and must not present into the context",
+				null, m$.var("p", "1").get());
+		
+		assertEquals(
+				"This variable was removed from the stacked and must not present into the context",
+				null, m$.var("p", "1", "2").get());
 	}
 
 	private void unstackingVariables() {
