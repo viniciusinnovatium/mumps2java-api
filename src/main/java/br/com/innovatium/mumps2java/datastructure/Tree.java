@@ -317,22 +317,23 @@ public final class Tree extends Node {
 		return node;
 	}
 
-	private void replaceNode(Node stackedNode, Node currentNode) {
-		if (currentNode == null) {
+	private void replaceNode(Node stackedNode, Node nodeOnTree) {
+		if (nodeOnTree == null) {
 			addSubnode(stackedNode);
 		} else {
-			stackedNode.setNext(currentNode.getNext());
-			stackedNode.setPrevious(currentNode.getPrevious());
-			stackedNode.setParent(currentNode.getParent());
+			stackedNode.setNext(nodeOnTree.getNext());
+			stackedNode.setPrevious(nodeOnTree.getPrevious());
+			stackedNode.setParent(nodeOnTree.getParent());
 
-			if (currentNode.hasPrevious()) {
-				currentNode.getPrevious().setNext(stackedNode);
+			if (nodeOnTree.hasPrevious()) {
+				nodeOnTree.getPrevious().setNext(stackedNode);
 			}
-			if (currentNode.hasNext()) {
-				currentNode.getNext().setPrevious(stackedNode);
+			if (nodeOnTree.hasNext()) {
+				nodeOnTree.getNext().setPrevious(stackedNode);
 			}
 
-			currentNode.cancelReferences();
+			nodeOnTree.cancelReferences();
+			kill(nodeOnTree);
 		}
 		addAllSubnodes(stackedNode);
 	}

@@ -121,7 +121,7 @@ public class Node implements Comparable<Node> {
 		if (subnode == null) {
 			subnode = newSubnode;
 		} else {
-			Node previous = findPrevious(subnode, newSubnode);
+			Node previous = findLessThan(subnode, newSubnode);
 			// When previous node is the first sub node into the hierarchy we
 			// have to switch its positions to maintain the order mechanism.
 			if (previous.isFirstSubnode() && previous.isAfter(newSubnode)) {
@@ -142,25 +142,21 @@ public class Node implements Comparable<Node> {
 		newSubnode.parent = this;
 	}
 
-	public Node findPrevious() {
-		return findPrevious(parent.subnode, this);
-	}
-
-	public Node findPrevious(Node previous, Node subnode) {
-		if (previous.compareTo(subnode) > 0) {
-			if (previous.hasPrevious()
-					&& previous.getPrevious().compareTo(subnode) < 0) {
-				return previous.getPrevious();
+	Node findLessThan(Node initial, Node reference) {
+		if (initial.compareTo(reference) > 0) {
+			if (initial.hasPrevious()
+					&& initial.getPrevious().compareTo(reference) < 0) {
+				return initial.getPrevious();
 			}
-			return previous;
-		} else if (previous.hasNext()) {
-			if (previous == previous.next) {
+			return initial;
+		} else if (initial.hasNext()) {
+			if (initial == initial.next) {
 				throw new IllegalArgumentException(
 						"Previous node is equal the next node");
 			}
-			return findPrevious(previous.next, subnode);
+			return findLessThan(initial.next, reference);
 		} else {
-			return previous;
+			return initial;
 		}
 
 	}
