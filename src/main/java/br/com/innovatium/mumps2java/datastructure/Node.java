@@ -117,7 +117,7 @@ public class Node implements Comparable<Node> {
 		return this.parent != null;
 	}
 
-	public void addSubnode(Node newSubnode) {
+	void addSubnode(Node newSubnode) {
 		if (subnode == null) {
 			subnode = newSubnode;
 		} else {

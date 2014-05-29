@@ -226,6 +226,22 @@ public final class Tree extends Node {
 	public Object order(Object... subs) {
 		return order(subs, 1);
 	}
+	
+	public Object[] findPrevious(Object[] subs) {
+		Node node = findNode(subs);
+		if(node == null || !node.hasPrevious()) {
+			return null;
+		}
+		return node.getPrevious().getSubs();
+	}
+	
+	public Object[] findNext(Object[] subs) {
+		Node node = findNode(subs);
+		if(node == null || !node.hasNext()) {
+			return null;
+		}
+		return node.getNext().getSubs();
+	}
 
 	/*
 	 * Generic method which be reused by anothers when search subnodes is need.
