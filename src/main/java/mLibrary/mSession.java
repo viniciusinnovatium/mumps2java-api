@@ -10,8 +10,7 @@ public class mSession {
 	private String sessionId;
 	private mData mDataSession = new mData();
 	
-	public mSession(Map<String, String[]> map) {
-		populateParameter(map);
+	public mSession() {
 		setSessionId(UUID.randomUUID().toString());
 	}
 

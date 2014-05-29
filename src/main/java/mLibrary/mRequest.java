@@ -2,43 +2,27 @@ package mLibrary;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class mRequest {
 	
 	private mData data = new mData();
-	private Map<String,String[]> cgiEnvs = new HashMap<String,String[]>();
+	private HttpServletRequest originalRequest;
 	private mContent content;
 	
-	public mRequest(Map<String, String[]> map) {
-		populateParameter(map);
+	public mRequest(HttpServletRequest request) {
+		originalRequest = request;
 	}	
-	
-	public void populateParameter(Map<String, String[]> map){
-		Set<Entry<String, String[]>> results = map.entrySet();
-		for (Entry<String, String[]> result : results) {
-			for (int i = 0; i < result.getValue().length; i++) {
-				setData(result.getKey(), i+1, result.getValue()[i]);
-			}
-		}
-	}	
-	
-	public Object getCgiEnvs(Object key){			
-		return getCgiEnv(key, "");
+ 
+	public Object getCgiEnvs(Object...key){			
+		return getCgiEnv(key[0], "");
 	}
 	
-	
-	public Map<String, String[]> getCgiEnvs() {
-		return cgiEnvs;
-	}
-
 	public void setCgiEnvs(Map<String, String[]> cgiEnvs) {
-		this.cgiEnvs = cgiEnvs;
-		populateParameter(cgiEnvs);
+		throw new UnsupportedOperationException();
 	}
 
 	public mVar varData(Object... args){
@@ -82,11 +66,38 @@ public class mRequest {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	public Object getCgiEnv(Object string, Object pDefault) {
-		//TODO
-		//mFnc.$get(string,pDefault);
-		//return "";
-		// referencia: http://www.stephenwithington.com/blog/index.cfm/2008/8/26/CGI-Variables-and-Their-Respective-ColdFusionJava-Servlet-Alternative-Methods
+		String cgiVarName = String.valueOf(string);
+		switch ( cgiVarName ) {
+		case "AUTH_TYPE": return originalRequest.getAuthType();
+		case "CONTENT_LENGTH": return originalRequest.getContentLength();
+		case "CONTEXT_PATH": return originalRequest.getContextPath();
+		case "CONTENT_TYPE": return originalRequest.getContentType();
+		case "PATH_INFO": return originalRequest.getPathInfo();
+		case "PATH_TRANSLATED": return originalRequest.getPathTranslated();
+		case "QUERY_STRING": return originalRequest.getQueryString();
+		case "REMOTE_ADDR": return originalRequest.getRemoteAddr();
+		case "REMOTE_HOST": return originalRequest.getRemoteHost();
+		case "REMOTE_USER": return originalRequest.getRemoteUser();
+		case "REQUEST_METHOD": return originalRequest.getMethod();
+		case "SCRIPT_NAME": return originalRequest.getServletPath();
+		case "SERVER_NAME": return originalRequest.getServerName();
+		case "SERVER_PORT": return originalRequest.getServerPort();
+		case "SERVER_PORT_SECURE": return originalRequest.isSecure();
+		case "SERVER_PROTOCOL": return originalRequest.getProtocol();
+		case "SERVER_SOFTWARE": return originalRequest.getHeader("Server-Software");
+		case "HTTP_ACCEPT": return originalRequest.getHeader("Accept");
+		case "HTTP_ACCEPT_CHARSET": return originalRequest.getHeader("Accept-Charset");
+		case "HTTP_ACCEPT_ENCODING": return originalRequest.getHeader("Accept-Encoding");
+		case "HTTP_ACCEPT_LANGUAGE": return originalRequest.getHeader("Accept-Language");
+		case "HTTP_CONNECTION": return originalRequest.getHeader("Connection");
+		case "HTTP_COOKIE": return originalRequest.getHeader("Cookie");
+		case "HTTP_HOST": return originalRequest.getHeader("Host");
+		case "HTTP_REFERER": return originalRequest.getHeader("Referer");
+		case "HTTP_USER_AGENT": return originalRequest.getHeader("User-Agent");
+	}
+	
 		return null;
 	}	
 }
