@@ -346,7 +346,8 @@ public final class Tree extends Node {
 		} else {
 			node.getPrevious().setNext(node.getNext());
 		}
-		if (node.getNext() != null) {
+		
+		if (node.hasNext()) {
 			node.getNext().setPrevious(node.getPrevious());
 		}
 		node.cancelReferences();
