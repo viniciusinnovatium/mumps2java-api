@@ -34,13 +34,12 @@ public class mCmd extends mParent {
 	}
 
 	public void Do(mClass objClass, String methodName, Object... parameters) {
-		methodName = m$.defineMethodName(objClass, methodName);
-		m$.dispatch(objClass, methodName, parameters);
+		DoJob(false, objClass, methodName, parameters);
 	}
 
-	public void Do(Object object, String methodName, Object object2) {
+	public void Do(String object, String methodName, String object2) {
 		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException();
 	}
 
 	public void Do(Object methodName) {
@@ -48,27 +47,43 @@ public class mCmd extends mParent {
 	}
 
 	public void Do(String methodName) {
+		DoJob(false, methodName);
+	}
+	
+	public void Do(String methodName, Object... parameters) {
+		DoJob(false, null, methodName, parameters);
+	}
+
+	private void DoJob(boolean isJobExec, mClass objClass, String methodName,
+			Object... parameters) {
+		methodName = m$.defineMethodName(objClass, methodName);
+		m$.dispatch(isJobExec, objClass, methodName, parameters);
+	}
+	
+	private void DoJob(boolean isJobExec, String methodName) {
 		if (isIndirectionExecution(methodName)) {
 			mVar var = m$.indirectVar(methodName);
 			methodName = var.getName();
 
 			if (isMethodExecution(methodName)) {
-				Do(defineMethodName(methodName), var.getParameters());
+				DoJob(isJobExec, defineMethodName(methodName), var.getParameters());
 			} else {
-				Do(methodName, var.getParameters());
+				DoJob(isJobExec, methodName, var.getParameters());
 			}
 		} else {
 			if (isMethodExecution(methodName)) {
-				Do(defineMethodName(methodName), (Object[]) null);
+				DoJob(isJobExec, defineMethodName(methodName), (Object[]) null);
 			} else {
 				m$.fnc$(methodName);
 			}
 		}
 	}
 
-	public void Do(String methodName, Object... parameters) {
-		Do(null, methodName, parameters);
+
+	private void DoJob(boolean isJobExec, String methodName, Object... parameters) {
+		DoJob(isJobExec, null, methodName, parameters);
 	}
+	
 
 	public void Goto(Object label) {
 		throw new UnsupportedOperationException();
@@ -191,7 +206,7 @@ public class mCmd extends mParent {
 				try {
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
-					if(String.valueOf(str).contains("<HR")){
+					if (String.valueOf(str).contains("<HR")) {
 						System.out.print("");
 					}
 					System.out.print(strWr);
@@ -244,8 +259,8 @@ public class mCmd extends mParent {
 	}
 
 	public void Job(String methodName) {
-		m$.Cmd.Do(methodName);
-		//new Thread(new JobCmd(methodName)).start();
+		//m$.Cmd.Do(methodName);
+		new Thread(new JobCmd(methodName)).start();
 	}
 
 	private class JobCmd implements Runnable {
@@ -256,7 +271,7 @@ public class mCmd extends mParent {
 		}
 
 		public void run() {
-			m$.Cmd.Do(methodName);
+			m$.Cmd.DoJob(true, methodName);
 		}
 
 	}
