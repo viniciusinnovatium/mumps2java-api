@@ -168,7 +168,7 @@ public class mData {
 		String tableName = generateTableName(currentSubs);
 
 		Map<String, String> map = dao.like(tableName,
-				generateKeyToLikeQuery(currentSubs));
+				generateKeyWithoutVarName(currentSubs));
 
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
