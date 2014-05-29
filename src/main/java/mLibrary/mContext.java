@@ -303,12 +303,12 @@ public class mContext {
 			entry.getKey().stackingBlock(indexBlock, entry.getValue());
 		}
 	}
-	
-	public void newVarBlockExcept(int indexBlock, mVar... vars) {
+
+	public void newVarExceptBlock(int indexBlock, mVar... vars) {
 		Map<mData, Object[]> maps = filteringVariableTypes(vars);
 		Set<Entry<mData, Object[]>> set = maps.entrySet();
 		for (Entry<mData, Object[]> entry : set) {
-			entry.getKey().stackingBlockExcept(indexBlock, entry.getValue());
+			entry.getKey().stackingExceptBlock(indexBlock, entry.getValue());
 		}
 	}
 

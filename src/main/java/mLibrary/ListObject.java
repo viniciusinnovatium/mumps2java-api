@@ -1,7 +1,6 @@
 package mLibrary;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,28 +28,39 @@ public final class ListObject {
 
 	static ListObject add(Object... elements) {
 		ListObject l = new ListObject();
+		if (elements == null) {
+			return l;
+		}
 		l.list.addAll(Arrays.asList(elements));
 		return l;
 	}
 
-	static int find(Object listObj, Object obj) {
+	static int find(Object listObj, Object obj, Object startAfter) {
 		if (listObj instanceof ListObject) {
+
+			int init = mFncUtil.integerConverter(startAfter);
+			if (init == -1) {
+				return 0;
+			} else if (init <= -2) {
+				throw new IllegalArgumentException(
+						"Start less than -1 is not allowed");
+			}
+
 			List<Object> list = ((ListObject) listObj).list;
-			for (int i = 0; i < list.size(); i++) {
+			for (int i = init; i < list.size(); i++) {
 				Object item = list.get(i);
 				item = mFncUtil.toString(item);
 				obj = mFncUtil.toString(obj);
 				if (item.equals(obj)) {
-					return i;
+					return i + 1;
 				}
-
 			}
 		}
 		return 0;
 	}
 
-	public int find(Object obj) {
-		return find(this, obj);
+	public int find(Object obj, Object start) {
+		return find(this, obj, start);
 	}
 
 	ListObject sublist(int init, int end) {
@@ -72,8 +82,11 @@ public final class ListObject {
 	}
 
 	public Object element(int position) {
-		if (position <= 0) {
-			position = 0;
+		if (position == 0) {
+			return "";
+		}
+		if (position < 0) {
+			position = list.size() - 1;
 		} else {
 			position = position - 1;
 		}
@@ -85,7 +98,13 @@ public final class ListObject {
 	}
 
 	public int length() {
-		return list.size();
+		int length = list.size();
+		if (length == 1) {
+			if ("".equals(list.get(0))) {
+				return 0;
+			}
+		}
+		return length;
 	}
 
 	public String toString() {

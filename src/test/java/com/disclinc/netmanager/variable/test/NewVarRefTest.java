@@ -8,7 +8,7 @@ import mLibrary.mVar;
 import org.junit.Before;
 import org.junit.Test;
 
-public class VariableThroughReferenceOrValueTest {
+public class NewVarRefTest {
 	private mContext m$ = null;
 
 	@Before

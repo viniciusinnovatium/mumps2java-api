@@ -1,13 +1,11 @@
 package mLibrary;
 
-import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,10 +13,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.SimpleTimeZone;
 import java.util.regex.Pattern;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import br.com.innovatium.mumps2java.todo.REVIEW;
 import br.com.innovatium.mumps2java.todo.TODO;
@@ -193,6 +187,14 @@ public final class mFnc extends mParent {
 	public static int $find(Object string, Object substring, Object start) {
 		return mFncUtil.findImpl(mFncUtil.castString(string),
 				mFncUtil.castString(substring), mFncUtil.castInt(start));
+	}
+
+	public static int $f(Object string, Object substring, Object start) {
+		return $find(string, substring, start);
+	}
+
+	public static int $f(Object string, Object substring) {
+		return $find(string, substring);
 	}
 
 	public static Object $fnumber(Object inumber, String format) {
@@ -393,44 +395,60 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $listfind(Object $listbuild, Object object) {
-		// TODO Auto-generated method stub
+		return $listfind($listbuild, object, 0);
+	}
+
+	public static Object $listfind(Object $listbuild, Object object,
+			Object startAfter) {
 		if ($listbuild instanceof ListObject) {
 			ListObject lo = (ListObject) $listbuild;
-			return lo.find(object);
+			return lo.find(object, startAfter);
 		} else {
 			return 0;
 		}
 	}
 
 	public static Object $listget(Object list) {
-		return $listget(list,1);
+		return $listget(list, 1);
 	}
 
 	public static Object $listget(Object list, Object position) {
 		return $listget(list, position, "");
 	}
 
-	public static Object $listget(Object list, Object position, Object defaultValue) {
-		// TODO Auto-generated method stub
+	public static Object $listget(Object list, Object index, Object defaultValue) {
+		if (defaultValue == null) {
+			throw new IllegalArgumentException(
+					"Default value is required to get list function.");
+		}
 		// position convert to integer
 		Object result = defaultValue;
-		if (list instanceof ListObject)	{
-			
-			int positionValue = mFncUtil.integerConverter(position);
+		if (list instanceof ListObject) {
+
+			int position = mFncUtil.integerConverter(index);
 			ListObject listValue = (ListObject) list;
-			if (positionValue<=listValue.length()){
-				result = listValue.element(positionValue);
+			if (position <= listValue.length()) {
+				result = listValue.element(position);
+				if (result == null && defaultValue != null) {
+					return defaultValue;
+				} else if (result == null && defaultValue == null) {
+					return "";
+				} else {
+					return result;
+				}
+			} else {
+				return defaultValue;
 			}
 		}
 		return result;
 	}
-	
+
 	public static Object $listlength(Object list) {
-		if (Boolean.valueOf(String.valueOf($listvalid(list)))) {
+		if (list instanceof ListObject) {
 			return ((ListObject) list).length();
-		} else {
-			return null;
 		}
+		throw new IllegalArgumentException(
+				"Arguments must be a listObject and it was " + list.getClass());
 	}
 
 	/**
@@ -592,7 +610,7 @@ public final class mFnc extends mParent {
 			}
 			result = result + ")";
 		}
-		
+
 		if (target != null) {
 			target.set(m$.indirectVar(result));
 		}
@@ -753,104 +771,93 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zconvert(Object string, String mode, String trantable) {
-		// TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO 
-		if(trantable.equals("JS")){
-	        if (string == null)
-	        {
-	            return null;
-	        }
-	        String str = String.valueOf(string);
-	        StringBuffer writer = new StringBuffer(str.length() * 2);
+		// TODO REVISAR IMPLEMENTAÇÃO DO MÉTODO
+		if (trantable.equals("JS")) {
+			if (string == null) {
+				return null;
+			}
+			String str = String.valueOf(string);
+			StringBuffer writer = new StringBuffer(str.length() * 2);
 
-	        int sz = str.length();
-	        for (int i = 0; i < sz; i++)
-	        {
-	            char ch = str.charAt(i);
+			int sz = str.length();
+			for (int i = 0; i < sz; i++) {
+				char ch = str.charAt(i);
 
-	            // handle unicode
-	            if (ch > 0xfff)
-	            {
-	                writer.append("\\u");
-	                writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
-	            }
-	            else if (ch > 0xff)
-	            {
-	                writer.append("\\u0");
-	                writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
-	            }
-	            else if (ch > 0x7f)
-	            {
-	                writer.append("\\u00");
-	                writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
-	            }
-	            else if (ch < 32)
-	            {
-	                switch (ch)
-	                {
-	                case '\b':
-	                    writer.append('\\');
-	                    writer.append('b');
-	                    break;
-	                case '\n':
-	                    writer.append('\\');
-	                    writer.append('n');
-	                    break;
-	                case '\t':
-	                    writer.append('\\');
-	                    writer.append('t');
-	                    break;
-	                case '\f':
-	                    writer.append('\\');
-	                    writer.append('f');
-	                    break;
-	                case '\r':
-	                    writer.append('\\');
-	                    writer.append('r');
-	                    break;
-	                default:
-	                    if (ch > 0xf)
-	                    {
-	                        writer.append("\\u00");
-	                        writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
-	                    }
-	                    else
-	                    {
-	                        writer.append("\\u000");
-	                        writer.append(Integer.toHexString(ch).toUpperCase(Locale.ENGLISH));
-	                    }
-	                    break;
-	                }
-	            }
-	            else
-	            {
-	                switch (ch)
-	                {
-	                case '\'':
-	                    // If we wanted to escape for Java strings then we would
-	                    // not need this next line.
-	                    writer.append('\\');
-	                    writer.append('\'');
-	                    break;
-	                case '"':
-	                    writer.append('\\');
-	                    writer.append('"');
-	                    break;
-	                case '\\':
-	                    writer.append('\\');
-	                    writer.append('\\');
-	                    break;
-	                default:
-	                    writer.append(ch);
-	                    break;
-	                }
-	            }
-	        }			
-	        
-				return writer;
-		}else if(trantable.equals("HTML")){
+				// handle unicode
+				if (ch > 0xfff) {
+					writer.append("\\u");
+					writer.append(Integer.toHexString(ch).toUpperCase(
+							Locale.ENGLISH));
+				} else if (ch > 0xff) {
+					writer.append("\\u0");
+					writer.append(Integer.toHexString(ch).toUpperCase(
+							Locale.ENGLISH));
+				} else if (ch > 0x7f) {
+					writer.append("\\u00");
+					writer.append(Integer.toHexString(ch).toUpperCase(
+							Locale.ENGLISH));
+				} else if (ch < 32) {
+					switch (ch) {
+					case '\b':
+						writer.append('\\');
+						writer.append('b');
+						break;
+					case '\n':
+						writer.append('\\');
+						writer.append('n');
+						break;
+					case '\t':
+						writer.append('\\');
+						writer.append('t');
+						break;
+					case '\f':
+						writer.append('\\');
+						writer.append('f');
+						break;
+					case '\r':
+						writer.append('\\');
+						writer.append('r');
+						break;
+					default:
+						if (ch > 0xf) {
+							writer.append("\\u00");
+							writer.append(Integer.toHexString(ch).toUpperCase(
+									Locale.ENGLISH));
+						} else {
+							writer.append("\\u000");
+							writer.append(Integer.toHexString(ch).toUpperCase(
+									Locale.ENGLISH));
+						}
+						break;
+					}
+				} else {
+					switch (ch) {
+					case '\'':
+						// If we wanted to escape for Java strings then we would
+						// not need this next line.
+						writer.append('\\');
+						writer.append('\'');
+						break;
+					case '"':
+						writer.append('\\');
+						writer.append('"');
+						break;
+					case '\\':
+						writer.append('\\');
+						writer.append('\\');
+						break;
+					default:
+						writer.append(ch);
+						break;
+					}
+				}
+			}
+
+			return writer;
+		} else if (trantable.equals("HTML")) {
 			return string;
-		}else{		
-			throw new UnsupportedOperationException();			
+		} else {
+			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -970,10 +977,10 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	@REVIEW(description="Esclarecer conceito de namespace.")
+	@REVIEW(description = "Esclarecer conceito de namespace.")
 	public static Object $znspace() {
 		// TODO Auto-generated method stub
-		//throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
 		return "default";
 	}
 
