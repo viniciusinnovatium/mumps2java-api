@@ -399,11 +399,11 @@ public class StackingVariableAndNewOperatorTest {
 		assertEquals(
 				"This variable was removed from the stacked and must be the same as before new var method execution",
 				6, m$.var("p").get());
-		
+
 		assertEquals(
 				"This variable was removed from the stacked and must not present into the context",
 				null, m$.var("p", "1").get());
-		
+
 		assertEquals(
 				"This variable was removed from the stacked and must not present into the context",
 				null, m$.var("p", "1", "2").get());
