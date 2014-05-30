@@ -234,13 +234,20 @@ public class mCmd extends mParent {
 		Write(string);		
 	}
 
-	public void Xecute(Object object) {
-		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(object.toString());
-		if (String.valueOf(object).startsWith("do ")) {
-			Do(String.valueOf(object).replaceAll("do ", ""));
-		} else if (String.valueOf(object).toUpperCase().startsWith("U ")
-				|| String.valueOf(object).toUpperCase().startsWith("USER ")) {
-		} else if (String.valueOf(object).toUpperCase().startsWith("SET ")) {
+	public void Xecute(Object command) {
+		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(command.toString());
+		String cmdStr = String.valueOf(command);
+		if (cmdStr.startsWith("DO ")){
+			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
+		}else if(cmdStr.startsWith("D ")) {
+			Do(String.valueOf(command).replaceAll(Pattern.quote("D "), ""));
+		}else if (cmdStr.startsWith("do ")){
+			Do(String.valueOf(command).replaceAll(Pattern.quote("do "), ""));
+		}else if(cmdStr.startsWith("d ")) {
+			Do(String.valueOf(command).replaceAll(Pattern.quote("d "), ""));
+		} else if (cmdStr.startsWith("U ")
+				|| cmdStr.startsWith("USER ")) {
+		} else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
 		} else {
 			throw new UnsupportedOperationException();
 		}
