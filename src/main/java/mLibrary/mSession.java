@@ -47,6 +47,6 @@ public class mSession {
 
 	public Object getAppTimeout() {
 		//TODO REVISAR TIMEOUT PROVISÓRIO;
-		return 1;
+		return 900;
 	}		
 }
