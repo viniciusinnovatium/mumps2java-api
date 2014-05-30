@@ -937,9 +937,12 @@ public final class mFnc extends mParent {
 		return returnDate;
 	}
 
-	public static Object $zdatetime(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zdatetime(Object hdatetime) {
+		return $zdate(hdatetime);
+	}	
+
+	public static Object $zdatetime(Object hdatetime, Object dformat) {
+		return $zdate(hdatetime, dformat);
 	}
 
 	public static Object $zdatetimeh(Object object, int i) {
