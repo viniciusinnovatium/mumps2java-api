@@ -1,6 +1,5 @@
 package mLibrary;
 
-import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyToLikeQuery;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKeyWithoutVarName;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateSubs;
@@ -71,8 +70,8 @@ public class mData {
 					"Stacking variable is not supported to access data on disk");
 		}
 	}
-	
-	public void stackingBlock(int indexBlock, Object... variables){
+
+	public void stackingBlock(int indexBlock, Object... variables) {
 		if (!isDiskAccess(variables)) {
 			tree.stackingBlock(indexBlock, variables);
 		} else {
@@ -80,8 +79,8 @@ public class mData {
 					"Stacking variable in block is not supported to access data on disk");
 		}
 	}
-	
-	public void stackingExceptBlock(int indexBlock, Object... variables){
+
+	public void stackingExceptBlock(int indexBlock, Object... variables) {
 		if (!isDiskAccess(variables)) {
 			tree.stackingExceptBlock(indexBlock, variables);
 		} else {
@@ -97,8 +96,8 @@ public class mData {
 	public void unstacking() {
 		tree.unstacking();
 	}
-	
-	public void unstackingBlock(int indexBlock){
+
+	public void unstackingBlock(int indexBlock) {
 		tree.unstackingBlock(indexBlock);
 	}
 
@@ -119,13 +118,13 @@ public class mData {
 
 	public int data(Object... subs) {
 		currentSubs = subs;
-		populateTree();
+		populateTree(false);
 		return tree.data(subs);
 	}
 
 	public Object order(Object[] subs, int direction) {
 		this.currentSubs = subs;
-		populateTree();
+		populateTree(true);
 		return tree.order(subs, direction);
 	}
 
@@ -138,12 +137,12 @@ public class mData {
 		return this;
 	}
 
-	private void populateTree() {
+	private void populateTree(boolean isOrder) {
 		if (isDiskAccess(currentSubs)) {
 			if (!orderDataCache.isCached(currentSubs)) {
 				orderDataCache.add(currentSubs);
 				initDAO();
-				findDataOnDisk();
+				findDataOnDisk(isOrder);
 			}
 		}
 	}
@@ -163,12 +162,15 @@ public class mData {
 		}
 	}
 
-	private void findDataOnDisk() {
+	private void findDataOnDisk(boolean isOrder) {
 
 		String tableName = generateTableName(currentSubs);
-
-		Map<String, String> map = dao.like(tableName,
-				generateKeyToLikeQuery(currentSubs));
+		Map<String, String> map = null;
+		if (isOrder) {
+			map = dao.like(tableName, generateKeyToLikeQuery(currentSubs));
+		} else {
+			map = dao.like(tableName, generateKeyWithoutVarName(currentSubs));
+		}
 
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
