@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.TODO;
 
@@ -226,7 +227,11 @@ public class mCmd extends mParent {
 	}
 
 	public void WriteJS(Object... string) {
-		Write(string);
+		for (int i = 0; i < string.length; i++) {
+			string[i] = String.valueOf(string[i]).replaceAll(Pattern.quote("&lt;"), "<");
+			string[i] = String.valueOf(string[i]).replaceAll(Pattern.quote("&gt;"), ">");
+		}
+		Write(string);		
 	}
 
 	public void Xecute(Object object) {

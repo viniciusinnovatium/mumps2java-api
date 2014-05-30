@@ -4,12 +4,29 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import br.com.innovatium.mumps2java.todo.REVIEW;
 import br.com.innovatium.mumps2java.todo.TODO;
 
+ 
 public abstract class mPage extends mClass {
 
-	public abstract Object OnPage(Object... _p);
-
+	public void OnPreHTTP(){
+	}
+	public abstract Object OnPage();
+	public void OnPostHTTP(){
+	}
+	public void Page(){
+		Page(true);
+	}
+	@REVIEW(description = "Revisar ordem de execução dos métodos")
+	public void Page(boolean skipheader){
+		if (!skipheader){
+			OnPreHTTP();
+		}
+		OnPage();
+		OnPostHTTP();
+	}
+	
 	public static Object EscapeURL(Object url) {
 		try {
 			return URLEncoder.encode(String.valueOf(url), "UTF-8");
