@@ -1,9 +1,15 @@
 package mLibrary;
 
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
+
 class mDataAccessMemory extends mDataAccess {
 
 	public mDataAccessMemory(mVariables mVariables, int type) {
 		super(mVariables, type);
+	}
+	
+	public mDataAccessMemory() {
+		super(new mVariables(), DataStructureUtil.LOCAL);
 	}
 
 	public Object get(Object... subs) {

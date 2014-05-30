@@ -10,8 +10,7 @@ public class mSession {
 	private String sessionId;
 	private mDataAccessMemory mDataSession = new mDataAccessLocal(new mVariables());
 	
-	public mSession(Map<String, String[]> map) {
-		populateParameter(map);
+	public mSession() {
 		setSessionId(UUID.randomUUID().toString());
 	}
 

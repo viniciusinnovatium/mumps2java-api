@@ -89,8 +89,8 @@ public class mContext {
 		return system;
 	}
 
-	public Object dispatch(mClass objClass, String methodName,
-			Object... parameters) {
+	public Object dispatch(boolean isJobExec, mClass objClass,
+			String methodName, Object... parameters) {
 		Method m = getMethod(methodName);
 		Object result = null;
 		Object obj = null;
@@ -102,7 +102,17 @@ public class mContext {
 			} else if (!Modifier.isStatic(m.getModifiers())) {
 				obj = m.getDeclaringClass().newInstance();
 				if (obj instanceof mClass) {
-					((mClass) obj).setContext(this);
+					// This was done because in the job threads we have sharing
+					// memory mContext, so, to get isolation we must create a
+					// new context and into this the thread can create variables
+					// in such way that will not conflict with mContext of the
+					// request.
+					if (isJobExec) {
+						((mClass) obj).setContext(new mContext());
+					} else {
+						((mClass) obj).setContext(this);
+					}
+
 				}
 			}
 			if (m.getParameterTypes() != null
@@ -125,6 +135,11 @@ public class mContext {
 		oldvar();
 		countNewOperator = countOld;
 		return result;
+	}
+
+	public Object dispatch(mClass objClass, String methodName,
+			Object... parameters) {
+		return dispatch(false, objClass, methodName, parameters);
 	}
 
 	private Method getMethod(String methodName) {

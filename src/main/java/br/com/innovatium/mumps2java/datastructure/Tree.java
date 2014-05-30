@@ -208,6 +208,22 @@ public final class Tree extends Node {
 	public Object order(Object... subs) {
 		return order(subs, 1);
 	}
+	
+	public Object[] findPrevious(Object[] subs) {
+		Node node = findNode(subs);
+		if(node == null || !node.hasPrevious()) {
+			return null;
+		}
+		return node.getPrevious().getSubs();
+	}
+	
+	public Object[] findNext(Object[] subs) {
+		Node node = findNode(subs);
+		if(node == null || !node.hasNext()) {
+			return null;
+		}
+		return node.getNext().getSubs();
+	}
 
 	/*
 	 * Generic method which be reused by anothers when search subnodes is need.
@@ -283,22 +299,23 @@ public final class Tree extends Node {
 		return node;
 	}
 
-	private void replaceNode(Node stackedNode, Node currentNode) {
-		if (currentNode == null) {
+	private void replaceNode(Node stackedNode, Node nodeOnTree) {
+		if (nodeOnTree == null) {
 			addSubnode(stackedNode);
 		} else {
-			stackedNode.setNext(currentNode.getNext());
-			stackedNode.setPrevious(currentNode.getPrevious());
-			stackedNode.setParent(currentNode.getParent());
+			stackedNode.setNext(nodeOnTree.getNext());
+			stackedNode.setPrevious(nodeOnTree.getPrevious());
+			stackedNode.setParent(nodeOnTree.getParent());
 
-			if (currentNode.hasPrevious()) {
-				currentNode.getPrevious().setNext(stackedNode);
+			if (nodeOnTree.hasPrevious()) {
+				nodeOnTree.getPrevious().setNext(stackedNode);
 			}
-			if (currentNode.hasNext()) {
-				currentNode.getNext().setPrevious(stackedNode);
+			if (nodeOnTree.hasNext()) {
+				nodeOnTree.getNext().setPrevious(stackedNode);
 			}
 
-			currentNode.cancelReferences();
+			nodeOnTree.cancelReferences();
+			killAllSubnodes(nodeOnTree);
 		}
 		addAllSubnodes(stackedNode);
 	}
@@ -312,7 +329,8 @@ public final class Tree extends Node {
 		} else {
 			node.getPrevious().setNext(node.getNext());
 		}
-		if (node.getNext() != null) {
+		
+		if (node.hasNext()) {
 			node.getNext().setPrevious(node.getPrevious());
 		}
 		node.cancelReferences();
