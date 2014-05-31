@@ -378,11 +378,11 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $length(Object expression) {
-		return String.valueOf(expression).length();
+		return mFncUtil.toString(expression).length();
 	}
 
 	public static Object $length(Object expression, Object delimiter) {
-		return String.valueOf(expression).split(
+		return  mFncUtil.toString(expression).split(
 				Pattern.quote(String.valueOf(delimiter))).length;
 	}
 
@@ -903,7 +903,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zdateh(Object date) {
-		throw new UnsupportedOperationException();
+		return $zdateh(date, 4);//TODO REVISAR FORMATO LOCAL
 	}
 
 	public static Object $zdateh(Object date, Object dformat) {
@@ -913,7 +913,7 @@ public final class mFnc extends mParent {
 		String returnDate = null;
 		try {
 			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
-					sdf.parse(String.valueOf(date))).longValue());
+					sdf.parse(String.valueOf(date)).getTime()).longValue());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -929,7 +929,7 @@ public final class mFnc extends mParent {
 		String returnDate = erropt != null ? String.valueOf(erropt) : null;
 		try {
 			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
-					sdf.parse(String.valueOf(date))).longValue());
+					sdf.parse(String.valueOf(date)).getTime()).longValue());
 		} catch (ParseException e) {
 
 			e.printStackTrace();
