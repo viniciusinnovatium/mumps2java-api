@@ -8,10 +8,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Random;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.REVIEW;
@@ -894,16 +895,18 @@ public final class mFnc extends mParent {
 			Object monthlist, Object yearopt, Object startwin, Object endwin,
 			Object mindate, Object maxdate, Object erropt) {
 
-		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate).longValue());
-
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+		GregorianCalendar dt = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+		dt.setTimeInMillis(mFncUtil.dateMumpsToJava(hdate).longValue());
+		dt.setLenient(false);
 		SimpleDateFormat sdf = new SimpleDateFormat(
 				mFncUtil.dateCodeFormatMumpsToJava(dformat));
 
-		return sdf.format(dt);
+		return sdf.format(dt.getTime());
 	}
 
 	public static Object $zdateh(Object date) {
-		return $zdateh(date, 4);//TODO REVISAR FORMATO LOCAL
+		return $zdateh(date, 1);//TODO REVISAR FORMATO LOCAL
 	}
 
 	public static Object $zdateh(Object date, Object dformat) {

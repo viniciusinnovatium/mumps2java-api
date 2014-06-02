@@ -137,7 +137,7 @@ public final class mOp {
 	public static Object IntegerDivide(Object num1, Object num2) {
 		double d1 = mFncUtil.numberConverter(num1);
 		double d2 = mFncUtil.numberConverter(num2);
-		return (d1 / d2);
+		return Double.valueOf(d1 / d2).intValue();
 	}
 
 	public static boolean Less(Object object, Object object2) {

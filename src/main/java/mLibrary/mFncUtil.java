@@ -3,6 +3,8 @@ package mLibrary;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
@@ -180,10 +182,10 @@ public final class mFncUtil {
 	}
 
 	public static Double dateMumpsToJava(Object internalDate) {
-		Calendar cal1 = Calendar.getInstance();
+		Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cal1.set(1840, 12, 31);
-
-		Calendar cal2 = Calendar.getInstance();
+		
+		Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cal2.set(1970, 01, 01);
 
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
@@ -197,10 +199,10 @@ public final class mFncUtil {
 	}
 
 	public static Double dateJavaToMumps(Object internalDate) {
-		Calendar cal1 = Calendar.getInstance();
+		Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cal1.set(1840, 12, 31);
 
-		Calendar cal2 = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cal2.set(1970, 01, 01);
 
 		Long dateDif = cal2.getTimeInMillis() - cal1.getTimeInMillis();
