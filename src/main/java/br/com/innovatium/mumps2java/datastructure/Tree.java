@@ -333,7 +333,7 @@ public final class Tree extends Node {
 			}
 
 			nodeOnTree.cancelReferences();
-			kill(nodeOnTree);
+			killAllSubnodes(nodeOnTree);
 		}
 		addAllSubnodes(stackedNode);
 	}
