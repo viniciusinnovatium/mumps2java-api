@@ -87,7 +87,9 @@ public class mContext {
 			if (objClass != null) {
 				obj = objClass;
 			} else if (!Modifier.isStatic(m.getModifiers())) {
-				obj = m.getDeclaringClass().newInstance();
+				obj = m.getDeclaringClass().newInstance();	
+			
+				
 				if (obj instanceof mClass) {
 					// This was done because in the job threads we have sharing
 					// memory mContext, so, to get isolation we must create a
