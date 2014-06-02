@@ -47,7 +47,7 @@ public class DAO {
 			result = select.executeQuery();
 			map = new HashMap<String, String>();
 			while (result.next()) {			
-				map.put(result.getString(1), result.getString(2));
+				map.put(result.getString(1), result.getString(2)!=null?result.getString(2):"");
 			}
 
 		} catch (java.sql.SQLSyntaxErrorException e) {
