@@ -12,19 +12,19 @@ public abstract class mPage extends mClass {
 
 	public void OnPreHTTP(){
 	}
-	public abstract Object OnPage();
+	public Object OnPage() {
+		return null;
+	}
 	public void OnPostHTTP(){
 	}
-	public void Page(){
-		Page(true);
-	}
 	@REVIEW(description = "Revisar ordem de execução dos métodos")
-	public void Page(boolean skipheader){
-		if (!skipheader){
-			OnPreHTTP();
-		}
+	public void Page(){
+		OnPreHTTP();
 		OnPage();
 		OnPostHTTP();
+	}
+	
+	public void Page(boolean skipheader){
 	}
 	
 	public static Object EscapeURL(Object url) {

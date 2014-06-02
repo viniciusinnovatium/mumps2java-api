@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,15 +17,35 @@ public class mRequest {
 
 	public mRequest(HttpServletRequest request) {
 		originalRequest = request;
-		populateRequest(String.valueOf(request.getQueryString()));
+		populateRequest();
 	}
 	
 	public mRequest(HttpServletRequest request, String queryString) {
 		originalRequest = request;
-		populateRequest(queryString);
+		forceRequestData(queryString);
 	}
 	
-	private void populateRequest(String queryString) {
+	private void populateRequest() {
+		Set<Entry<String, String[]>> entries = originalRequest.getParameterMap().entrySet();
+		for (Entry<String, String[]> entry : entries) {
+			String key = entry.getKey();
+			int keyCount = 0;
+			for (String value : entry.getValue())
+			{
+				keyCount++;
+				setData(key, keyCount, value);
+			}
+			
+			/*
+			for (int keyCount = 1; keyCount <= entry.getValue().length; keyCount++) {
+				setData(entry.getKey(), keyCount, entry.getValue()[keyCount-1]);
+			}
+			*/
+		}
+	
+	}
+	
+	private void forceRequestData(String queryString) {
 		String[] atributos = queryString.split("&");
 		String[] parameter = null;
 		String key,value;
@@ -34,6 +56,7 @@ public class mRequest {
 			setData(key, 1, value);
 		}
 	}
+	
 	public Object getCgiEnvs(Object... key) {
 		return getCgiEnv(key[0], "");
 	}
