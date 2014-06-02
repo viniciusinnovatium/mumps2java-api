@@ -167,7 +167,7 @@ public class DAO {
 			ps = con.prepareStatement(selectOne.toString());
 			ps.setString(1, key);
 			result = ps.executeQuery();
-			objResult = result.next() ? result.getString(2) : null;
+			objResult = result.next() ? (result.getString(2)!=null?result.getString(2):"") : null;
 		} catch (java.sql.SQLSyntaxErrorException e) {
 			if (!hasTable(tableName)) {
 				objResult = null;
