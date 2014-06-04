@@ -279,10 +279,10 @@ public final class mFncUtil {
 	}
 
 	public static Double numberConverter(Object obj) {
-		if (obj == null) {
+		if (obj == null || obj instanceof ListObject) {
 			return 0d;
 		}
-
+		
 		Double dbl = null;
 		try {
 			dbl = Double.valueOf(String.valueOf(obj));
