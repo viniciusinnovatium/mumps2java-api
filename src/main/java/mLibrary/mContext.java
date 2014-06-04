@@ -31,12 +31,14 @@ public class mContext {
 	private mSystem system;
 	private Writer writer;
 	private Object io;
+	private Writer writerDefault;
 
 	private Map<String, Class> stackedClasses = new HashMap<String, Class>(30);
 
 	public mContext(Writer writer) {
 		this();
 		this.writer = writer;
+		this.writerDefault = writer;
 	}
 
 	public mContext() {
