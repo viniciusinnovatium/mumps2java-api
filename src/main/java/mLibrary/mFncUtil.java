@@ -213,15 +213,38 @@ public final class mFncUtil {
 		return days;
 
 	}
+	
+	public static String timeCodeFormatMumpsToJava(Object tFormat) {
+		String dFormatStr = "hh:mm:ss";
+		String dFormatCod = String.valueOf(tFormat);
+		if (dFormatCod.equals("-1")) {
+			// dFormatStr = "";
+		}  else if (dFormatCod.equals("1")) {
+			dFormatStr = "HH:mm:ss";
+		} else if (dFormatCod.equals("2")) {
+			dFormatStr = "HH:mm";
+		} else if (dFormatCod.equals("3")) {
+			dFormatStr = "hh:mm:ss";
+		} else if (dFormatCod.equals("4")) {
+			dFormatStr = "hh:mm";
+		} else if (dFormatCod.equals("5")) {
+			dFormatStr = "HH:mm:ss";
+		} else if (dFormatCod.equals("6")) {
+			dFormatStr = "HH:mm";
+		} else if (dFormatCod.equals("7")) {
+			throw new UnsupportedOperationException();
+		} else if (dFormatCod.equals("8")) {
+			throw new UnsupportedOperationException();
+		} 
+		return dFormatStr;
+	}
 
 	public static String dateCodeFormatMumpsToJava(Object dFormat) {
 		String dFormatStr = "MM/dd/yy";
 		String dFormatCod = String.valueOf(dFormat);
 		if (dFormatCod.equals("-1")) {
 			// dFormatStr = "";
-		} else if (dFormatCod.equals("0")) {
-			dFormatStr = "dd MMM yy";
-		} else if (dFormatCod.equals("1")) {
+		}else if (dFormatCod.equals("1")) {
 			dFormatStr = "MM/dd/yy";
 		} else if (dFormatCod.equals("2")) {
 			dFormatStr = "dd MMM yy";
@@ -249,6 +272,8 @@ public final class mFncUtil {
 			dFormatStr = "ddd";
 		} else if (dFormatCod.equals("14")) {
 			dFormatStr = "D";
+		}else{
+			throw new UnsupportedOperationException();
 		}
 		return dFormatStr;
 	}

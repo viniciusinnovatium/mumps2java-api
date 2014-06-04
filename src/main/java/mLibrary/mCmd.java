@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
@@ -15,9 +16,9 @@ public class mCmd extends mParent {
 		super(m$);
 	}
 
-	public void Close(Object $$$OprLog) {
+	public void Close(Object io) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		//throw new UnsupportedOperationException();
 	}
 
 	public String defineMethodName(String methodName) {
@@ -142,8 +143,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Open(Object object, String string, int i) {
-		// TODO Auto-generated method stub
-
+		m$.setIO(new File(String.valueOf(object)));
 	}
 
 	public void Open(Object object, String string, Object concat, int i) {
@@ -157,14 +157,20 @@ public class mCmd extends mParent {
 	public void Read(Object... parameters) {
 		Scanner s = null;
 		try {
-			String variable = "";
+			Object variable = null;
+			Object scan = null;
 			if (parameters != null && parameters.length > 0) {
-				variable = String.valueOf(parameters[0]);
+				variable = parameters[0];
 			}
-			s = new Scanner(System.in);
-			System.out.println(variable);
-			String input = s.next();
-			System.out.println("Input: " + input);
+			if(m$.getIO() instanceof File){
+				s = new Scanner((File)m$.getIO());
+				scan = s.nextLine();
+			}
+			if(variable instanceof mVar){
+				mVar var = (mVar)variable;
+				var.set(scan);
+			}
+			System.out.println(scan);
 		} catch (Exception e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
@@ -191,9 +197,8 @@ public class mCmd extends mParent {
 		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
-	public void Use(Object $$$OprLog) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public void Use(Object io) {
+		
 	}
 
 	/*

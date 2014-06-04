@@ -947,10 +947,24 @@ public final class mFnc extends mParent {
 	public static Object $zdatetime(Object hdatetime, Object dformat) {
 		return $zdate(hdatetime, dformat);
 	}
-
-	public static Object $zdatetimeh(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zdatetimeh(Object hdatetime, Object dformat, Object tformat) {
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat).concat(" ").concat(mFncUtil.timeCodeFormatMumpsToJava(tformat)));
+		Double daysMumps = null;
+		try {
+			daysMumps = mFncUtil.dateJavaToMumps(
+					sdf.parse(String.valueOf(hdatetime)).getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
+		Double fra = (sec - sec.longValue()) * 1000d;
+		return daysMumps.longValue() + "," + sec.longValue() + "."
+		+ fra.longValue();				
+	}
+	public static Object $zdatetimeh(Object hdatetime, Object dformat) {
+		return $zdatetimeh(hdatetime, dformat, 1);
 	}
 
 	public static Object $zeof() {
@@ -1087,7 +1101,7 @@ public final class mFnc extends mParent {
 
 	public static Object $zversion() {
 		// TODO REVISAR IMPLEMENTAÇÃO PROVISÓRIA
-		return "NetManager Java Version 1.0";
+		return "Cache for Windows (x86-32) 2008.2.3 (Build 933) Tue May 12 2009 15:11:50 EDT";
 	}
 
 	public static Boolean booleanConverter(Object obj) {
