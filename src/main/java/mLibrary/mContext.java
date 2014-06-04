@@ -30,6 +30,7 @@ public class mContext {
 	public mCmd Cmd;
 	private mSystem system;
 	private Writer writer;
+	private Object io;
 
 	private Map<String, Class> stackedClasses = new HashMap<String, Class>(30);
 
@@ -52,6 +53,14 @@ public class mContext {
 		return writer;
 	}
 
+	public Object getIO(){
+		return io;
+	}
+	
+	public void setIO(Object io){
+		this.io = io;
+	}
+	
 	public mData getmDataPublic() {
 		return mDataPublic;
 	}

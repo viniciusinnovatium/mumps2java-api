@@ -8,10 +8,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Random;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.todo.REVIEW;
@@ -894,16 +895,18 @@ public final class mFnc extends mParent {
 			Object monthlist, Object yearopt, Object startwin, Object endwin,
 			Object mindate, Object maxdate, Object erropt) {
 
-		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate).longValue());
-
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+		GregorianCalendar dt = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+		dt.setTimeInMillis(mFncUtil.dateMumpsToJava(hdate).longValue());
+		dt.setLenient(false);
 		SimpleDateFormat sdf = new SimpleDateFormat(
 				mFncUtil.dateCodeFormatMumpsToJava(dformat));
 
-		return sdf.format(dt);
+		return sdf.format(dt.getTime());
 	}
 
 	public static Object $zdateh(Object date) {
-		return $zdateh(date, 4);//TODO REVISAR FORMATO LOCAL
+		return $zdateh(date, 1);//TODO REVISAR FORMATO LOCAL
 	}
 
 	public static Object $zdateh(Object date, Object dformat) {
@@ -944,10 +947,24 @@ public final class mFnc extends mParent {
 	public static Object $zdatetime(Object hdatetime, Object dformat) {
 		return $zdate(hdatetime, dformat);
 	}
-
-	public static Object $zdatetimeh(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zdatetimeh(Object hdatetime, Object dformat, Object tformat) {
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				mFncUtil.dateCodeFormatMumpsToJava(dformat).concat(" ").concat(mFncUtil.timeCodeFormatMumpsToJava(tformat)));
+		Double daysMumps = null;
+		try {
+			daysMumps = mFncUtil.dateJavaToMumps(
+					sdf.parse(String.valueOf(hdatetime)).getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
+		Double fra = (sec - sec.longValue()) * 1000d;
+		return daysMumps.longValue() + "," + sec.longValue() + "."
+		+ fra.longValue();				
+	}
+	public static Object $zdatetimeh(Object hdatetime, Object dformat) {
+		return $zdatetimeh(hdatetime, dformat, 1);
 	}
 
 	public static Object $zeof() {
@@ -1084,7 +1101,7 @@ public final class mFnc extends mParent {
 
 	public static Object $zversion() {
 		// TODO REVISAR IMPLEMENTAÇÃO PROVISÓRIA
-		return "NetManager Java Version 1.0";
+		return "Cache for Windows (x86-32) 2008.2.3 (Build 933) Tue May 12 2009 15:11:50 EDT";
 	}
 
 	public static Boolean booleanConverter(Object obj) {
