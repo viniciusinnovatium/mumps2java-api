@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 import br.com.innovatium.mumps2java.todo.REVIEW;
 import br.com.innovatium.mumps2java.todo.TODO;
@@ -305,7 +306,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $io() {
-		return 1;
+		return m$.getIO();
 	}
 
 	public static Object $isobject(Object object) {
@@ -383,7 +384,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $length(Object expression, Object delimiter) {
-		return  mFncUtil.toString(expression).split(
+		return mFncUtil.toString(expression).split(
 				Pattern.quote(String.valueOf(delimiter))).length;
 	}
 
@@ -862,9 +863,22 @@ public final class mFnc extends mParent {
 		}
 	}
 
-	public static Object $zcrc(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zcrc(Object string, int mode) {
+		Integer checksum = null;
+		if (mode == 0) {
+			char[] charArray = String.valueOf(string).toCharArray();
+			for (int j = 0; j < charArray.length; j++) {
+				checksum = (checksum != null ? checksum : 0)
+						+ Integer.valueOf(String.valueOf($ascii(charArray[j])));
+			}
+			return checksum;
+		} else if (mode == 7){
+			CRC32 crc = new CRC32();
+		    crc.update(String.valueOf(string).getBytes());
+			return crc.getValue();
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public static Object $zdate(Object hdate) {
@@ -896,7 +910,8 @@ public final class mFnc extends mParent {
 			Object mindate, Object maxdate, Object erropt) {
 
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-		GregorianCalendar dt = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+		GregorianCalendar dt = new GregorianCalendar(
+				TimeZone.getTimeZone("GMT"));
 		dt.setTimeInMillis(mFncUtil.dateMumpsToJava(hdate).longValue());
 		dt.setLenient(false);
 		SimpleDateFormat sdf = new SimpleDateFormat(
@@ -906,7 +921,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zdateh(Object date) {
-		return $zdateh(date, 1);//TODO REVISAR FORMATO LOCAL
+		return $zdateh(date, 1);// TODO REVISAR FORMATO LOCAL
 	}
 
 	public static Object $zdateh(Object date, Object dformat) {
@@ -942,18 +957,21 @@ public final class mFnc extends mParent {
 
 	public static Object $zdatetime(Object hdatetime) {
 		return $zdate(hdatetime);
-	}	
+	}
 
 	public static Object $zdatetime(Object hdatetime, Object dformat) {
 		return $zdate(hdatetime, dformat);
 	}
-	public static Object $zdatetimeh(Object hdatetime, Object dformat, Object tformat) {
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				mFncUtil.dateCodeFormatMumpsToJava(dformat).concat(" ").concat(mFncUtil.timeCodeFormatMumpsToJava(tformat)));
+
+	public static Object $zdatetimeh(Object hdatetime, Object dformat,
+			Object tformat) {
+		SimpleDateFormat sdf = new SimpleDateFormat(mFncUtil
+				.dateCodeFormatMumpsToJava(dformat).concat(" ")
+				.concat(mFncUtil.timeCodeFormatMumpsToJava(tformat)));
 		Double daysMumps = null;
 		try {
-			daysMumps = mFncUtil.dateJavaToMumps(
-					sdf.parse(String.valueOf(hdatetime)).getTime());
+			daysMumps = mFncUtil.dateJavaToMumps(sdf.parse(
+					String.valueOf(hdatetime)).getTime());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -961,8 +979,9 @@ public final class mFnc extends mParent {
 		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
 		Double fra = (sec - sec.longValue()) * 1000d;
 		return daysMumps.longValue() + "," + sec.longValue() + "."
-		+ fra.longValue();				
+				+ fra.longValue();
 	}
+
 	public static Object $zdatetimeh(Object hdatetime, Object dformat) {
 		return $zdatetimeh(hdatetime, dformat, 1);
 	}
