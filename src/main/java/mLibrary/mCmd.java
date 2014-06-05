@@ -276,8 +276,8 @@ public class mCmd extends mParent {
 	}
 
 	public void Job(String methodName) {
-		//m$.Cmd.Do(methodName);
-		new Thread(new JobCmd(methodName)).start();
+		m$.Cmd.Do(methodName);
+		//new Thread(new JobCmd(methodName)).start();
 	}
 
 	private class JobCmd implements Runnable {

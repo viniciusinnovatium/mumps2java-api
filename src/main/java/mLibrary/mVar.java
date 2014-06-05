@@ -45,36 +45,11 @@ public class mVar {
 	}
 
 	public void set(Object value) {
-		if (generateKey(subs).contains("^WWWSOR")) {
-			System.out.print("");
-			if(String.valueOf(value).contains("null")){
-				System.out.print("");
-			}		
-		}
-		if (generateKey(subs).contains("YSATZ")) {
-			System.out.print("");
-			if(String.valueOf(value).contains("null")){
-				System.out.print("");
-			}		
-		}		
-		if (generateKey(subs).contains("objWWW122")) {
-			System.out.print("");
-			if(String.valueOf(value).contains("null")){
-				System.out.print("");
-			}		
-		}			
 		mData.subs(subs).set(value);
 	}
 
 	public Object get() {
-		Object value = mData.get(subs);
-		if(String.valueOf(value).contains("Sexo")){
-			System.out.print("");
-		}
-		if(generateKey(subs).contains("YSATZ")){
-			System.out.print("");
-		}		
-		return value;
+		return mData.get(subs);
 	}
 
 	public void kill() {
