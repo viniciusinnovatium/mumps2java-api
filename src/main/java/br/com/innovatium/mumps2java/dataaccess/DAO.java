@@ -14,7 +14,7 @@ public class DAO {
 	private final Connection con;
 
 	public DAO() {
-		this(ConnectionType.DATASOURCE);
+		this(ConnectionType.DATASOURCE_METADATA);
 	}
 
 	public DAO(ConnectionType connectionType) {
@@ -46,8 +46,9 @@ public class DAO {
 			select.setString(1, key + "%");
 			result = select.executeQuery();
 			map = new HashMap<String, String>();
-			while (result.next()) {			
-				map.put(result.getString(1), result.getString(2)!=null?result.getString(2):"");
+			while (result.next()) {
+				map.put(result.getString(1),
+						result.getString(2) != null ? result.getString(2) : "");
 			}
 
 		} catch (java.sql.SQLSyntaxErrorException e) {
@@ -161,13 +162,16 @@ public class DAO {
 		ResultSet result = null;
 
 		try {
+
 			final StringBuilder selectOne = new StringBuilder(
 					"select key_, value_ from ").append(tableName).append(
 					" where key_ = ?");
+
 			ps = con.prepareStatement(selectOne.toString());
 			ps.setString(1, key);
 			result = ps.executeQuery();
-			objResult = result.next() ? (result.getString(2)!=null?result.getString(2):"") : null;
+			objResult = result.next() ? (result.getString(2) != null ? result
+					.getString(2) : "") : null;
 		} catch (java.sql.SQLSyntaxErrorException e) {
 			if (!hasTable(tableName)) {
 				objResult = null;
