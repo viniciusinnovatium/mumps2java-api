@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
@@ -976,10 +977,15 @@ public final class mFnc extends mParent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Double sec = (daysMumps - daysMumps.longValue()) * 24d * 60d * 60d;
-		Double fra = (sec - sec.longValue()) * 1000d;
-		return daysMumps.longValue() + "," + sec.longValue() + "."
-				+ fra.longValue();
+		BigDecimal sec = BigDecimal.valueOf((daysMumps - daysMumps.longValue()) * 24d * 60d * 60d).setScale(3, BigDecimal.ROUND_HALF_UP);
+		Integer fra = Double.valueOf((sec.doubleValue() - sec.longValue()) * 1000d).intValue();
+		String hStr = String.valueOf(daysMumps.longValue());
+		hStr = hStr.concat(","+sec.longValue());
+
+		if(fra>0){
+			hStr = hStr.concat("."+fra.longValue());
+		}
+		return hStr;
 	}
 
 	public static Object $zdatetimeh(Object hdatetime, Object dformat) {
