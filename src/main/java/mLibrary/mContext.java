@@ -137,7 +137,7 @@ public class mContext {
 			if (objClass != null) {
 				obj = objClass;
 			} else if (!Modifier.isStatic(m.getModifiers())) {
-				obj = m.getDeclaringClass().newInstance();
+				obj = Class.forName(methodName.substring(0, methodName.lastIndexOf("."))).newInstance();
 
 				if (obj instanceof mClass) {
 					// This was done because in the job threads we have sharing

@@ -193,4 +193,8 @@ public class mRequest {
 		}
 		return (result != null) ? result : pDefault;
 	}
+	
+	public HttpServletRequest getOriginalRequest(){
+		return originalRequest;
+	}
 }
