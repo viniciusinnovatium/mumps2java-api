@@ -54,33 +54,53 @@ public class mNMObject {
 						resultRecord = resultRecord
 								+ (resultRecord.isEmpty() ? "" : "~")
 								+ convertDateToMumps(result.getDate(i + 1));
+						continue;
 					} catch (SQLException e) {
 						throw new IllegalArgumentException(
 								"Fail to get result set", e);
 					}
 				}
 				// Timestamp
-				else if (fieldCDefMap[2].equals("14")) {
+				if (fieldCDefMap[2].equals("14")) {
 					try {
 						resultRecord = resultRecord
 								+ (resultRecord.isEmpty() ? "" : "~")
 								+ convertDateToMumps(result.getTimestamp(i + 1));
+						continue;
 					} catch (SQLException e) {
 						throw new IllegalArgumentException(
 								"Fail to get result set", e);
 					}
 				}
-				// Others
-				else {
-					try {
+
+				try {
+					if (result.getObject(i + 1) != null
+							&& (result.getObject(i + 1).getClass().getName()
+									.contains("CLOB") || result
+									.getObject(i + 1).getClass().getName()
+									.contains("Clob"))) {
+
 						resultRecord = resultRecord
 								+ (resultRecord.isEmpty() ? "" : "~")
-								+ (result.getObject(i + 1) != null ? result
-										.getObject(i + 1) : "");
-					} catch (SQLException e) {
-						throw new IllegalArgumentException(
-								"Fail to get result set", e);
+								+ convertDateToMumps(result.getTimestamp(i + 1));
+						continue;
+					} // Others
+					else {
+						try {
+							resultRecord = resultRecord
+									+ (resultRecord.isEmpty() ? "" : "~")
+									+ (result.getObject(i + 1) != null ? result
+											.getObject(i + 1) : "");
+							continue;
+						} catch (SQLException e) {
+							throw new IllegalArgumentException(
+									"Fail to get result set", e);
+						}
 					}
+
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			// Others
