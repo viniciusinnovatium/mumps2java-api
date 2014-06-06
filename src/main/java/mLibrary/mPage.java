@@ -49,7 +49,7 @@ public abstract class mPage extends mClass {
 
 	@TODO
 	public String HyperEventCall(String method, String args, Integer type) {
-		return "'"+m$.Fnc.$zconvert("\"\"\"cspHttpServerMethod(\"\"\"\""+method+"\"\"\"\","+args+")\"\"\"","","JS").toString()+"'";
+		return "cspHttpServerMethod(\""+method+"\","+args+")";
 	}
 
 	public static String UnescapeURL(Object url) {

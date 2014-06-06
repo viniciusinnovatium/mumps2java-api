@@ -1,5 +1,11 @@
 package mLibrary;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -10,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletResponse;
 
 import mSystem.mSystem;
 import br.com.innovatium.mumps2java.todo.REMOVE;
@@ -30,15 +39,17 @@ public class mContext {
 	public mCmd Cmd;
 	private mSystem system;
 	private Writer writer;
-	private Object io;
-	private Writer writerDefault;
+	private BufferedReader reader;
+	private Map<String, Object> ioMap = new TreeMap<String, Object>();
+	private String ioDefault = "response";
+	private String ioActual;
 
 	private Map<String, Class> stackedClasses = new HashMap<String, Class>(30);
 
-	public mContext(Writer writer) {
+	public mContext(Object io) {
 		this();
-		this.writer = writer;
-		this.writerDefault = writer;
+		ioMap.put(this.ioDefault, io);
+		useIO(this.ioDefault);
 	}
 
 	public mContext() {
@@ -54,15 +65,43 @@ public class mContext {
 	public Writer getWriter() {
 		return writer;
 	}
+	
+	public BufferedReader getReader() {
+		return reader;
+	}	
 
-	public Object getIO(){
-		return io;
+	public Object getIO() {
+		return this.ioActual;
+	}
+
+	public void putIO(String deviceName, Object io) {
+		ioMap.put(deviceName, io);
 	}
 	
-	public void setIO(Object io){
-		this.io = io;
+	public void removeIO(String deviceName){
+		ioMap.remove(deviceName);
+		useIO(this.ioDefault);
 	}
-	
+
+	public void useIO(String deviceName) {
+		Object io = ioMap.get(deviceName);
+		try {
+			if (io instanceof HttpServletResponse) {
+				HttpServletResponse res = (HttpServletResponse) io;
+				this.writer = res.getWriter();
+				this.reader = null;
+			} else if (io instanceof File) {
+				File res = (File) io;
+				this.writer = new BufferedWriter(new FileWriter(res, true));
+				this.reader = new BufferedReader(new FileReader(res));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.ioActual = deviceName;
+	}
+
 	public mData getmDataPublic() {
 		return mDataPublic;
 	}
@@ -98,9 +137,8 @@ public class mContext {
 			if (objClass != null) {
 				obj = objClass;
 			} else if (!Modifier.isStatic(m.getModifiers())) {
-				obj = m.getDeclaringClass().newInstance();	
-			
-				
+				obj = Class.forName(methodName.substring(0, methodName.lastIndexOf("."))).newInstance();
+
 				if (obj instanceof mClass) {
 					// This was done because in the job threads we have sharing
 					// memory mContext, so, to get isolation we must create a

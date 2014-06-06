@@ -17,8 +17,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Close(Object io) {
-		// TODO Auto-generated method stub
-		//throw new UnsupportedOperationException();
+		m$.removeIO(String.valueOf(io));
 	}
 
 	public String defineMethodName(String methodName) {
@@ -143,7 +142,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Open(Object object, String string, int i) {
-		m$.setIO(new File(String.valueOf(object)));
+		m$.putIO(String.valueOf(object),new File(String.valueOf(object)));
 	}
 
 	public void Open(Object object, String string, Object concat, int i) {
@@ -155,28 +154,24 @@ public class mCmd extends mParent {
 	 * Exibe mensagem no console solicitando entrada de dados.
 	 */
 	public void Read(Object... parameters) {
-		Scanner s = null;
 		try {
 			Object variable = null;
 			Object scan = null;
 			if (parameters != null && parameters.length > 0) {
 				variable = parameters[0];
 			}
-			if(m$.getIO() instanceof File){
-				s = new Scanner((File)m$.getIO());
-				scan = s.nextLine();
-			}
+			;
+			scan = m$.getReader().readLine();
 			if(variable instanceof mVar){
 				mVar var = (mVar)variable;
 				var.set(scan);
+			}else{
+				
 			}
 			System.out.println(scan);
 		} catch (Exception e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
-			if (s != null) {
-				s.close();
-			}
 		}
 	}
 
@@ -198,7 +193,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Use(Object io) {
-		
+		m$.useIO(String.valueOf(io));
 	}
 
 	/*
@@ -210,6 +205,10 @@ public class mCmd extends mParent {
 			Writer writer = m$.getWriter();
 			for (Object str : string) {
 				try {
+					if(m$.getIO() instanceof File){
+						throw new IllegalArgumentException(
+								"Fail to write the string in FILE " + str.toString());
+					}
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
 					if (String.valueOf(str).contains("<HR")) {
