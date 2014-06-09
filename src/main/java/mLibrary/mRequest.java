@@ -86,9 +86,8 @@ public class mRequest {
 		data.subs("data", subs, idx).set(value);
 	}
 
-	public void killData(Object object, int i) {
-		throw new UnsupportedOperationException();
-
+	public void killData(Object ...subs) {
+		data.kill(subs);
 	}
 
 	public void setCgiEnvs(String string, Object object) {

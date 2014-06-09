@@ -1,12 +1,15 @@
 package $CSP;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+import mLibrary.mContext;
+import mLibrary.mFncUtil;
+import mLibrary.mPage;
 import br.com.innovatium.mumps2java.todo.REVIEW;
 import br.com.innovatium.mumps2java.todo.TODO;
-import mLibrary.*;
 
 public class Broker extends mPage {
 
@@ -26,8 +29,9 @@ public class Broker extends mPage {
 	@Override
 	public boolean OnPreHTTP() {
 		// Make sure pageclass query parameter cannot be set in URL
-		request.setAttribute("pageclass",null);
+		//request.setAttribute("pageclass",null);
 		String event = "";
+		boolean result = true;
 		if ((event = request.getParameter("WJSEVENT"))!=null) {
 			response.setContentType("text/html");
 		} else if ((event = request.getParameter("WEVENT"))!=null) {
@@ -37,12 +41,18 @@ public class Broker extends mPage {
 			throw new IllegalArgumentException("Bad broker request.");
 		} else {
 			getEvent(event);
-			String pgcls=request.getParameter("pageclass");
+			String pgcls=request.getAttribute("pageclass").toString();
 			if (!pgcls.isEmpty()) {
-				return mFncUtil.booleanConverter(m$.fnc$(pgcls.concat(".").concat("OnPreHyperEvent"),_class,_method));
+				try {
+					result = mFncUtil.booleanConverter(m$.fnc$(pgcls.concat(".").concat("OnPreHyperEvent"),_class,_method));
+				}
+				catch (IllegalArgumentException e){
+					if (e.toString().contains(".OnPreHyperEvent does not exist"))
+					result = true;
+				}
 			}
 		}
-		return true;
+		return result;
 	}
 	
 	@REVIEW(description = "Descriptografia do parametro event")
@@ -60,8 +70,8 @@ public class Broker extends mPage {
 		String pageclass = "";
 		int find = event.indexOf(":");
 		if (find!=-1){
-			pageclass=event.substring(find);
-			event=event.substring(1, find-1);
+			pageclass=event.substring(find+1);
+			event=event.substring(0, find);
 		}
 		
 		_class = event.substring(0,event.lastIndexOf("."));
@@ -109,6 +119,7 @@ public class Broker extends mPage {
 	@TODO(description = "Tratamento WLIST")
 	private Object event() {
 		//Write %session.CSPSessionCookie,!
+		m$.Cmd.Write("\r\n");
 		//m$.Cmd.Write(m$.getSession().getOriginalSession().,"/n");
 		m$.Cmd.Write("#R","\r\n");
 		
@@ -133,7 +144,8 @@ public class Broker extends mPage {
 		//#; Output anything written in the OnPreHyperEvent code
 		//For i=1:1:+$get(%output) Write %output(i)
 		// invoke method
-		rs = m$.fnc$(_class.concat(".").concat(_method),parameters);
+		Object [] pArgs = mFncUtil.concat(new Object []{_class.concat(".").concat(_method)}, parameters);
+		rs = m$.fnc$(pArgs);
 		m$.Cmd.Write("\r\n","#OK","\r\n"); 
 		m$.Cmd.Write( rs,"\r\n");
 		return null;
