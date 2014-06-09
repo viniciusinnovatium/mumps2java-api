@@ -10,7 +10,8 @@ import br.com.innovatium.mumps2java.todo.TODO;
  
 public abstract class mPage extends mClass {
 
-	public void OnPreHTTP(){
+	public boolean OnPreHTTP(){
+		return true;
 	}
 	public Object OnPage() {
 		return null;
@@ -19,9 +20,10 @@ public abstract class mPage extends mClass {
 	}
 	@REVIEW(description = "Revisar ordem de execução dos métodos")
 	public void Page(){
-		OnPreHTTP();
-		OnPage();
-		OnPostHTTP();
+		if (OnPreHTTP()){
+			OnPage();
+			OnPostHTTP();
+		}
 	}
 	
 	public void Page(boolean skipheader){

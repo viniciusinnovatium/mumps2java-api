@@ -608,4 +608,7 @@ public class mContext {
 		return parameter;
 	}
 
+	public HttpServletResponse getResponse(){
+		return (HttpServletResponse) this.ioMap.get("response");
+	}
 }
