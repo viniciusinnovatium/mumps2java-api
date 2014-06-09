@@ -33,7 +33,7 @@ final class SQLResolver {
 		sql.put(SQLType.STRING, "varchar(4000)");
 		sql.put(SQLType.DROP_TABLE, "drop table");
 		sql.put(SQLType.CREATE_TABLE, "create table");
-		sql.put(SQLType.SELECT_TABLE_NAME, "SHOW [FULL] TABLES [FROM db_name] [LIKE 'pattern']");
+		sql.put(SQLType.SELECT_TABLE_NAME, "SHOW TABLES from metauser");
 	}
 
 	private void initOracleSQL() {

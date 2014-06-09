@@ -96,8 +96,7 @@ public class mContext {
 				this.reader = new BufferedReader(new FileReader(res));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IllegalArgumentException("The writer strategy must not be empty.");
 		}
 		this.ioActual = deviceName;
 	}
