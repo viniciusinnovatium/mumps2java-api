@@ -529,4 +529,16 @@ public final class mFncUtil {
 		return BigDecimal.valueOf(value)
 				.setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
 	}
+	
+	public static String normalizeClassname(String className){
+		String result;
+		if (className.contains(".")){
+			result = className;
+		} else if (!className.startsWith("$")){
+			result = "User.".concat(className);
+		} else {
+			result = className.replaceFirst("\\$", "$Library.");
+		}
+		return result;
+	}
 }
