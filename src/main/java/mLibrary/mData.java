@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import br.com.innovatium.mumps2java.dataaccess.DAO;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 import br.com.innovatium.mumps2java.datastructure.OrderDataCache;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
@@ -158,7 +160,11 @@ public class mData {
 
 	private void initDAO() {
 		if (dao == null) {
-			this.dao = new DAO();
+			try {
+				this.dao = ServiceLocator.locate(DAO.class);
+			} catch (ServiceLocatorException e) {
+				throw new IllegalArgumentException("Fail to create data access object", e);
+			} 
 		}
 	}
 
