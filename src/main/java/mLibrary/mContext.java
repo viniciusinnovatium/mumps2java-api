@@ -65,10 +65,10 @@ public class mContext {
 	public Writer getWriter() {
 		return writer;
 	}
-	
+
 	public BufferedReader getReader() {
 		return reader;
-	}	
+	}
 
 	public Object getIO() {
 		return this.ioActual;
@@ -77,8 +77,8 @@ public class mContext {
 	public void putIO(String deviceName, Object io) {
 		ioMap.put(deviceName, io);
 	}
-	
-	public void removeIO(String deviceName){
+
+	public void removeIO(String deviceName) {
 		ioMap.remove(deviceName);
 		useIO(this.ioDefault);
 	}
@@ -136,7 +136,9 @@ public class mContext {
 			if (objClass != null) {
 				obj = objClass;
 			} else if (!Modifier.isStatic(m.getModifiers())) {
-				obj = Class.forName(methodName.substring(0, methodName.lastIndexOf("."))).newInstance();
+				obj = Class.forName(
+						methodName.substring(0, methodName.lastIndexOf(".")))
+						.newInstance();
 
 				if (obj instanceof mClass) {
 					// This was done because in the job threads we have sharing
@@ -234,6 +236,7 @@ public class mContext {
 		methodName = defineMethodName(objClassArg, methodName);
 		return dispatch(objClassArg, methodName, parameters);
 	}
+
 
 	/*
 	 * Estudar uma estrategia para executar o metodo quando nao temos declarado
@@ -607,7 +610,7 @@ public class mContext {
 		return parameter;
 	}
 
-	public HttpServletResponse getResponse(){
+	public HttpServletResponse getResponse() {
 		return (HttpServletResponse) this.ioMap.get("response");
 	}
 }
