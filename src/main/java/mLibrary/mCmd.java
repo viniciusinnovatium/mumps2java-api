@@ -251,7 +251,10 @@ public class mCmd extends mParent {
 			Do(String.valueOf(command).replaceAll(Pattern.quote("d "), ""));
 		} else if (cmdStr.startsWith("U ")
 				|| cmdStr.startsWith("USER ")) {
-		} else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
+		} else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){
+			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
+		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
+		
 		} else {
 			throw new UnsupportedOperationException();
 		}
