@@ -85,6 +85,9 @@ public final class Tree extends Node {
 	}
 
 	public void set(Object[] subs, Object value) {
+		if (value == null) {
+			return;
+		}
 		setting(subs, value);
 	}
 

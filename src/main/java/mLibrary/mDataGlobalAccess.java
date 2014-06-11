@@ -11,15 +11,22 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import br.com.innovatium.mumps2java.dataaccess.DAO;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 import br.com.innovatium.mumps2java.datastructure.QueryCache;
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
 public class mDataGlobalAccess extends mDataAccess {
-	private DAO dao = new DAO();
-	private QueryCache cache = new QueryCache();
+	private DAO dao;
+	private QueryCache queryCache = new QueryCache();
 
 	public mDataGlobalAccess(mVariables mVariables) {
 		super(mVariables, DataStructureUtil.GLOBAL);
+		try {
+			dao = ServiceLocator.locate(DAO.class);
+		} catch (ServiceLocatorException e) {
+			throw new IllegalStateException("DAO could not be initialized", e);
+		}
 	}
 
 	public Object get(Object... subs) {
@@ -49,7 +56,7 @@ public class mDataGlobalAccess extends mDataAccess {
 		// should be persisted as string
 		dao.insert(tableName, generateKeyWithoutVarName(currentSubs),
 				value != null ? value.toString() : null);
-		tree.set(currentSubs, value);
+		super.set(value);
 	}
 
 	public void stacking(Object... variables) {
@@ -79,13 +86,13 @@ public class mDataGlobalAccess extends mDataAccess {
 
 	public int data(Object... subs) {
 		currentSubs = subs;
-		populateTree();
+		populateTree(false);
 		return tree.data(subs);
 	}
 
 	public Object order(Object[] subs, int direction) {
 		this.currentSubs = subs;
-		populateTree();
+		populateTree(true);
 		return tree.order(subs, direction);
 	}
 
@@ -93,19 +100,23 @@ public class mDataGlobalAccess extends mDataAccess {
 		return order(subs, 1);
 	}
 
-	private void populateTree() {
-		if (!cache.isCached(currentSubs)) {
-			cache.add(currentSubs);
-			findDataOnDisk();
+	private void populateTree(boolean isOrder) {
+		if (!queryCache.isCached(currentSubs)) {
+			queryCache.add(currentSubs);
+			findDataOnDisk(isOrder);
 		}
 	}
 
-	private void findDataOnDisk() {
+	private void findDataOnDisk(boolean isOrder) {
 
-		final String tableName = generateTableName(currentSubs);
+		String tableName = generateTableName(currentSubs);
+		Map<String, String> map = null;
+		if (isOrder) {
+			map = dao.like(tableName, generateKeyToLikeQuery(currentSubs));
+		} else {
+			map = dao.like(tableName, generateKeyWithoutVarName(currentSubs));
+		}
 
-		Map<String, String> map = dao.like(tableName,
-				generateKeyToLikeQuery(currentSubs));
 		if (map != null) {
 			Set<Entry<String, String>> result = map.entrySet();
 			for (Entry<String, String> entry : result) {

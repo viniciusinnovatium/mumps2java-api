@@ -21,7 +21,9 @@ public abstract class mDataAccess {
 
 	public abstract Object get(Object... subs);
 
-	public abstract void set(Object value);
+	public void set(Object value) {
+		tree.set(currentSubs, value);
+	}
 
 	public abstract void stacking(Object... variables);
 

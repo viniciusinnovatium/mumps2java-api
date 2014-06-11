@@ -53,17 +53,22 @@ public final class ConnectionFactory {
 					"jdbc:oracle:thin:@mokona:1521:ora11db1", "metauser",
 					"metauser");
 
-			/*
-			 * return DriverManager.getConnection(
-			 * "jdbc:postgresql://localhost:5432/metadata", "postgres",
-			 * "@postgresql15");
-			 */
+		} else if (ConnectionType.DATASOURCE_METADATA.equals(type)) {
 
+			try {
+				return ((DataSource) ConnectionFactory.context
+						.lookup("java:jboss/datasources/metadata"))
+						.getConnection();
+			} catch (NamingException e) {
+				throw new IllegalStateException(
+						"Fail on look up datasource to open a new conection.",
+						e);
+			}
 		} else {
 
 			try {
 				return ((DataSource) ConnectionFactory.context
-						.lookup("java:jboss/datasources/oracle"))
+						.lookup("java:jboss/datasources/relational"))
 						.getConnection();
 			} catch (NamingException e) {
 				throw new IllegalStateException(

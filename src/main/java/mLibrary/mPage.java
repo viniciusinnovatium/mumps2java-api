@@ -10,21 +10,23 @@ import br.com.innovatium.mumps2java.todo.TODO;
  
 public abstract class mPage extends mClass {
 
-	public void OnPreHTTP(){
+	public boolean OnPreHTTP(){
+		return true;
 	}
-	public abstract Object OnPage();
+	public Object OnPage() {
+		return null;
+	}
 	public void OnPostHTTP(){
 	}
-	public void Page(){
-		Page(true);
-	}
 	@REVIEW(description = "Revisar ordem de execução dos métodos")
-	public void Page(boolean skipheader){
-		if (!skipheader){
-			OnPreHTTP();
+	public void Page(){
+		if (OnPreHTTP()){
+			OnPage();
+			OnPostHTTP();
 		}
-		OnPage();
-		OnPostHTTP();
+	}
+	
+	public void Page(boolean skipheader){
 	}
 	
 	public static Object EscapeURL(Object url) {
@@ -48,9 +50,8 @@ public abstract class mPage extends mClass {
 	}
 
 	@TODO
-	public static String HyperEventCall(String method, String args, Integer type) {
-		return "\"\"\"cspHttpServerMethod(\"\"\"\"" + method + "\"\"\"\","
-				+ args + ")\"\"\"";
+	public String HyperEventCall(String method, String args, Integer type) {
+		return "cspHttpServerMethod(\""+method+"\","+args+")";
 	}
 
 	public static String UnescapeURL(Object url) {

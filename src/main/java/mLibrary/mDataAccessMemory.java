@@ -16,10 +16,6 @@ class mDataAccessMemory extends mDataAccess {
 		return tree.get(subs);
 	}
 
-	public void set(Object value) {
-		tree.set(currentSubs, value);
-	}
-
 	public void stacking(Object... variables) {
 		tree.stacking(variables);
 	}

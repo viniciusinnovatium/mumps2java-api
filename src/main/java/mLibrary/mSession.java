@@ -3,24 +3,29 @@ package mLibrary;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
+
+import javax.servlet.http.HttpSession;
 
 public class mSession {
+	private HttpSession originalSession;
 	
-	private String sessionId;
 	private mDataAccessMemory mDataSession = new mDataAccessLocal(new mVariables());
 	
-	public mSession() {
-		setSessionId(UUID.randomUUID().toString());
+	public mSession(HttpSession httpSession) {
+		setSessionId(httpSession.getId());
+		originalSession = httpSession;
 	}
 
 	public Object getSessionId(){
-		return sessionId;
+		return originalSession.getId();
 	}
 	
+	public boolean isNewSession() {
+		return originalSession.isNew();
+	}
+
 	public void setSessionId(String sessionId){
 		setData("sessionId", 1, sessionId);
-		this.sessionId = sessionId;
 	}
 	
 	public void populateParameter(Map<String, String[]> map){
@@ -47,6 +52,10 @@ public class mSession {
 
 	public Object getAppTimeout() {
 		//TODO REVISAR TIMEOUT PROVISÓRIO;
-		return 1;
-	}		
+		return 900;
+	}
+	
+	public HttpSession getOriginalSession(){
+		return originalSession;
+	}
 }

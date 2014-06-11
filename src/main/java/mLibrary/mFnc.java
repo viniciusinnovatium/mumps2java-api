@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
@@ -8,11 +9,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Random;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 import br.com.innovatium.mumps2java.todo.REVIEW;
 import br.com.innovatium.mumps2java.todo.TODO;
@@ -304,7 +307,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $io() {
-		return 1;
+		return m$.getIO();
 	}
 
 	public static Object $isobject(Object object) {
@@ -378,11 +381,11 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $length(Object expression) {
-		return String.valueOf(expression).length();
+		return mFncUtil.toString(expression).length();
 	}
 
 	public static Object $length(Object expression, Object delimiter) {
-		return String.valueOf(expression).split(
+		return mFncUtil.toString(expression).split(
 				Pattern.quote(String.valueOf(delimiter))).length;
 	}
 
@@ -836,9 +839,22 @@ public final class mFnc extends mParent {
 		}
 	}
 
-	public static Object $zcrc(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zcrc(Object string, int mode) {
+		Integer checksum = null;
+		if (mode == 0) {
+			char[] charArray = String.valueOf(string).toCharArray();
+			for (int j = 0; j < charArray.length; j++) {
+				checksum = (checksum != null ? checksum : 0)
+						+ Integer.valueOf(String.valueOf($ascii(charArray[j])));
+			}
+			return checksum;
+		} else if (mode == 7){
+			CRC32 crc = new CRC32();
+		    crc.update(String.valueOf(string).getBytes());
+			return crc.getValue();
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public static Object $zdate(Object hdate) {
@@ -869,16 +885,19 @@ public final class mFnc extends mParent {
 			Object monthlist, Object yearopt, Object startwin, Object endwin,
 			Object mindate, Object maxdate, Object erropt) {
 
-		Date dt = new Date(mFncUtil.dateMumpsToJava(hdate).longValue());
-
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+		GregorianCalendar dt = new GregorianCalendar(
+				TimeZone.getTimeZone("GMT"));
+		dt.setTimeInMillis(mFncUtil.dateMumpsToJava(hdate).longValue());
+		dt.setLenient(false);
 		SimpleDateFormat sdf = new SimpleDateFormat(
 				mFncUtil.dateCodeFormatMumpsToJava(dformat));
 
-		return sdf.format(dt);
+		return sdf.format(dt.getTime());
 	}
 
 	public static Object $zdateh(Object date) {
-		throw new UnsupportedOperationException();
+		return $zdateh(date, 1);// TODO REVISAR FORMATO LOCAL
 	}
 
 	public static Object $zdateh(Object date, Object dformat) {
@@ -888,7 +907,7 @@ public final class mFnc extends mParent {
 		String returnDate = null;
 		try {
 			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
-					sdf.parse(String.valueOf(date))).longValue());
+					sdf.parse(String.valueOf(date)).getTime()).longValue());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -904,7 +923,7 @@ public final class mFnc extends mParent {
 		String returnDate = erropt != null ? String.valueOf(erropt) : null;
 		try {
 			returnDate = String.valueOf(mFncUtil.dateJavaToMumps(
-					sdf.parse(String.valueOf(date))).longValue());
+					sdf.parse(String.valueOf(date)).getTime()).longValue());
 		} catch (ParseException e) {
 
 			e.printStackTrace();
@@ -912,14 +931,40 @@ public final class mFnc extends mParent {
 		return returnDate;
 	}
 
-	public static Object $zdatetime(Object... object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zdatetime(Object hdatetime) {
+		return $zdate(hdatetime);
 	}
 
-	public static Object $zdatetimeh(Object object, int i) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $zdatetime(Object hdatetime, Object dformat) {
+		return $zdate(hdatetime, dformat);
+	}
+
+	public static Object $zdatetimeh(Object hdatetime, Object dformat,
+			Object tformat) {
+		SimpleDateFormat sdf = new SimpleDateFormat(mFncUtil
+				.dateCodeFormatMumpsToJava(dformat).concat(" ")
+				.concat(mFncUtil.timeCodeFormatMumpsToJava(tformat)));
+		Double daysMumps = null;
+		try {
+			daysMumps = mFncUtil.dateJavaToMumps(sdf.parse(
+					String.valueOf(hdatetime)).getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BigDecimal sec = BigDecimal.valueOf((daysMumps - daysMumps.longValue()) * 24d * 60d * 60d).setScale(3, BigDecimal.ROUND_HALF_UP);
+		Integer fra = Double.valueOf((sec.doubleValue() - sec.longValue()) * 1000d).intValue();
+		String hStr = String.valueOf(daysMumps.longValue());
+		hStr = hStr.concat(","+sec.longValue());
+
+		if(fra>0){
+			hStr = hStr.concat("."+fra.longValue());
+		}
+		return hStr;
+	}
+
+	public static Object $zdatetimeh(Object hdatetime, Object dformat) {
+		return $zdatetimeh(hdatetime, dformat, 1);
 	}
 
 	public static Object $zeof() {
@@ -1056,7 +1101,7 @@ public final class mFnc extends mParent {
 
 	public static Object $zversion() {
 		// TODO REVISAR IMPLEMENTAÇÃO PROVISÓRIA
-		return "NetManager Java Version 1.0";
+		return "Cache for Windows (x86-32) 2008.2.3 (Build 933) Tue May 12 2009 15:11:50 EDT";
 	}
 
 	public static Boolean booleanConverter(Object obj) {

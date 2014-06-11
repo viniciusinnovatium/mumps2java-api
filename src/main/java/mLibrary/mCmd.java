@@ -1,5 +1,6 @@
 package mLibrary;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
@@ -15,9 +16,8 @@ public class mCmd extends mParent {
 		super(m$);
 	}
 
-	public void Close(Object $$$OprLog) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public void Close(Object io) {
+		m$.removeIO(String.valueOf(io));
 	}
 
 	public String defineMethodName(String methodName) {
@@ -142,8 +142,7 @@ public class mCmd extends mParent {
 	}
 
 	public void Open(Object object, String string, int i) {
-		// TODO Auto-generated method stub
-
+		m$.putIO(String.valueOf(object),new File(String.valueOf(object)));
 	}
 
 	public void Open(Object object, String string, Object concat, int i) {
@@ -155,22 +154,24 @@ public class mCmd extends mParent {
 	 * Exibe mensagem no console solicitando entrada de dados.
 	 */
 	public void Read(Object... parameters) {
-		Scanner s = null;
 		try {
-			String variable = "";
+			Object variable = null;
+			Object scan = null;
 			if (parameters != null && parameters.length > 0) {
-				variable = String.valueOf(parameters[0]);
+				variable = parameters[0];
 			}
-			s = new Scanner(System.in);
-			System.out.println(variable);
-			String input = s.next();
-			System.out.println("Input: " + input);
+			;
+			scan = m$.getReader().readLine();
+			if(variable instanceof mVar){
+				mVar var = (mVar)variable;
+				var.set(scan);
+			}else{
+				
+			}
+			System.out.println(scan);
 		} catch (Exception e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
-			if (s != null) {
-				s.close();
-			}
 		}
 	}
 
@@ -191,9 +192,8 @@ public class mCmd extends mParent {
 		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 
-	public void Use(Object $$$OprLog) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public void Use(Object io) {
+		m$.useIO(String.valueOf(io));
 	}
 
 	/*
@@ -205,6 +205,10 @@ public class mCmd extends mParent {
 			Writer writer = m$.getWriter();
 			for (Object str : string) {
 				try {
+					if(m$.getIO() instanceof File){
+						throw new IllegalArgumentException(
+								"Fail to write the string in FILE " + str.toString());
+					}
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
 					if (String.valueOf(str).contains("<HR")) {
@@ -234,13 +238,20 @@ public class mCmd extends mParent {
 		Write(string);		
 	}
 
-	public void Xecute(Object object) {
-		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(object.toString());
-		if (String.valueOf(object).startsWith("do ")) {
-			Do(String.valueOf(object).replaceAll("do ", ""));
-		} else if (String.valueOf(object).toUpperCase().startsWith("U ")
-				|| String.valueOf(object).toUpperCase().startsWith("USER ")) {
-		} else if (String.valueOf(object).toUpperCase().startsWith("SET ")) {
+	public void Xecute(Object command) {
+		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(command.toString());
+		String cmdStr = String.valueOf(command);
+		if (cmdStr.startsWith("DO ")){
+			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
+		}else if(cmdStr.startsWith("D ")) {
+			Do(String.valueOf(command).replaceAll(Pattern.quote("D "), ""));
+		}else if (cmdStr.startsWith("do ")){
+			Do(String.valueOf(command).replaceAll(Pattern.quote("do "), ""));
+		}else if(cmdStr.startsWith("d ")) {
+			Do(String.valueOf(command).replaceAll(Pattern.quote("d "), ""));
+		} else if (cmdStr.startsWith("U ")
+				|| cmdStr.startsWith("USER ")) {
+		} else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -264,8 +275,8 @@ public class mCmd extends mParent {
 	}
 
 	public void Job(String methodName) {
-		//m$.Cmd.Do(methodName);
-		new Thread(new JobCmd(methodName)).start();
+		m$.Cmd.Do(methodName);
+		//new Thread(new JobCmd(methodName)).start();
 	}
 
 	private class JobCmd implements Runnable {
