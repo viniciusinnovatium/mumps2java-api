@@ -252,7 +252,8 @@ public class mCmd extends mParent {
 		} else if (cmdStr.startsWith("U ")
 				|| cmdStr.startsWith("USER ")) {
 		} else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){
-			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
+			//m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
+			m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
 		
 		} else {

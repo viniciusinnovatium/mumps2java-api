@@ -282,8 +282,10 @@ public final class mFncUtil {
 		if (obj == null || obj instanceof ListObject) {
 			return 0d;
 		}
-		
 		Double dbl = null;
+		if (obj instanceof Boolean) {
+			return (Boolean.parseBoolean(String.valueOf(obj))?1d:0d);
+		}		
 		try {
 			dbl = Double.valueOf(String.valueOf(obj));
 		} catch (NumberFormatException nfe) {

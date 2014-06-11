@@ -30,7 +30,9 @@ public class mData {
 			initDAO();
 			final String tableName = generateTableName(subs);
 			value = dao.find(tableName, generateKeyWithoutVarName(subs));
-			tree.set(subs, value);
+			if (value != null) {
+				tree.set(subs, value);
+			}
 		}
 		return value;
 	}
