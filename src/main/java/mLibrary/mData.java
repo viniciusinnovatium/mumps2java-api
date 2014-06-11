@@ -40,7 +40,10 @@ public class mData {
 			}
 			final String tableName = generateTableName(subs);
 			value = dao.find(tableName, generateKeyWithoutVarName(subs));
-			metadataCache.set(subs, value);
+			if (value != null) {
+				metadataCache.set(subs, value);
+			}
+
 			return value;
 		}
 		return tree.get(subs);
@@ -59,17 +62,23 @@ public class mData {
 
 	public void set(Object value) {
 		if (isDiskAccess(currentSubs)) {
-			if (currentSubs != null) {
-				metadataCache.set(currentSubs, value != null ? value.toString()
-						: null);
+			if (currentSubs != null && value != null) {
+				metadataCache.set(currentSubs, value.toString());
 			}
 		} else {
-			tree.set(currentSubs, value);
+			if(value != null) {
+				tree.set(currentSubs, value);	
+			}
+			
 		}
 	}
 
 	public void merge(Object[] dest, Object[] orig) {
-		tree.merge(dest, orig);
+		if (isDiskAccess(dest)) {
+			metadataCache.merge(dest, orig);
+		} else {
+			tree.merge(dest, orig);
+		}
 	}
 
 	public void stacking(Object... variables) {
@@ -126,17 +135,19 @@ public class mData {
 
 	public int data(Object... subs) {
 		currentSubs = subs;
-		populateTree(false);
-		if(isDiskAccess(subs)){
-			return metadataCache.data(subs);	
+
+		if (isDiskAccess(subs)) {
+			populateTree(false);
+			return metadataCache.data(subs);
 		}
 		return tree.data(subs);
 	}
 
 	public Object order(Object[] subs, int direction) {
 		this.currentSubs = subs;
-		populateTree(true);
-		if(isDiskAccess(subs)){
+
+		if (isDiskAccess(subs)) {
+			populateTree(true);
 			return metadataCache.order(subs);
 		}
 		return tree.order(subs, direction);
@@ -152,10 +163,8 @@ public class mData {
 	}
 
 	private void populateTree(boolean isOrder) {
-		if (isDiskAccess(currentSubs)) {
-			if (!metadataCache.contains(currentSubs)) {
-				findDataOnDisk(isOrder);
-			}
+		if (isDiskAccess(currentSubs) && !metadataCache.contains(currentSubs)) {
+			findDataOnDisk(isOrder);
 		}
 	}
 

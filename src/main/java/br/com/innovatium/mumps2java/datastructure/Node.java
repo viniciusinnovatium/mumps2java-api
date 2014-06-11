@@ -33,6 +33,9 @@ public class Node implements Comparable<Node> {
 		this.key = key;
 		final int index = subs.length == 1 ? 0 : subs.length - 1;
 		Object temp = subs[index];
+		if(temp == null){
+			throw new IllegalArgumentException("Subscript must not be empty. The subs setted is "+Arrays.deepToString(subs));
+		}
 		if (temp instanceof Double && (Double) temp % 1 == 0) {
 			temp = ((Double) temp).longValue();
 		}

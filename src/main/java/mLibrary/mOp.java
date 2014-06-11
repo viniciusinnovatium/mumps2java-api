@@ -59,9 +59,6 @@ public final class mOp {
 	}
 
 	public static Object Concat(Object string1, Object string2) {
-		if (string2 instanceof mVar) {
-			int i = 0;
-		}
 		return mFncUtil.toString(string1).concat(mFncUtil.toString(string2));
 	}
 

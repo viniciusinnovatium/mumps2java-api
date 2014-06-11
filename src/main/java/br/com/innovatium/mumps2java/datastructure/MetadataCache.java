@@ -10,32 +10,36 @@ public final class MetadataCache {
 	private MetadataCache() {
 		tree = new Tree();
 	}
-	
-	public static MetadataCache getCache(){
+
+	public static MetadataCache getCache() {
 		return cache;
 	}
-	
-	public void set(Object[] subs, Object value){
+
+	public void set(Object[] subs, Object value) {
 		tree.set(subs, value);
 	}
-	
-	public Object get(Object[] subs){
+
+	public Object get(Object[] subs) {
 		return tree.get(subs);
 	}
 
-	public boolean contains(Object[] subs){
+	public boolean contains(Object[] subs) {
 		return get(subs) != null;
 	}
-	
-	public void kill(Object[] subs){
+
+	public void kill(Object[] subs) {
 		tree.kill(subs);
 	}
-	
-	public int data(Object[] subs){
+
+	public int data(Object[] subs) {
 		return tree.data(subs);
 	}
-	
-	public Object order(Object[] subs){
+
+	public Object order(Object[] subs) {
 		return tree.order(subs);
+	}
+
+	public void merge(Object[] destSubs, Object[] origSubs) {
+		tree.merge(destSubs, origSubs);
 	}
 }
