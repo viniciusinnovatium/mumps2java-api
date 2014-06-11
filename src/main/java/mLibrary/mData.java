@@ -43,7 +43,7 @@ public class mData {
 			if (value != null) {
 				metadataCache.set(subs, value);
 			}
-
+			
 			return value;
 		}
 		return tree.get(subs);
@@ -65,6 +65,7 @@ public class mData {
 			if (currentSubs != null && value != null) {
 				metadataCache.set(currentSubs, value.toString());
 			}
+			
 		} else {
 			if (value != null) {
 				tree.set(currentSubs, value);
@@ -137,7 +138,7 @@ public class mData {
 		currentSubs = subs;
 
 		if (isDiskAccess(subs)) {
-			populateTree(false);
+			populateCache(false);
 			return metadataCache.data(subs);
 		}
 		return tree.data(subs);
@@ -147,7 +148,7 @@ public class mData {
 		this.currentSubs = subs;
 
 		if (isDiskAccess(subs)) {
-			populateTree(true);
+			populateCache(true);
 			return metadataCache.order(subs);
 		}
 		return tree.order(subs, direction);
@@ -162,7 +163,7 @@ public class mData {
 		return this;
 	}
 
-	private void populateTree(boolean isOrder) {
+	private void populateCache(boolean isOrder) {
 		if (isDiskAccess(currentSubs) && !metadataCache.isQueried(currentSubs)) {
 			findDataOnDisk(isOrder);
 			metadataCache.addQueried(currentSubs);

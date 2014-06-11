@@ -1,6 +1,7 @@
 package br.com.innovatium.mumps2java.datastructure;
 
 
+
 public final class MetadataCache {
 	private static final MetadataCache metadataCache;
 	private final Tree tree;
@@ -11,6 +12,7 @@ public final class MetadataCache {
 
 	private MetadataCache() {
 		tree = new Tree();
+		initGlobalOfTheSystem();
 	}
 
 	public static MetadataCache getCache() {
@@ -47,5 +49,11 @@ public final class MetadataCache {
 
 	public void merge(Object[] destSubs, Object[] origSubs) {
 		tree.merge(destSubs, origSubs);
+	}
+	
+	private void initGlobalOfTheSystem(){
+		queryCache.add(new Object[]{"^|%SYS|SYS"});
+		queryCache.add(new Object[]{"^|%SYS|SYS", "UserIdentification"});
+		
 	}
 }
