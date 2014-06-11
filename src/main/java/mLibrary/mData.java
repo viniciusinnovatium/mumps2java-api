@@ -5,7 +5,6 @@ import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateSubs;
 import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateTableName;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -13,7 +12,7 @@ import java.util.Set;
 import br.com.innovatium.mumps2java.dataaccess.DAO;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
-import br.com.innovatium.mumps2java.datastructure.OrderDataCache;
+import br.com.innovatium.mumps2java.datastructure.MetadataCache;
 import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public class mData {
@@ -21,18 +20,30 @@ public class mData {
 
 	DAO dao;
 	final Tree tree = new Tree();
-	final Set<String> cacheOrderFunction = new HashSet<String>(50);
-	final OrderDataCache orderDataCache = new OrderDataCache();
+
+	final MetadataCache metadataCache = MetadataCache.getCache();
+
+	public mData() {
+		try {
+			this.dao = ServiceLocator.locate(DAO.class);
+		} catch (ServiceLocatorException e) {
+			throw new IllegalArgumentException(
+					"Fail to create data access object", e);
+		}
+	}
 
 	public Object get(Object... subs) {
-		Object value = tree.get(subs);
-		if (isDiskAccess(subs) && value == null) {
-			initDAO();
+		if (isDiskAccess(subs)) {
+			Object value = metadataCache.get(subs);
+			if (value != null) {
+				return value;
+			}
 			final String tableName = generateTableName(subs);
 			value = dao.find(tableName, generateKeyWithoutVarName(subs));
-			tree.set(subs, value);
+			metadataCache.set(subs, value);
+			return value;
 		}
-		return value;
+		return tree.get(subs);
 	}
 
 	/*
@@ -49,15 +60,12 @@ public class mData {
 	public void set(Object value) {
 		if (isDiskAccess(currentSubs)) {
 			if (currentSubs != null) {
-				initDAO();
-				final String tableName = generateTableName(currentSubs);
-				// Here we have calling toString method because ListObject
-				// should be persisted as string
-				dao.insert(tableName, generateKeyWithoutVarName(currentSubs),
-						value != null ? value.toString() : null);
+				metadataCache.set(currentSubs, value != null ? value.toString()
+						: null);
 			}
+		} else {
+			tree.set(currentSubs, value);
 		}
-		tree.set(currentSubs, value);
 	}
 
 	public void merge(Object[] dest, Object[] orig) {
@@ -110,9 +118,7 @@ public class mData {
 	public void kill(Object... subs) {
 		currentSubs = null;
 		if (isDiskAccess(subs)) {
-			initDAO();
-			dao.remove(generateTableName(subs), generateKeyWithoutVarName(subs));
-			tree.kill(subs);
+			metadataCache.kill(subs);
 		} else {
 			tree.kill(subs);
 		}
@@ -121,12 +127,18 @@ public class mData {
 	public int data(Object... subs) {
 		currentSubs = subs;
 		populateTree(false);
+		if(isDiskAccess(subs)){
+			return metadataCache.data(subs);	
+		}
 		return tree.data(subs);
 	}
 
 	public Object order(Object[] subs, int direction) {
 		this.currentSubs = subs;
 		populateTree(true);
+		if(isDiskAccess(subs)){
+			return metadataCache.order(subs);
+		}
 		return tree.order(subs, direction);
 	}
 
@@ -141,9 +153,7 @@ public class mData {
 
 	private void populateTree(boolean isOrder) {
 		if (isDiskAccess(currentSubs)) {
-			if (!orderDataCache.isCached(currentSubs)) {
-				orderDataCache.add(currentSubs);
-				initDAO();
+			if (!metadataCache.contains(currentSubs)) {
 				findDataOnDisk(isOrder);
 			}
 		}
@@ -156,16 +166,6 @@ public class mData {
 			bool = subs[0].toString().charAt(0) == '^';
 		}
 		return bool;
-	}
-
-	private void initDAO() {
-		if (dao == null) {
-			try {
-				this.dao = ServiceLocator.locate(DAO.class);
-			} catch (ServiceLocatorException e) {
-				throw new IllegalArgumentException("Fail to create data access object", e);
-			} 
-		}
 	}
 
 	private void findDataOnDisk(boolean isOrder) {
@@ -183,7 +183,7 @@ public class mData {
 			for (Entry<String, String> entry : result) {
 				// Here we have to include variable or table name into the key
 				// because this is part of the subscripts.
-				tree.set(generateSubs(tableName, entry.getKey()),
+				metadataCache.set(generateSubs(tableName, entry.getKey()),
 						entry.getValue());
 			}
 		}
