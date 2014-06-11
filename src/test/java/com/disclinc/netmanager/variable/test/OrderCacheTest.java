@@ -5,11 +5,11 @@ import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
-import br.com.innovatium.mumps2java.datastructure.OrderDataCache;
+import br.com.innovatium.mumps2java.datastructure.QueryCache;
 
 public class OrderCacheTest {
 
-	private OrderDataCache cache = new OrderDataCache();
+	private QueryCache cache = new QueryCache();
 
 	@Test
 	public void testInsertInCache() {

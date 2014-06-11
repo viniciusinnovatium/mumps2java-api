@@ -211,9 +211,6 @@ public class mCmd extends mParent {
 					}
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
-					if (String.valueOf(str).contains("<HR")) {
-						System.out.print("");
-					}
 					System.out.print(strWr);
 				} catch (IOException e) {
 					throw new IllegalArgumentException(

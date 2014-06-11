@@ -1,10 +1,12 @@
 package br.com.innovatium.mumps2java.datastructure;
 
+
 public final class MetadataCache {
-	private static final MetadataCache cache;
+	private static final MetadataCache metadataCache;
 	private final Tree tree;
+	private QueryCache queryCache = new QueryCache();
 	static {
-		cache = new MetadataCache();
+		metadataCache = new MetadataCache();
 	}
 
 	private MetadataCache() {
@@ -12,7 +14,7 @@ public final class MetadataCache {
 	}
 
 	public static MetadataCache getCache() {
-		return cache;
+		return metadataCache;
 	}
 
 	public void set(Object[] subs, Object value) {
@@ -23,8 +25,12 @@ public final class MetadataCache {
 		return tree.get(subs);
 	}
 
-	public boolean contains(Object[] subs) {
-		return get(subs) != null;
+	public boolean isQueried(Object[] subs) {
+		return this.queryCache.isCached(subs);
+	}
+	
+	public void addQueried(Object[] subs) {
+		this.queryCache.add(subs);
 	}
 
 	public void kill(Object[] subs) {

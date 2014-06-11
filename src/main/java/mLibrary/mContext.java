@@ -545,7 +545,6 @@ public class mContext {
 
 	private Object parseVarValue(String _content) {
 		Object _result;
-		System.out.println(_content);
 		if (_content == null) {
 			_result = "";
 		} else if (_content.length() == 0) {

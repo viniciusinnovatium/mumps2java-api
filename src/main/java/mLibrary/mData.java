@@ -66,10 +66,10 @@ public class mData {
 				metadataCache.set(currentSubs, value.toString());
 			}
 		} else {
-			if(value != null) {
-				tree.set(currentSubs, value);	
+			if (value != null) {
+				tree.set(currentSubs, value);
 			}
-			
+
 		}
 	}
 
@@ -163,8 +163,9 @@ public class mData {
 	}
 
 	private void populateTree(boolean isOrder) {
-		if (isDiskAccess(currentSubs) && !metadataCache.contains(currentSubs)) {
+		if (isDiskAccess(currentSubs) && !metadataCache.isQueried(currentSubs)) {
 			findDataOnDisk(isOrder);
+			metadataCache.addQueried(currentSubs);
 		}
 	}
 
@@ -195,6 +196,11 @@ public class mData {
 				metadataCache.set(generateSubs(tableName, entry.getKey()),
 						entry.getValue());
 			}
+		}
+
+		Object value = get(currentSubs);
+		if (value != null) {
+			metadataCache.set(currentSubs, value);
 		}
 	}
 }
