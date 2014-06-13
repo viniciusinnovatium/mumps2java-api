@@ -78,27 +78,35 @@ public class NMDAO {
 			String strcmd = "insert into " + tableName + " (" + columns + ")"
 					+ " values (" + columnsVal + ")";
 			cmd = con.prepareStatement(strcmd);
-
-			
-			StringBuilder valores = new  StringBuilder();
+			boolean isnum = false;
+			StringBuilder valores = new StringBuilder();
 			for (int i = 0; i < columnsMap.length; i++) {
+				isnum = false;
 				if (values[i] instanceof Date) {
-					cmd.setDate(i + 1, (new java.sql.Date(
-							((Date) values[i]).getTime())));
+					cmd.setDate(i + 1,
+							(new java.sql.Date(((Date) values[i]).getTime())));
 				} else if (values[i] instanceof Integer) {
 					cmd.setInt(i + 1, (int) values[i]);
+					isnum = true;
 				} else if (values[i] instanceof Double) {
 					cmd.setDouble(i + 1, (double) values[i]);
+					isnum = true;
 				} else {
-					cmd.setObject(i + 1, values[i] == null ? ""
-							: values[i]);
+					cmd.setObject(i + 1, values[i] == null ? "''" : values[i]);
+				}
+
+				if (values[i] != null && !isnum) {
+					valores.append(!isnum ? "'" + values[i] + "'" : values[i]);
+				} else if(values[i] == null && !isnum) {
+					valores.append("null");
+				}
+				if (i + 1 < columnsMap.length) {
+					valores.append(", ");
 				}
 				
-				valores.append(values[i]).append(", ");
-
 			}
-			System.out.println("\nQuery: insert into " + tableName + " (" + columns + ")"
-					+ " values (" + valores+ ")");
+			System.out.println("\nQuery: insert into " + tableName + " ("
+					+ columns + ")" + " values (" + valores + ")");
 			cmd.execute();
 		} catch (SQLException e) {
 			throw new IllegalStateException("Fail to insert into table "
@@ -145,8 +153,6 @@ public class NMDAO {
 		return "";
 	}
 
-	
-	
 	public String deleteRecord(String tableName, String id) {
 		PreparedStatement cmd = null;
 		try {
