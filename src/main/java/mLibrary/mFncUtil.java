@@ -284,6 +284,9 @@ public final class mFncUtil {
 		}
 		
 		Double dbl = null;
+		if (obj instanceof Boolean) {
+			return (Boolean.parseBoolean(String.valueOf(obj))?1d:0d);
+		}			
 		try {
 			dbl = Double.valueOf(String.valueOf(obj));
 		} catch (NumberFormatException nfe) {
