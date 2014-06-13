@@ -64,8 +64,7 @@ public abstract class mPage extends mClass {
 		}
 	}
 
-	public static Object QuoteJS(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object QuoteJS(Object js) {
+		return "'"+mFncUtil.escapeJS(String.valueOf(js))+"'";
 	}
 }

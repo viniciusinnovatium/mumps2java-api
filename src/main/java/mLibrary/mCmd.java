@@ -86,8 +86,8 @@ public class mCmd extends mParent {
 	}
 	
 
-	public void Goto(Object label) {
-		throw new UnsupportedOperationException();
+	public Object Goto(Object label) {
+		return m$.fnc$(label);
 	}
 
 	/*
@@ -240,7 +240,19 @@ public class mCmd extends mParent {
 	public void Xecute(Object command) {
 		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(command.toString());
 		String cmdStr = String.valueOf(command);
-		if (cmdStr.startsWith("DO ")){
+		if(cmdStr.equals("do AfterDataFields^COMViewFilter(\"MEDPatient,,\",1)")){
+			Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);
+		}else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){		
+			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
+			//m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
+		}else if(cmdStr.equals("SET %TXT(1)=$$CallBack^COMViewUtils(YINHALT,YVAR)")){
+			m$.var("%TXT",1).set(m$.fnc$("COMViewUtils.CallBack",m$.var("YINHALT").get(),m$.var("YVAR").get()));
+			//m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
+		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
+			throw new UnsupportedOperationException();
+		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
+		
+		} else if (cmdStr.startsWith("DO ")){
 			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
 		}else if(cmdStr.startsWith("D ")) {
 			Do(String.valueOf(command).replaceAll(Pattern.quote("D "), ""));
@@ -250,11 +262,6 @@ public class mCmd extends mParent {
 			Do(String.valueOf(command).replaceAll(Pattern.quote("d "), ""));
 		} else if (cmdStr.startsWith("U ")
 				|| cmdStr.startsWith("USER ")) {
-		} else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){
-			//m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
-			m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
-		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
-		
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -293,5 +300,10 @@ public class mCmd extends mParent {
 			m$.Cmd.DoJob(true, methodName);
 		}
 
+	}
+
+	public void Job(String string, Object object, Object object2, Object object3) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 }
