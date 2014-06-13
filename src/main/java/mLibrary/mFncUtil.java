@@ -110,7 +110,7 @@ public final class mFncUtil {
 			return 0;
 		}
 
-		string = string.substring(start);
+		string = string.substring(start-1);
 
 		char[] substringChar = substring.toCharArray();
 		char[] stringChar = string.toCharArray();

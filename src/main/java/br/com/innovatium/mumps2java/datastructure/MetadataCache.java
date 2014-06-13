@@ -32,7 +32,11 @@ public final class MetadataCache {
 	}
 	
 	public void addQueried(Object[] subs) {
-		this.queryCache.add(subs);
+		this.addQueried(subs,false);
+	}
+
+	public void addQueried(Object[] subs, boolean isOrder) {
+		this.queryCache.add(subs,isOrder);
 	}
 
 	public void kill(Object[] subs) {

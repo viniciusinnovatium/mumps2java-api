@@ -59,6 +59,7 @@ public class DAOImpl implements DAO {
 		if (key == null) {
 			return null;
 		}
+		key = (key==" ")?"":key;
 		Map<String, String> map = null;
 		PreparedStatement select = null;
 		ResultSet result = null;
