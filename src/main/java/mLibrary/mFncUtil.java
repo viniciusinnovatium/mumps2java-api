@@ -14,6 +14,10 @@ public final class mFncUtil {
 	public static Object[] concat(Object[] dest, Object[] orig) {
 		return DataStructureUtil.concat(dest, orig);
 	}
+	
+	public static String[] splitDemiliter(String string){
+		return string.split("~", -1);
+	}
 
 	public static Object[] concatSinceLastSubscript(Object[] dest, Object[] orig) {
 		return DataStructureUtil.concatSinceLast(dest, orig);
