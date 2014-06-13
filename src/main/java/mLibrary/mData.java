@@ -38,13 +38,23 @@ public class mData {
 			if (value != null) {
 				return value;
 			}
+			if (metadataCache.isQueried(subs)) {
+				return null;
+			}
 			final String tableName = generateTableName(subs);
 			value = dao.find(tableName, generateKeyWithoutVarName(subs));
 			if (value != null) {
 				metadataCache.set(subs, value);
 			}
-			
+			if (!metadataCache.isQueried(subs)) {
+				metadataCache.addQueried(subs);
+			}
 			return value;
+			/*
+			currentSubs = subs;
+			populateCache(false);
+			return metadataCache.get(subs);
+			*/
 		}
 		return tree.get(subs);
 	}
@@ -166,7 +176,7 @@ public class mData {
 	private void populateCache(boolean isOrder) {
 		if (isDiskAccess(currentSubs) && !metadataCache.isQueried(currentSubs)) {
 			findDataOnDisk(isOrder);
-			metadataCache.addQueried(currentSubs);
+			metadataCache.addQueried(currentSubs,isOrder);
 		}
 	}
 
