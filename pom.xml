@@ -30,11 +30,6 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>br.com.innovatium</groupId>
-			<artifactId>sql-commons</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
