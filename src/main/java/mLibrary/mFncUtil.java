@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -14,6 +13,13 @@ public final class mFncUtil {
 
 	public static Object[] concat(Object[] dest, Object[] orig) {
 		return DataStructureUtil.concat(dest, orig);
+	}
+	
+	public static String[] splitDemiliter(String string){
+		if(string == null){
+			return null;
+		} 
+		return string.split("~", -1);
 	}
 
 	public static Object[] concatSinceLastSubscript(Object[] dest, Object[] orig) {
@@ -283,7 +289,6 @@ public final class mFncUtil {
 		if (obj == null || obj instanceof ListObject) {
 			return 0d;
 		}
-		
 		Double dbl = null;
 		if (obj instanceof Boolean) {
 			return (Boolean.parseBoolean(String.valueOf(obj))?1d:0d);
