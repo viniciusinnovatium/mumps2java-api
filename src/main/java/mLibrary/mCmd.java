@@ -125,11 +125,6 @@ public class mCmd extends mParent {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void Job(String string, Object string2, Object o1, Object o2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 	public void Lock(String string, String string2, String string3) {
 		// TODO REVISAR IMPLEMENTAÇÃO
 	}

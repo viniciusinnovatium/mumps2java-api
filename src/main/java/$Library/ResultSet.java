@@ -82,4 +82,20 @@ public class ResultSet extends mClass {
 			throw new IllegalArgumentException("Column "+column+" not found");
 		}
 	}
+	
+	public Object GetColumnCount(){
+		try {
+			return resultSet.getMetaData().getColumnCount();
+		} catch (SQLException e) {
+			return 0;
+		}
+	}
+	
+	public Object GetColumnName(int column){
+		try {
+			return resultSet.getMetaData().getColumnName(column);
+		} catch (SQLException e) {
+			throw new IllegalArgumentException("Column "+column+" not found");
+		}
+	}
 }
