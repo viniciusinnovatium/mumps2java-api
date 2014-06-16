@@ -1,6 +1,5 @@
 package br.com.innovatium.mumps2java.dataaccess;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,25 +13,15 @@ import javax.ejb.Stateless;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 @Stateless
-public class DAOImpl implements DAO {
-	private final Connection con;
-	private SQLResolver resolver = null;
+public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 	private Set<String> tableCache = new HashSet<String>(30);
 
-	public DAOImpl() {
+	public MetadataDAOImpl() {
 		this(ConnectionType.DATASOURCE_METADATA);
 	}
 
-	public DAOImpl(ConnectionType connectionType) {
-		try {
-			con = ConnectionFactory.getConnection(connectionType);
-			resolver = SQLResolver.getResolver(con.getMetaData()
-					.getDatabaseProductName());
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to database access throught "
-							+ connectionType + " strategy", e);
-		}
+	public MetadataDAOImpl(ConnectionType connectionType) {
+		super(connectionType);
 
 		PreparedStatement ps;
 		try {
