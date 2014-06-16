@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import br.com.innovatium.mumps2java.dataaccess.RelationalDataDAO;
-import br.com.innovatium.mumps2java.dataaccess.RelationalDataDAOImpl;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 
@@ -52,7 +51,6 @@ public class mNMObject {
 			}
 		}
 		//
-		RelationalDataDAOImpl dao = new RelationalDataDAOImpl();
 		ResultSet result = dao.loadRecord(tableSQLName, id,
 				tableSQLFields.toString());
 		if (result == null) {
@@ -232,7 +230,6 @@ public class mNMObject {
 		}
 		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
-		RelationalDataDAOImpl dao = new RelationalDataDAOImpl();
 		return dao.deleteRecord(tableSQLName, id);
 	}
 
