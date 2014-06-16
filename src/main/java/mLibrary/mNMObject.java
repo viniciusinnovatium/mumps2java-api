@@ -2,11 +2,26 @@ package mLibrary;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
-import br.com.innovatium.mumps2java.dataaccess.NMDAO;
+import br.com.innovatium.mumps2java.dataaccess.RelationalDataDAO;
+import br.com.innovatium.mumps2java.dataaccess.RelationalDataDAOImpl;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 
 public class mNMObject {
+	private final RelationalDataDAO dao;
+
+	public mNMObject() {
+		try {
+			dao = ServiceLocator.locate(RelationalDataDAO.class);
+		} catch (ServiceLocatorException e) {
+			throw new IllegalArgumentException(
+					"There is not service to locate to this class "
+							+ RelationalDataDAO.class.getName(), e);
+		}
+	}
 
 	public String loadRecord(mContext m$, String className, String id) {
 		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
@@ -37,7 +52,7 @@ public class mNMObject {
 			}
 		}
 		//
-		NMDAO dao = new NMDAO();
+		RelationalDataDAOImpl dao = new RelationalDataDAOImpl();
 		ResultSet result = dao.loadRecord(tableSQLName, id,
 				tableSQLFields.toString());
 		if (result == null) {
@@ -130,7 +145,6 @@ public class mNMObject {
 		}
 		String[] classCDefColMap = classCDefCol.split(";");
 
-		NMDAO dao = new NMDAO();
 		boolean exists = dao.existsRecord(tableSQLName, id);
 
 		String tableSQLFields = "";
@@ -161,7 +175,7 @@ public class mNMObject {
 						}
 						// Timestamp
 						else if (fieldCDefMap[2].equals("14")) {
-							tableSQLValues[count++] = idMap[i];
+							tableSQLValues[count++] = convertTimestampToJava(idMap[i]);
 						}
 						// Others
 						else {
@@ -189,7 +203,7 @@ public class mNMObject {
 					}
 					// Timestamp
 					else if (fieldCDefMap[2].equals("14")) {
-						tableSQLValues[count++] = recordMap[i];
+						tableSQLValues[count++] = convertTimestampToJava(recordMap[i]);
 					}
 					// Others
 					else {
@@ -218,7 +232,7 @@ public class mNMObject {
 		}
 		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
-		NMDAO dao = new NMDAO();
+		RelationalDataDAOImpl dao = new RelationalDataDAOImpl();
 		return dao.deleteRecord(tableSQLName, id);
 	}
 
@@ -241,9 +255,16 @@ public class mNMObject {
 		if (val.isEmpty()) {
 			return null;
 		}
-		Date res = new Date();
-		res.setTime(mFncUtil.dateMumpsToJava(val).longValue());
-		return res;
+		return new Date(mFncUtil.dateMumpsToJava(val).longValue());
 	}
 
+	public Timestamp convertTimestampToJava(String val) {
+		if (val == null) {
+			return null;
+		}
+		if (val.isEmpty()) {
+			return null;
+		}
+		return new Timestamp(Long.parseLong(val));
+	}
 }

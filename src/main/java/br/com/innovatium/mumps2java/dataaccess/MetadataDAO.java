@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.ejb.Local;
 
 @Local
-public interface DAO {
+public interface MetadataDAO {
 	Object find(String tableName, String key);
 
 	Map<String, String> like(String tableName, String key);
