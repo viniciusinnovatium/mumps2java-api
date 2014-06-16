@@ -1,6 +1,5 @@
 package mLibrary;
 
-
 public final class mOp {
 	private mOp() {
 	}
@@ -41,12 +40,12 @@ public final class mOp {
 		if (y instanceof Double && (((Double) y) % 1 == 0)) {
 			y = ((Double) y).longValue();
 		}
-		if(x instanceof Boolean){
-			x = ((Boolean)x)?1:0;
+		if (x instanceof Boolean) {
+			x = ((Boolean) x) ? 1 : 0;
 		}
-		if(y instanceof Boolean){
-			y = ((Boolean)y)?1:0;
-		}		
+		if (y instanceof Boolean) {
+			y = ((Boolean) y) ? 1 : 0;
+		}
 		if (String.valueOf(x).equals(String.valueOf(y))) {
 			return true;
 		} else {
@@ -59,7 +58,27 @@ public final class mOp {
 	}
 
 	public static Object Concat(Object string1, Object string2) {
+		if (string1 instanceof ListObject) {
+			ListObject lo1 = (ListObject) string1;
+			ListObject lo2 = null;
+			if (string2 == null || string2.toString().isEmpty()) {
+				return lo1;
+			} else if (string2 instanceof ListObject) {
+				lo2 = mFnc.$listbuild(string2);
+				return ListObject.concat(lo1, lo2);
+			}
+		} else if (string2 instanceof ListObject) {
+			ListObject lo2 = (ListObject) string2;
+			ListObject lo1 = null;
+			if (string1 == null || string1.toString().isEmpty()) {
+				return lo2;
+			} else if (string1 instanceof ListObject) {
+				lo1 = mFnc.$listbuild(string1);
+				return ListObject.concat(lo1, lo2);
+			}
+		}
 		return mFncUtil.toString(string1).concat(mFncUtil.toString(string2));
+
 	}
 
 	public static boolean SortsAfter(Object object, Object object2) {
@@ -159,7 +178,7 @@ public final class mOp {
 	public static boolean Or(Object x, Object y) {
 		boolean a = mFncUtil.booleanConverter(x);
 		boolean b = mFncUtil.booleanConverter(y);
-		return a | b; 
+		return a | b;
 	}
 
 	public static boolean NotContains(Object str1, Object str2) {
@@ -169,7 +188,7 @@ public final class mOp {
 	public static boolean And(Object x, Object y) {
 		boolean a = mFncUtil.booleanConverter(x);
 		boolean b = mFncUtil.booleanConverter(y);
-		return a & b; 
+		return a & b;
 	}
 
 }

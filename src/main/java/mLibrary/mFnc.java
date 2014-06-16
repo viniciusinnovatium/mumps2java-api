@@ -1456,4 +1456,14 @@ public final class mFnc extends mParent {
 	public Object $ztimeh(Object object, int i, String string) {
 		throw new UnsupportedOperationException();
 	}
+
+	public Object $list(Object object, int init, Object subtract) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $list(Object object, Object add, Object $listlength) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }
