@@ -10,6 +10,8 @@ final class SQLResolver {
 	private Map<SQLType, String> sql = new HashMap<SQLType, String>();
 	private final SQLResolverType type;
 	private static final DateFormat dateFormat = new SimpleDateFormat(
+			"dd/MM/yyyy");
+	private static final DateFormat timestampFormat = new SimpleDateFormat(
 			"dd/MM/yyyy HH:mm:ss");
 
 	private SQLResolver(SQLResolverType type) {
@@ -49,7 +51,8 @@ final class SQLResolver {
 		sql.put(SQLType.DROP_TABLE, "drop table");
 		sql.put(SQLType.CREATE_TABLE, "create table");
 		sql.put(SQLType.SELECT_TABLE_NAME, "select table_name from ALL_TABLES");
-		sql.put(SQLType.TO_DATE, "TO_DATE('X', 'DD/MM/YYYY HH24:MI:SS')");
+		sql.put(SQLType.TO_DATE, "TO_DATE('X', 'DD/MM/YYYY')");
+		sql.put(SQLType.TO_TIMESTAMP, "TO_DATE('X', 'DD/MM/YYYY HH24:MI:SS')");
 
 	}
 
@@ -65,7 +68,7 @@ final class SQLResolver {
 		return sql.get(type);
 	}
 
-	public String toDate(Date date) {
+	public String formatDate(Date date) {
 		if (date == null) {
 			return null;
 		}
@@ -73,6 +76,18 @@ final class SQLResolver {
 		if (SQLResolverType.ORACLE.equals(type)) {
 			return sql.get(SQLType.TO_DATE).replaceAll("X",
 					dateFormat.format(date));
+		}
+		throw new IllegalArgumentException();
+	}
+
+	public String formatTimestamp(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		if (SQLResolverType.ORACLE.equals(type)) {
+			return sql.get(SQLType.TO_TIMESTAMP).replaceAll("X",
+					timestampFormat.format(date));
 		}
 		throw new IllegalArgumentException();
 	}

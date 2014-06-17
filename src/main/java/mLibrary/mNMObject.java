@@ -8,6 +8,7 @@ import java.util.Date;
 import br.com.innovatium.mumps2java.dataaccess.RelationalDataDAO;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
+import br.com.innovatium.mumps2java.dataaccess.exception.SQLExecutionException;
 
 public class mNMObject {
 	private final RelationalDataDAO dao;
@@ -51,8 +52,14 @@ public class mNMObject {
 			}
 		}
 		//
-		ResultSet result = dao.loadRecord(tableSQLName, id,
-				tableSQLFields.toString());
+		ResultSet result = null;
+		try {
+			result = dao
+					.loadRecord(tableSQLName, id, tableSQLFields.toString());
+		} catch (SQLExecutionException e1) {
+			throw new MLibraryException("Fail to load record from the table "
+					+ className + " and id " + id, e1);
+		}
 		if (result == null) {
 			return "";
 		}
@@ -85,9 +92,26 @@ public class mNMObject {
 				// Others
 				else {
 					try {
-						resultRecord
-								.append(result.getObject(i + 1) != null ? result
-										.getObject(i + 1) : "");
+						Object obj = result.getObject(i + 1);
+						if (obj != null) {
+							if (obj.getClass().getName().contains("CLOB")) {
+								try {
+									resultRecord.append(dao.toString(result
+											.getClob(i + 1)));
+								} catch (SQLExecutionException e) {
+									throw new MLibraryException(
+											"Fail to parse clob from the table "
+													+ className + " and id "
+													+ id + " and column "
+													+ (i + 1), e);
+								}
+							} else {
+								resultRecord.append(obj);
+							}
+						} else {
+							resultRecord.append("");
+						}
+
 					} catch (SQLException e) {
 						throw new IllegalArgumentException(
 								"Fail to get result set", e);
@@ -143,7 +167,14 @@ public class mNMObject {
 		}
 		String[] classCDefColMap = classCDefCol.split(";");
 
-		boolean exists = dao.existsRecord(tableSQLName, id);
+		boolean exists;
+		try {
+			exists = dao.existsRecord(tableSQLName, id);
+		} catch (SQLExecutionException e) {
+			throw new MLibraryException(
+					"Fail to verify existence of the record from the table "
+							+ className + " and id " + id, e);
+		}
 
 		String tableSQLFields = "";
 		Object[] tableSQLValues;
@@ -214,11 +245,23 @@ public class mNMObject {
 		}
 		//
 		if (!exists) {
-			return dao.insertRecord(tableSQLName, tableSQLFields,
-					tableSQLValues);
+			try {
+				return dao.insertRecord(tableSQLName, tableSQLFields,
+						tableSQLValues);
+			} catch (SQLExecutionException e) {
+				throw new MLibraryException(
+						"Fail to insert record into the table " + className
+								+ " and id " + id, e);
+			}
 		} else {
-			return dao.updateRecord(tableSQLName, id, tableSQLFields,
-					tableSQLValues);
+			try {
+				return dao.updateRecord(tableSQLName, id, tableSQLFields,
+						tableSQLValues);
+			} catch (SQLExecutionException e) {
+				throw new MLibraryException(
+						"Fail to update record from the table " + className
+								+ " and id " + id, e);
+			}
 		}
 	}
 
@@ -230,7 +273,12 @@ public class mNMObject {
 		}
 		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
-		return dao.deleteRecord(tableSQLName, id);
+		try {
+			return dao.deleteRecord(tableSQLName, id);
+		} catch (SQLExecutionException e) {
+			throw new MLibraryException("Fail to delete record from the table "
+					+ className + " and id " + id, e);
+		}
 	}
 
 	public String convertDateToMumps(Object val) {
@@ -262,6 +310,6 @@ public class mNMObject {
 		if (val.isEmpty()) {
 			return null;
 		}
-		return new Timestamp(Long.parseLong(val));
+		return new Timestamp(mFncUtil.dateMumpsToJava(val).longValue());
 	}
 }
