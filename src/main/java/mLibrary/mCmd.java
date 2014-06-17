@@ -125,7 +125,7 @@ public class mCmd extends mParent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	public void Lock(String string, String string2, String string3) {
 		// TODO REVISAR IMPLEMENTAÇÃO
 	}

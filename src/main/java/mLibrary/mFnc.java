@@ -449,6 +449,8 @@ public final class mFnc extends mParent {
 	public static Object $listlength(Object list) {
 		if (list instanceof ListObject) {
 			return ((ListObject) list).length();
+		}else if(list.toString().isEmpty()){
+			return 0;
 		}
 		
 		if (String.valueOf(list).isEmpty()){

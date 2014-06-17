@@ -2,11 +2,25 @@ package mLibrary;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
-import br.com.innovatium.mumps2java.dataaccess.NMDAO;
+import br.com.innovatium.mumps2java.dataaccess.RelationalDataDAO;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 
 public class mNMObject {
+	private final RelationalDataDAO dao;
+
+	public mNMObject() {
+		try {
+			dao = ServiceLocator.locate(RelationalDataDAO.class);
+		} catch (ServiceLocatorException e) {
+			throw new IllegalArgumentException(
+					"There is not service to locate to this class "
+							+ RelationalDataDAO.class.getName(), e);
+		}
+	}
 
 	public String loadRecord(mContext m$, String className, String id) {
 		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
@@ -14,7 +28,7 @@ public class mNMObject {
 		if ((classCDef == null) || (classCDef.isEmpty())) {
 			return "";
 		}
-		String tableSQLName = classCDef.split("~")[1];
+		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
 		String classCDefCol = (String) m$.var("^WWWCLASSCDEF", className,
 				"coldef").get();
@@ -37,23 +51,22 @@ public class mNMObject {
 			}
 		}
 		//
-		NMDAO dao = new NMDAO();
 		ResultSet result = dao.loadRecord(tableSQLName, id,
 				tableSQLFields.toString());
 		if (result == null) {
 			return "";
 		}
 		//
-		String resultRecord = "";
+		StringBuilder resultRecord = new StringBuilder();
 		for (int i = 0; i < classCDefColMap.length; i++) {
-			fieldCDefMap = classCDefColMap[i].split("~");
+			fieldCDefMap = mFncUtil.splitDemiliter(classCDefColMap[i]);
+
 			if (fieldCDefMap.length >= 3) {
 				// Date
 				if (fieldCDefMap[2].equals("1")) {
 					try {
-						resultRecord = resultRecord
-								+ (resultRecord.isEmpty() ? "" : "~")
-								+ convertDateToMumps(result.getDate(i + 1));
+						resultRecord.append(convertDateToMumps(result
+								.getDate(i + 1)));
 					} catch (SQLException e) {
 						throw new IllegalArgumentException(
 								"Fail to get result set", e);
@@ -62,9 +75,8 @@ public class mNMObject {
 				// Timestamp
 				else if (fieldCDefMap[2].equals("14")) {
 					try {
-						resultRecord = resultRecord
-								+ (resultRecord.isEmpty() ? "" : "~")
-								+ convertDateToMumps(result.getTimestamp(i + 1));
+						resultRecord.append(convertDateToMumps(result
+								.getTimestamp(i + 1)));
 					} catch (SQLException e) {
 						throw new IllegalArgumentException(
 								"Fail to get result set", e);
@@ -73,9 +85,8 @@ public class mNMObject {
 				// Others
 				else {
 					try {
-						resultRecord = resultRecord
-								+ (resultRecord.isEmpty() ? "" : "~")
-								+ (result.getObject(i + 1) != null ? result
+						resultRecord
+								.append(result.getObject(i + 1) != null ? result
 										.getObject(i + 1) : "");
 					} catch (SQLException e) {
 						throw new IllegalArgumentException(
@@ -86,47 +97,52 @@ public class mNMObject {
 			// Others
 			else {
 				try {
-					resultRecord = resultRecord
-							+ (resultRecord.isEmpty() ? "" : "~")
-							+ (result.getObject(i + 1) != null ? result
+					resultRecord
+							.append(result.getObject(i + 1) != null ? result
 									.getObject(i + 1) : "");
 				} catch (SQLException e) {
 					throw new IllegalArgumentException(
 							"Fail to get result set", e);
 				}
 			}
-		}
-		try {
-			result.getStatement().close();
-		}
-		catch (SQLException e) {
-			throw new IllegalArgumentException("Fail to close result set", e);
+
+			if (i + 1 < classCDefColMap.length) {
+				resultRecord.append("~");
+			}
 		}
 
-		return resultRecord;
+		try {
+			result.getStatement().close();
+		} catch (SQLException e) {
+			throw new IllegalArgumentException("Fail to close result set", e);
+		}
+		return resultRecord.toString();
 	}
 
 	public String saveRecord(mContext m$, String className, String id,
 			String record) {
-		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def").get();
+
+		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
+				.get();
 		if ((classCDef == null) || (classCDef.isEmpty())) {
 			return "";
 		}
-		String tableSQLName = classCDef.split("~")[1];
+		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
-		String classCDefPK = (String) m$.var("^WWWCLASSCDEF", className, "pkdef").get();
+		String classCDefPK = (String) m$.var("^WWWCLASSCDEF", className,
+				"pkdef").get();
 		if ((classCDefPK == null) || (classCDefPK.isEmpty())) {
 			return "";
 		}
 		String[] classCDefPKMap = classCDefPK.split(";");
 
-		String classCDefCol = (String) m$.var("^WWWCLASSCDEF", className, "coldef").get();
+		String classCDefCol = (String) m$.var("^WWWCLASSCDEF", className,
+				"coldef").get();
 		if ((classCDefCol == null) || (classCDefCol.isEmpty())) {
 			return "";
 		}
 		String[] classCDefColMap = classCDefCol.split(";");
 
-		NMDAO dao = new NMDAO();
 		boolean exists = dao.existsRecord(tableSQLName, id);
 
 		String tableSQLFields = "";
@@ -134,8 +150,7 @@ public class mNMObject {
 		if (!exists) {
 			tableSQLValues = new Object[classCDefPKMap.length
 					+ classCDefColMap.length];
-		}
-		else {
+		} else {
 			tableSQLValues = new Object[classCDefColMap.length];
 		}
 		String[] fieldCDefMap;
@@ -146,7 +161,7 @@ public class mNMObject {
 			String[] idMap = id.split("\\|\\|");
 			//
 			for (int i = 0; i < classCDefPKMap.length; i++) {
-				fieldCDefMap = classCDefPKMap[i].split("~");
+				fieldCDefMap = mFncUtil.splitDemiliter(classCDefPKMap[i]);
 				if (fieldCDefMap.length > 2) {
 					tableSQLFields = tableSQLFields
 							+ (tableSQLFields.isEmpty() ? "" : ",")
@@ -158,27 +173,26 @@ public class mNMObject {
 						}
 						// Timestamp
 						else if (fieldCDefMap[2].equals("14")) {
-							tableSQLValues[count++] = idMap[i];
+							tableSQLValues[count++] = convertTimestampToJava(idMap[i]);
 						}
 						// Others
 						else {
 							tableSQLValues[count++] = idMap[i];
 						}
-					}
-					else {
+					} else {
 						tableSQLValues[count++] = null;
 					}
 				}
 			}
 		}
 		//
-		String[] recordMap = record.split("~");
+		String[] recordMap = mFncUtil.splitDemiliter(record);
 		//
 		for (int i = 0; i < classCDefColMap.length; i++) {
-			fieldCDefMap = classCDefColMap[i].split("~");
+			fieldCDefMap = mFncUtil.splitDemiliter(classCDefColMap[i]);
 			if (fieldCDefMap.length > 2) {
 				tableSQLFields = tableSQLFields
-						+ (tableSQLFields.isEmpty() ? "" : ",") 
+						+ (tableSQLFields.isEmpty() ? "" : ",")
 						+ fieldCDefMap[1];
 				if (i < recordMap.length) {
 					// Date
@@ -187,14 +201,13 @@ public class mNMObject {
 					}
 					// Timestamp
 					else if (fieldCDefMap[2].equals("14")) {
-						tableSQLValues[count++] = recordMap[i];
+						tableSQLValues[count++] = convertTimestampToJava(recordMap[i]);
 					}
 					// Others
 					else {
 						tableSQLValues[count++] = recordMap[i];
 					}
-				}
-				else {
+				} else {
 					tableSQLValues[count++] = null;
 				}
 			}
@@ -203,21 +216,20 @@ public class mNMObject {
 		if (!exists) {
 			return dao.insertRecord(tableSQLName, tableSQLFields,
 					tableSQLValues);
-		}
-		else {
+		} else {
 			return dao.updateRecord(tableSQLName, id, tableSQLFields,
 					tableSQLValues);
 		}
 	}
 
 	public String deleteRecord(mContext m$, String className, String id) {
-		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def").get();
+		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
+				.get();
 		if ((classCDef == null) || (classCDef.isEmpty())) {
 			return "";
 		}
-		String tableSQLName = classCDef.split("~")[1];
+		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
-		NMDAO dao = new NMDAO();
 		return dao.deleteRecord(tableSQLName, id);
 	}
 
@@ -240,9 +252,16 @@ public class mNMObject {
 		if (val.isEmpty()) {
 			return null;
 		}
-		Date res = new Date();
-		res.setTime(mFncUtil.dateMumpsToJava(val).longValue());
-		return res;
+		return new Date(mFncUtil.dateMumpsToJava(val).longValue());
 	}
 
+	public Timestamp convertTimestampToJava(String val) {
+		if (val == null) {
+			return null;
+		}
+		if (val.isEmpty()) {
+			return null;
+		}
+		return new Timestamp(Long.parseLong(val));
+	}
 }

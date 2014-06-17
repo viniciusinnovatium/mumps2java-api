@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import br.com.innovatium.mumps2java.dataaccess.DAO;
+import br.com.innovatium.mumps2java.dataaccess.MetadataDAO;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 import br.com.innovatium.mumps2java.datastructure.MetadataCache;
@@ -18,14 +18,14 @@ import br.com.innovatium.mumps2java.datastructure.Tree;
 public class mData {
 	Object[] currentSubs;
 
-	DAO dao;
+	MetadataDAO dao;
 	final Tree tree = new Tree();
 
 	final MetadataCache metadataCache = MetadataCache.getCache();
 
 	public mData() {
 		try {
-			this.dao = ServiceLocator.locate(DAO.class);
+			this.dao = ServiceLocator.locate(MetadataDAO.class);
 		} catch (ServiceLocatorException e) {
 			throw new IllegalArgumentException(
 					"Fail to create data access object", e);
