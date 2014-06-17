@@ -74,14 +74,6 @@ public class ResultSet extends mClass {
 			throw new IllegalArgumentException("Column "+column+" not found");
 		}
 	}
-
-	public Object Data(int column) {
-		try {
-			return resultSet.getObject(column);
-		} catch (SQLException e) {
-			throw new IllegalArgumentException("Column "+column+" not found");
-		}
-	}
 	
 	public Object GetColumnCount(){
 		try {

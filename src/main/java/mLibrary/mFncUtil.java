@@ -132,7 +132,7 @@ public final class mFncUtil {
 			}
 
 			if (j == max) {
-				return ++i + (start + 1);
+				return i + (start + 1);
 			}
 		}
 		return 0;
