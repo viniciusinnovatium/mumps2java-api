@@ -25,9 +25,9 @@ public abstract class mPage extends mClass {
 			OnPostHTTP();
 		}
 	}
-	
+	/*
 	public void Page(boolean skipheader){
-	}
+	}*/
 	
 	public static Object EscapeURL(Object url) {
 		try {
