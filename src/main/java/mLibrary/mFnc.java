@@ -452,6 +452,11 @@ public final class mFnc extends mParent {
 		}else if(list.toString().isEmpty()){
 			return 0;
 		}
+		
+		if (String.valueOf(list).isEmpty()){
+			return 0;
+		}
+		
 		throw new IllegalArgumentException(
 				"Arguments must be a listObject and it was " + list.getClass());
 	}

@@ -94,15 +94,16 @@ public class mCmd extends mParent {
 	 * Pausa o processamento por um determinado número de milisegundos
 	 */
 	public void Hang(Object obj) {
-		/*
+		Double time = mFncUtil.numberConverter(obj);
+		time = time * 1000;
 		try {
-			Thread.sleep(Long.valueOf(String.valueOf(obj)));
+			Thread.sleep(time.longValue());
 		} catch (NumberFormatException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		} catch (InterruptedException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		}
-		*/
+		
 
 	}
 
@@ -213,7 +214,7 @@ public class mCmd extends mParent {
 					}
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
-					//System.out.print(strWr);
+					System.out.print(strWr);
 				} catch (IOException e) {
 					throw new IllegalArgumentException(
 							"Fail to write the string HTML " + str.toString());

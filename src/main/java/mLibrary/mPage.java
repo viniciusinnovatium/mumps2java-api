@@ -26,8 +26,10 @@ public abstract class mPage extends mClass {
 		}
 	}
 	
+	/*
 	public void Page(boolean skipheader){
 	}
+	*/
 	
 	public static Object EscapeURL(Object url) {
 		try {
