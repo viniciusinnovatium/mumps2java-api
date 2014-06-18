@@ -171,7 +171,6 @@ public class mCmd extends mParent {
 			}else{
 				
 			}
-			System.out.println(scan);
 		} catch (Exception e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
@@ -214,7 +213,6 @@ public class mCmd extends mParent {
 					}
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
-					System.out.print(strWr);
 				} catch (IOException e) {
 					throw new IllegalArgumentException(
 							"Fail to write the string HTML " + str.toString());
