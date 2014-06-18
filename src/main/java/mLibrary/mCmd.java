@@ -94,7 +94,7 @@ public class mCmd extends mParent {
 	 * Pausa o processamento por um determinado número de milisegundos
 	 */
 	public void Hang(Object obj) {
-		Double time = mFncUtil.numberConverter(obj);
+		Double time = 0d;//mFncUtil.numberConverter(obj);
 		time = time * 1000;
 		
 		try {

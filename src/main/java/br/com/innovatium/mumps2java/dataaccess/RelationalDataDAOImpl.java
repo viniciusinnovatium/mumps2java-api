@@ -1,5 +1,6 @@
 package br.com.innovatium.mumps2java.dataaccess;
 
+import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,6 +8,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.ejb.Stateless;
+
+import br.com.innovatium.mumps2java.dataaccess.exception.SQLExecutionException;
 
 @Stateless
 public class RelationalDataDAOImpl extends AbstractDAO implements
@@ -16,7 +19,8 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 		super(ConnectionType.DATASOURCE_RELATIONAL);
 	}
 
-	public boolean existsRecord(String tableName, String id) {
+	public boolean existsRecord(String tableName, String id)
+			throws SQLExecutionException {
 		boolean exists = false;
 		PreparedStatement cmd = null;
 		ResultSet result = null;
@@ -30,7 +34,7 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 				break;
 			}
 		} catch (SQLException e) {
-			throw new IllegalStateException("Fail to select from table "
+			throw new SQLExecutionException("Fail to select from table "
 					+ tableName + " (ID " + id + ")", e);
 		} finally {
 			releaseResouce(cmd);
@@ -38,7 +42,8 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 		return exists;
 	}
 
-	public ResultSet loadRecord(String tableName, String id, String columnString) {
+	public ResultSet loadRecord(String tableName, String id, String columnString)
+			throws SQLExecutionException {
 		PreparedStatement cmd = null;
 		ResultSet result = null;
 		StringBuilder strcmd = new StringBuilder();
@@ -49,17 +54,19 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 			cmd.setString(1, id);
 			result = cmd.executeQuery();
 			if (!result.next()) {
+				cmd.close();
 				return null;
 			}
 
 		} catch (SQLException e) {
-			throw new IllegalStateException("Fail to select from table "
+			throw new SQLExecutionException("Fail to select from table "
 					+ tableName + " (ID " + id + ")", e);
 		}
 		return result;
 	}
 
-	public String insertRecord(String tableName, String columns, Object[] values) {
+	public String insertRecord(String tableName, String columns, Object[] values)
+			throws SQLExecutionException {
 		PreparedStatement cmd = null;
 		String[] columnsMap = columns.split(",");
 
@@ -78,42 +85,13 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 					columnsMap));
 			cmd.execute();
 		} catch (SQLException e) {
-			throw new IllegalStateException("Fail to insert into table "
+			throw new SQLExecutionException("Fail to insert into table "
 					+ tableName, e);
 		} finally {
 			releaseResouce(cmd);
 		}
 
 		return "";
-	}
-
-	private PreparedStatement populateStatement(String tableName,
-			Object[] values, Object[] columnsMap, String strcmd)
-			throws SQLException {
-
-		StringBuilder insert = new StringBuilder();
-		insert.append("insert into ").append(tableName);
-
-		PreparedStatement cmd = con.prepareStatement(strcmd);
-		for (int i = 0; i < columnsMap.length; i++) {
-			if (values[i] instanceof Timestamp) {
-				cmd.setTimestamp(i + 1, (Timestamp) values[i]);
-			} else if (values[i] instanceof Date) {
-				cmd.setDate(i + 1,
-						(new java.sql.Date(((Date) values[i]).getTime())));
-			} else if (values[i] instanceof Integer) {
-				cmd.setInt(i + 1, (int) values[i]);
-			} else if (values[i] instanceof Double) {
-				cmd.setDouble(i + 1, (double) values[i]);
-			} else {
-				cmd.setObject(i + 1, values[i] == null ? "''" : values[i]);
-			}
-
-			System.out.println("coluna " + (i + 1) + ": " + columnsMap[i]
-					+ " valor: " + values[i]);
-
-		}
-		return cmd;
 	}
 
 	public String generateUpdate(String idRecord, String tableName,
@@ -124,7 +102,7 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 			updateValues.append(columnsMap[i]).append("=");
 			if (values[i] != null) {
 				if (values[i] instanceof Date) {
-					updateValues.append(resolver.toDate((Date) values[i]));
+					updateValues.append(resolver.formatDate((Date) values[i]));
 				} else {
 					updateValues.append("'").append(values[i]).append("'");
 				}
@@ -154,8 +132,11 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 
 			columnsInsert.append(columnsMap[i]);
 			if (values[i] != null) {
-				if (values[i] instanceof Date) {
-					insertValues.append(resolver.toDate((Date) values[i]));
+				if (values[i] instanceof Timestamp) {
+					insertValues.append(resolver
+							.formatTimestamp((Date) values[i]));
+				} else if (values[i] instanceof Date) {
+					insertValues.append(resolver.formatDate((Date) values[i]));
 				} else {
 					insertValues.append("'").append(values[i]).append("'");
 				}
@@ -181,7 +162,7 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 	}
 
 	public String updateRecord(String tableName, String id, String columns,
-			Object[] values) {
+			Object[] values) throws SQLExecutionException {
 
 		PreparedStatement cmd = null;
 
@@ -204,16 +185,17 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 			//
 			cmd.execute();
 		} catch (SQLException e) {
-			throw new IllegalStateException("Fail to update table " + tableName
+			throw new SQLExecutionException("Fail to update table " + tableName
 					+ " (ID:" + id + ")", e);
 		} finally {
 			releaseResouce(cmd);
 		}
 
-		return "";
+		return "1";
 	}
 
-	public String deleteRecord(String tableName, String id) {
+	public String deleteRecord(String tableName, String id)
+			throws SQLExecutionException {
 		PreparedStatement cmd = null;
 		try {
 			String strcmd = "delete from " + tableName + " where ID = ?";
@@ -221,7 +203,7 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 			cmd.setString(1, id);
 			cmd.execute();
 		} catch (SQLException e) {
-			throw new IllegalStateException("Fail to delete table " + tableName
+			throw new SQLExecutionException("Fail to delete table " + tableName
 					+ " (ID:" + id + ")", e);
 		} finally {
 			releaseResouce(cmd);
@@ -229,13 +211,18 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 		return "";
 	}
 
-	private void releaseResouce(PreparedStatement ps) {
+	public String toString(Clob clob) throws SQLExecutionException {
+		return super.toString(clob);
+	}
+
+	private void releaseResouce(PreparedStatement ps)
+			throws SQLExecutionException {
 		try {
 			if (ps != null && !ps.isClosed()) {
 				ps.close();
 			}
 		} catch (SQLException e) {
-			throw new IllegalStateException("Fail to close prepare statement",
+			throw new SQLExecutionException("Fail to close prepare statement",
 					e);
 		}
 	}
