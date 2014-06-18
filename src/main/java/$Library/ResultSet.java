@@ -1,7 +1,10 @@
 package $Library;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
 
@@ -14,7 +17,7 @@ import br.com.innovatium.mumps2java.dataaccess.ConnectionType;
 @Stateless
 public class ResultSet extends mClass {
 	private final Connection con;
-	private String prepare;
+	private PreparedStatement prepare;
 	private java.sql.ResultSet resultSet;
 
 	public Object $New() {
@@ -35,20 +38,41 @@ public class ResultSet extends mClass {
 		this(ConnectionType.DATASOURCE_RELATIONAL);
 	}
 
-	public void Prepare(String prepare) {
-		if(prepare.equals("select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0 ")){
+	public void Prepare(String sqlMumps) {
+		String sql = "";
+		this.prepare = null;
+		if(sqlMumps.equals("select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0 ")){
 			//this.prepare = "select DISTINCT upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY ID";	
-			this.prepare = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY ID_ROW";
-		}else if(prepare.equals("select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")){
-			this.prepare = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY DOB";
-		}else{		
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY ID_ROW";
+		}else if(sqlMumps.equals("select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")){
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY DOB";
+		}else if(!mFncUtil.matcher(sqlMumps,"(\\Qselect DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"\\E{1,1}).*?(\\Q\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1))\\E{1,1})",0).isEmpty()/*prepare.matches(regex)startsWith(start = "select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"") && prepare.contains("\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")*/){
+			String param = mFncUtil.matcher(sqlMumps,"(\\Qselect DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"\\E{1,1}).*?(\\Q\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1))\\E{1,1})",null);
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND MEDPatient.name like '%?' and rownum <= 2001 ORDER BY DOB";
+			//"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"rena\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) "
+			 try {
+					this.prepare = con.prepareStatement(sql);
+					this.prepare.setObject(1, param);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
+		}else{				
 			throw new UnsupportedOperationException();
+		}
+		if(this.prepare == null){
+		 try {
+			this.prepare = con.prepareStatement(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		}
 	}
 
 	public Object Execute() {
-		try {			
-			resultSet = con.prepareStatement(prepare).executeQuery();
+		try {
+			resultSet = prepare.executeQuery();
 			return 1;
 
 		} catch (SQLException e) {
@@ -74,23 +98,26 @@ public class ResultSet extends mClass {
 		try {
 			return resultSet.getObject(column);
 		} catch (SQLException e) {
-			throw new IllegalArgumentException("Column "+column+" not found");
+			throw new IllegalArgumentException("Column " + column
+					+ " not found");
 		}
 	}
-	
-	public Object GetColumnCount(){
+
+	public Object GetColumnCount() {
 		try {
 			return resultSet.getMetaData().getColumnCount();
 		} catch (SQLException e) {
 			return 0;
 		}
 	}
-	
-	public Object GetColumnName(Object column){
+
+	public Object GetColumnName(Object column) {
 		try {
-			return resultSet.getMetaData().getColumnName(mFncUtil.numberConverter(column).intValue());
+			return resultSet.getMetaData().getColumnName(
+					mFncUtil.numberConverter(column).intValue());
 		} catch (SQLException e) {
-			throw new IllegalArgumentException("Column "+column+" not found");
+			throw new IllegalArgumentException("Column " + column
+					+ " not found");
 		}
 	}
 }
