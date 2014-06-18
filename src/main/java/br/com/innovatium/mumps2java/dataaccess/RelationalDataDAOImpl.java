@@ -54,6 +54,7 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 			cmd.setString(1, id);
 			result = cmd.executeQuery();
 			if (!result.next()) {
+				cmd.close();
 				return null;
 			}
 
