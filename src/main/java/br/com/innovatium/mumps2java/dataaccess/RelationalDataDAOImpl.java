@@ -191,7 +191,7 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 			releaseResouce(cmd);
 		}
 
-		return "";
+		return "1";
 	}
 
 	public String deleteRecord(String tableName, String id)

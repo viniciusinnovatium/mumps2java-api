@@ -930,8 +930,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $zerror() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return m$.var("$ZERROR").get();
 	}
 
 	public static Object $zhex(Object $zjob) {

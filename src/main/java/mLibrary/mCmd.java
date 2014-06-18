@@ -96,6 +96,7 @@ public class mCmd extends mParent {
 	public void Hang(Object obj) {
 		Double time = 0d;//mFncUtil.numberConverter(obj);
 		time = time * 1000;
+		
 		try {
 			Thread.sleep(time.longValue());
 		} catch (NumberFormatException e) {
@@ -288,8 +289,8 @@ public class mCmd extends mParent {
 	}
 
 	public void Job(String methodName) {
-		m$.Cmd.Do(methodName);
-		//new Thread(new JobCmd(methodName)).start();
+		//m$.Cmd.Do(methodName);
+		new Thread(new JobCmd(methodName)).start();
 	}
 
 	private class JobCmd implements Runnable {
@@ -300,7 +301,8 @@ public class mCmd extends mParent {
 		}
 
 		public void run() {
-			m$.Cmd.DoJob(true, methodName);
+			//m$.Cmd.DoJob(true, methodName);
+			m$.Cmd.Do(methodName);
 		}
 
 	}
