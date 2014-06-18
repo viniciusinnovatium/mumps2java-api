@@ -34,7 +34,7 @@ public class AbstractDAO {
 		Reader reader = null;
 		try {
 			if (clob == null || (length = (int) clob.length()) <= 0) {
-				return null;
+				return "";
 			}
 			reader = clob.getCharacterStream();
 		} catch (SQLException e) {

@@ -94,6 +94,7 @@ public class mCmd extends mParent {
 	 * Pausa o processamento por um determinado número de milisegundos
 	 */
 	public void Hang(Object obj) {
+		/*
 		Double time = mFncUtil.numberConverter(obj);
 		time = time * 1000;
 		try {
@@ -103,8 +104,7 @@ public class mCmd extends mParent {
 		} catch (InterruptedException e) {
 			Logger.getLogger(mClass.class.getName()).log(Level.SEVERE, null, e);
 		}
-		
-
+		*/
 	}
 
 	public boolean isIndirectionExecution(String content) {
