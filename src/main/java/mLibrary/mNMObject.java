@@ -149,17 +149,16 @@ public class mNMObject {
 		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
 				.get();
 		if ((classCDef == null) || (classCDef.isEmpty())) {
-			throw new IllegalStateException(
-					"There is no one configuration to this class: " + className);
+			return "";
+			//throw new IllegalStateException(	"There is no one configuration to this class: " + className);
 		}
 		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
 
 		String classCDefPK = (String) m$.var("^WWWCLASSCDEF", className,
 				"pkdef").get();
 		if ((classCDefPK == null) || (classCDefPK.isEmpty())) {
-			throw new IllegalStateException(
-					"There is no primary key configuration to this class: "
-							+ className);
+			return "";
+			//throw new IllegalStateException(	"There is no primary key configuration to this class: "+ className);
 		}
 		String[] classCDefPKMap = classCDefPK.split(";");
 
