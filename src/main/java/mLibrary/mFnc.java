@@ -516,7 +516,7 @@ public final class mFnc extends mParent {
 			}
 
 		} else if (isEmpty) {
-			mData mdata = m$.hasPublicVariables() ? m$.getmDataPublic() : m$
+			mDataAccess mdata = m$.hasPublicVariables() ? m$.getmDataPublic() : m$
 					.getmDataLocal();
 			next = new mVar(new Object[] { "" }, mdata).order((Integer) dir);
 		} else {
