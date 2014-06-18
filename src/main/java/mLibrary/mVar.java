@@ -1,20 +1,19 @@
 package mLibrary;
 
-import static br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil.generateKey;
-
 import java.util.Arrays;
 
 import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
+
 public class mVar {
 	/*
 	 * The subscripts should be converted to String soon.
 	 */
 	@TODO
 	private Object[] subs;
-	private mData mData;
+	private mDataAccess mData;
 
-	public mVar(Object[] subs, mLibrary.mData mData) {
+	public mVar(Object[] subs, mDataAccess mData) {
 		this.subs = subs;
 		this.mData = mData;
 	}
@@ -67,10 +66,11 @@ public class mVar {
 	public mVar var(Object... subs) {
 		return new mVar(mFncUtil.concat(this.subs, subs), mData);
 	}
-	
+
 	public mVar lastVar(Object... subs) {
-		return new mVar(mFncUtil.concatSinceLastSubscript(this.subs, subs), mData);  
-	} 
+		return new mVar(mFncUtil.concatSinceLastSubscript(this.subs, subs),
+				mData);
+	}
 
 	public String getName() {
 		return subs[0].toString();
@@ -84,7 +84,7 @@ public class mVar {
 		return subs;
 	}
 
-	public mData getmData() {
+	public mDataAccess getmData() {
 		return mData;
 	}
 

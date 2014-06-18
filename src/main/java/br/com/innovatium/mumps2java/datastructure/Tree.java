@@ -201,15 +201,25 @@ public final class Tree extends Node {
 	}
 
 	public void merge(final Object[] destSubs, final Object[] origSubs) {
-		Node origNode = findNode(origSubs);
+		merge(destSubs, findNode(origSubs));
+	}
+
+	/**
+	 * This method was create to supports merge of different kind of variables,
+	 * for instance, merge between local and public variables.
+	 * 
+	 * @param destSubs
+	 * @param origNode node from another kind of variable
+	 */
+	public void merge(final Object[] destSubs, final Node origNode) {
+		if (origNode == null) {
+			return;
+		}
+
 		Node destNode = findNode(destSubs);
 
 		if (destNode == null) {
 			destNode = setting(destSubs, null);
-		}
-
-		if (origNode == null) {
-			origNode = setting(origSubs, null);
 		}
 
 		if (origNode.getValue() != null) {
@@ -217,8 +227,8 @@ public final class Tree extends Node {
 		}
 
 		if (origNode.hasSubnodes()) {
-			mergeSubnodesOperation.set(destSubs, origSubs);
-			operateOverSubnodes(origNode.getSubnode(), mergeSubnodesOperation);
+			mergeSubnodesOperation.set(destSubs, origNode.getSubs());
+			operateOverSubnodes(origNode, mergeSubnodesOperation);
 		}
 
 	}
@@ -226,18 +236,18 @@ public final class Tree extends Node {
 	public Object order(Object... subs) {
 		return order(subs, 1);
 	}
-	
+
 	public Object[] findPrevious(Object[] subs) {
 		Node node = findNode(subs);
-		if(node == null || !node.hasPrevious()) {
+		if (node == null || !node.hasPrevious()) {
 			return null;
 		}
 		return node.getPrevious().getSubs();
 	}
-	
+
 	public Object[] findNext(Object[] subs) {
 		Node node = findNode(subs);
-		if(node == null || !node.hasNext()) {
+		if (node == null || !node.hasNext()) {
 			return null;
 		}
 		return node.getNext().getSubs();
@@ -347,7 +357,7 @@ public final class Tree extends Node {
 		} else {
 			node.getPrevious().setNext(node.getNext());
 		}
-		
+
 		if (node.hasNext()) {
 			node.getNext().setPrevious(node.getPrevious());
 		}

@@ -4,8 +4,35 @@ import mLibrary.mFncUtil;
 
 public final class DataStructureUtil {
 	public final static String DELIMITER = "~";
+	public static final int PUBLIC = 1;
+	public static final int GLOBAL = 2;
+	public static final int LOCAL = 3;
 
 	private DataStructureUtil() {
+	}
+
+	public static boolean isGlobal(Object[] subs) {
+		return GLOBAL == getVariableType(subs);
+	}
+
+	public static boolean isLocal(Object[] subs) {
+		return LOCAL == getVariableType(subs);
+	}
+
+	public static boolean isPublic(Object[] subs) {
+		return PUBLIC == getVariableType(subs);
+	}
+
+	public static int getVariableType(Object[] subs) {
+		String name = subs[0].toString();
+		final boolean isEmpty = name.length() == 0;
+		if (!isEmpty && '%' == name.charAt(0)) {
+			return PUBLIC;
+		} else if (!isEmpty && '^' == name.charAt(0)) {
+			return GLOBAL;
+		} else {
+			return LOCAL;
+		}
 	}
 
 	public static Object[] concat(Object[] first, Object[] second) {
@@ -33,7 +60,7 @@ public final class DataStructureUtil {
 
 	public static String generateKeyWithoutVarName(Object[] subs) {
 		int delimiterOccurece = subs.length - 2;
-		if(subs.length == 1){
+		if (subs.length == 1) {
 			return " ";
 		}
 		return generateKey(1, subs.length, delimiterOccurece, subs);

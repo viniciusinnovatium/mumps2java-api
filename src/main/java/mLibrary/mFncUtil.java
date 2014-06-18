@@ -11,14 +11,18 @@ import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
 public final class mFncUtil {
 
+	public static int getVariableType(Object[] subs) {
+		return DataStructureUtil.getVariableType(subs);
+	}
+
 	public static Object[] concat(Object[] dest, Object[] orig) {
 		return DataStructureUtil.concat(dest, orig);
 	}
-	
-	public static String[] splitDemiliter(String string){
-		if(string == null){
+
+	public static String[] splitDemiliter(String string) {
+		if (string == null) {
 			return null;
-		} 
+		}
 		return string.split("~", -1);
 	}
 
@@ -117,7 +121,7 @@ public final class mFncUtil {
 			return 0;
 		}
 
-		string = string.substring(start-1);
+		string = string.substring(start - 1);
 
 		char[] substringChar = substring.toCharArray();
 		char[] stringChar = string.toCharArray();
@@ -191,7 +195,7 @@ public final class mFncUtil {
 	public static Double dateMumpsToJava(Object internalDate) {
 		Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cal1.set(1840, 12, 31);
-		
+
 		Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cal2.set(1970, 01, 01);
 
@@ -220,13 +224,13 @@ public final class mFncUtil {
 		return days;
 
 	}
-	
+
 	public static String timeCodeFormatMumpsToJava(Object tFormat) {
 		String dFormatStr = "hh:mm:ss";
 		String dFormatCod = String.valueOf(tFormat);
 		if (dFormatCod.equals("-1")) {
 			// dFormatStr = "";
-		}  else if (dFormatCod.equals("1")) {
+		} else if (dFormatCod.equals("1")) {
 			dFormatStr = "HH:mm:ss";
 		} else if (dFormatCod.equals("2")) {
 			dFormatStr = "HH:mm";
@@ -242,7 +246,7 @@ public final class mFncUtil {
 			throw new UnsupportedOperationException();
 		} else if (dFormatCod.equals("8")) {
 			throw new UnsupportedOperationException();
-		} 
+		}
 		return dFormatStr;
 	}
 
@@ -251,7 +255,7 @@ public final class mFncUtil {
 		String dFormatCod = String.valueOf(dFormat);
 		if (dFormatCod.equals("-1")) {
 			// dFormatStr = "";
-		}else if (dFormatCod.equals("1")) {
+		} else if (dFormatCod.equals("1")) {
 			dFormatStr = "MM/dd/yy";
 		} else if (dFormatCod.equals("2")) {
 			dFormatStr = "dd MMM yy";
@@ -279,7 +283,7 @@ public final class mFncUtil {
 			dFormatStr = "ddd";
 		} else if (dFormatCod.equals("14")) {
 			dFormatStr = "D";
-		}else{
+		} else {
 			throw new UnsupportedOperationException();
 		}
 		return dFormatStr;
@@ -291,8 +295,8 @@ public final class mFncUtil {
 		}
 		Double dbl = null;
 		if (obj instanceof Boolean) {
-			return (Boolean.parseBoolean(String.valueOf(obj))?1d:0d);
-		}			
+			return (Boolean.parseBoolean(String.valueOf(obj)) ? 1d : 0d);
+		}
 		try {
 			dbl = Double.valueOf(String.valueOf(obj));
 		} catch (NumberFormatException nfe) {
@@ -538,20 +542,20 @@ public final class mFncUtil {
 		return BigDecimal.valueOf(value)
 				.setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
 	}
-	
-	public static String normalizeClassname(String className){
+
+	public static String normalizeClassname(String className) {
 		String result;
-		if (className.contains(".")){
+		if (className.contains(".")) {
 			result = className;
-		} else if (!className.startsWith("$")){
+		} else if (!className.startsWith("$")) {
 			result = "User.".concat(className);
 		} else {
 			result = className.replaceFirst("\\$", "$Library.");
 		}
 		return result;
 	}
-	
-	public static String escapeJS(String string){
+
+	public static String escapeJS(String string) {
 		String str = String.valueOf(string);
 		StringBuffer writer = new StringBuffer(str.length() * 2);
 
@@ -629,6 +633,6 @@ public final class mFncUtil {
 			}
 		}
 
-		return writer.toString();		
+		return writer.toString();
 	}
 }

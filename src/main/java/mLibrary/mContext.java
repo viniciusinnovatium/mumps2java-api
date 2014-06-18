@@ -21,15 +21,17 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletResponse;
 
 import mSystem.mSystem;
+import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mContext {
 	// TODO remover
 	public int xecuteCount;
-	private mData mDataPublic;
-	private mData mDataGlobal;
-	private mData mDataLocal;
+	private mDataAccess mDataPublic;
+	private mDataAccess mDataGlobal;
+	private mDataAccess mDataLocal;
+
 	private int countNewOperator;
 	private Map<String, Method> methodMap;
 
@@ -43,23 +45,34 @@ public class mContext {
 	private Map<String, Object> ioMap = new TreeMap<String, Object>();
 	private String ioDefault = "response";
 	private String ioActual;
-
+	private final mVariables mVariables;
 	private Map<String, Class> stackedClasses = new HashMap<String, Class>(30);
 
 	public mContext(Object io) {
-		this();
-		ioMap.put(this.ioDefault, io);
-		useIO(this.ioDefault);
+		this(true, io);
 	}
 
 	public mContext() {
-		this.mDataPublic = new mData();
-		this.mDataGlobal = new mData();
-		this.mDataLocal = new mData();
+		this(false, null);
+	}
+
+	public mContext(boolean hasDatabaseAcces, Object io) {
+		this.mVariables = new mVariables();
+		this.mDataPublic = new mDataAccessPublic(mVariables);
+		this.mDataLocal = new mDataAccessLocal(mVariables);
+		if (hasDatabaseAcces) {
+			this.mDataGlobal = new mDataGlobalAccess(mVariables);
+		} else {
+			this.mDataGlobal = new mDataAccessMemory(mVariables,
+					DataStructureUtil.GLOBAL);
+		}
 
 		this.Fnc = new mFnc(this);
 		this.Cmd = new mCmd(this);
 		this.system = new mSystem(this);
+
+		ioMap.put(this.ioDefault, io);
+		useIO(this.ioDefault);
 	}
 
 	public Writer getWriter() {
@@ -96,12 +109,13 @@ public class mContext {
 				this.reader = new BufferedReader(new FileReader(res));
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer strategy must not be empty.");
+			throw new IllegalArgumentException(
+					"The writer strategy must not be empty.");
 		}
 		this.ioActual = deviceName;
 	}
 
-	public mData getmDataPublic() {
+	public mDataAccess getmDataPublic() {
 		return mDataPublic;
 	}
 
@@ -109,20 +123,16 @@ public class mContext {
 		return !mDataPublic.isEmpty();
 	}
 
-	public mData getmDataGlobal() {
+	public mDataAccess getmDataGlobal() {
 		return mDataGlobal;
 	}
 
-	public mData getmDataLocal() {
+	public mDataAccess getmDataLocal() {
 		return mDataLocal;
 	}
 
 	public mSystem getSystem() {
 		return system;
-	}
-
-	public String dump() {
-		return mDataPublic.dump();
 	}
 
 	public Object dispatch(boolean isJobExec, mClass objClass,
@@ -237,7 +247,6 @@ public class mContext {
 		return dispatch(objClassArg, methodName, parameters);
 	}
 
-
 	/*
 	 * Estudar uma estrategia para executar o metodo quando nao temos declarado
 	 * o nome da classe a qual ele pertence, por exmplo: 1) Com nome definido:
@@ -345,9 +354,9 @@ public class mContext {
 
 	@TODO
 	public void newVar(mVar... vars) {
-		Map<mData, Object[]> maps = filteringVariableTypes(vars);
-		Set<Entry<mData, Object[]>> set = maps.entrySet();
-		for (Entry<mData, Object[]> entry : set) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
 			entry.getKey().stacking(entry.getValue());
 		}
 
@@ -356,26 +365,26 @@ public class mContext {
 
 	@TODO
 	public void newVarExcept(mVar... vars) {
-		Map<mData, Object[]> maps = filteringVariableTypes(vars);
-		Set<Entry<mData, Object[]>> set = maps.entrySet();
-		for (Entry<mData, Object[]> entry : set) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
 			entry.getKey().stackingExcept(entry.getValue());
 		}
 		countNewOperator++;
 	}
 
 	public void newVarBlock(int indexBlock, mVar... vars) {
-		Map<mData, Object[]> maps = filteringVariableTypes(vars);
-		Set<Entry<mData, Object[]>> set = maps.entrySet();
-		for (Entry<mData, Object[]> entry : set) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
 			entry.getKey().stackingBlock(indexBlock, entry.getValue());
 		}
 	}
 
 	public void newVarExceptBlock(int indexBlock, mVar... vars) {
-		Map<mData, Object[]> maps = filteringVariableTypes(vars);
-		Set<Entry<mData, Object[]>> set = maps.entrySet();
-		for (Entry<mData, Object[]> entry : set) {
+		Map<mDataAccess, Object[]> maps = filteringVariableTypes(vars);
+		Set<Entry<mDataAccess, Object[]>> set = maps.entrySet();
+		for (Entry<mDataAccess, Object[]> entry : set) {
 			entry.getKey().stackingExceptBlock(indexBlock, entry.getValue());
 		}
 	}
@@ -451,7 +460,7 @@ public class mContext {
 			return null;
 		}
 
-		return new mVar(subs, generateMData(varName));
+		return new mVar(subs, getMDataAccess(subs));
 	}
 
 	public mVar varRef(String name, Object ref) {
@@ -560,19 +569,19 @@ public class mContext {
 		return ((_result == null) ? "" : _result);
 	}
 
-	private mData generateMData(String variableName) {
-		final char type = variableName.charAt(0);
-		if (type == '%') {
+	private mDataAccess getMDataAccess(Object[] subs) {
+		final int type = mFncUtil.getVariableType(subs);
+		if (type == 1) {
 			return mDataPublic;
-		} else if (type == '^') {
+		} else if (type == 2) {
 			return mDataGlobal;
 		} else {
 			return mDataLocal;
 		}
 	}
 
-	private Map<mData, Object[]> filteringVariableTypes(mVar... variables) {
-		Map<mData, Object[]> map = new HashMap<mData, Object[]>();
+	private Map<mDataAccess, Object[]> filteringVariableTypes(mVar... variables) {
+		Map<mDataAccess, Object[]> map = new HashMap<mDataAccess, Object[]>();
 		List<String> locals = new ArrayList<String>();
 		List<String> publics = new ArrayList<String>();
 		List<String> globals = new ArrayList<String>();
