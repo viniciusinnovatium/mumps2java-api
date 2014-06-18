@@ -787,6 +787,8 @@ public final class mFnc extends mParent {
 				return null;
 			}
 			return mFncUtil.escapeJS(String.valueOf(string));
+		} else if (trantable.equals("URL")) {
+			return mFncUtil.escapeURL(String.valueOf(string));
 		} else if (trantable.equals("HTML")) {
 			return string;
 		} else {

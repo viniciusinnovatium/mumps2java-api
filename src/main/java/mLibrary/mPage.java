@@ -32,13 +32,7 @@ public abstract class mPage extends mClass {
 	*/
 	
 	public static Object EscapeURL(Object url) {
-		try {
-			return URLEncoder.encode(String.valueOf(url), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return url;
-		}
+		return mFncUtil.escapeURL(String.valueOf(url));
 	}
 
 	@TODO
@@ -57,13 +51,7 @@ public abstract class mPage extends mClass {
 	}
 
 	public static String UnescapeURL(Object url) {
-		try {
-			return URLDecoder.decode(String.valueOf(url), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return url.toString();
-		}
+		return mFncUtil.unescapeURL(String.valueOf(url));
 	}
 
 	public static Object QuoteJS(Object js) {
