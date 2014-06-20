@@ -564,9 +564,11 @@ public class mContext {
 
 		String name = null;
 		for (mVar var : variables) {
-			if (DataStructureUtil.isPublic(var.getSubs())) {
+			name = var.getSubs()[0] == null ? null : var.getSubs()[0]
+					.toString();
+			if (DataStructureUtil.isPublic(name)) {
 				publics.add(name);
-			} else if (DataStructureUtil.isGlobal(var.getSubs())) {
+			} else if (DataStructureUtil.isGlobal(name)) {
 				globals.add(name);
 			} else {
 				locals.add(name);

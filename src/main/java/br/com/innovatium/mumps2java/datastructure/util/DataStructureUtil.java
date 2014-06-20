@@ -22,9 +22,24 @@ public final class DataStructureUtil {
 	public static boolean isPublic(Object[] subs) {
 		return PUBLIC == getVariableType(subs);
 	}
+	
+	public static boolean isGlobal(String name) {
+		return GLOBAL == getVariableType(name);
+	}
+
+	public static boolean isLocal(String name) {
+		return LOCAL == getVariableType(name);
+	}
+
+	public static boolean isPublic(String name) {
+		return PUBLIC == getVariableType(name);
+	}
 
 	public static int getVariableType(Object[] subs) {
-		String name = subs[0].toString();
+		return getVariableType(subs[0].toString());
+	}
+
+	private static int getVariableType(String name) {
 		final boolean isEmpty = name.length() == 0;
 		if (!isEmpty && '%' == name.charAt(0)) {
 			return PUBLIC;
