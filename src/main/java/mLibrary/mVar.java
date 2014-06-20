@@ -2,7 +2,6 @@ package mLibrary;
 
 import java.util.Arrays;
 
-import br.com.innovatium.mumps2java.todo.REMOVE;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 public class mVar {
@@ -18,21 +17,8 @@ public class mVar {
 		this.mData = mData;
 	}
 
-	@REMOVE
-	public int getType() {
-		char type = subs[0].toString().charAt(0);
-		if ('%' == type) {
-			return 1;
-		} else if ('^' == type) {
-			return 2;
-		} else {
-			return 3;
-		}
-	}
-
-	@REMOVE
-	public boolean isSameType(mVar var) {
-		return this.getType() == var.getType();
+	public void merge(mVar orig) {
+		this.mData.merge(this.subs, orig.subs);
 	}
 
 	public Object order(int direction) {

@@ -85,6 +85,7 @@ public class mDataGlobalAccess extends mDataAccess {
 		metadataCache.kill(subs);
 	}
 
+	@Override
 	public void merge(Object[] dest, Object[] orig) {
 		metadataCache.merge(dest, orig);
 	}

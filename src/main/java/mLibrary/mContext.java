@@ -325,31 +325,8 @@ public class mContext {
 		return var(concat);
 	}
 
-	@TODO
 	public void merge(mVar dest, mVar orig) {
-		Object valOrig = orig.get();
-		if (valOrig != null) {
-			dest.set(valOrig);
-		}
-		Object obj = String.valueOf("");
-		for (;;) {
-			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig
-					.getSubs()));
-			subL.add(obj);
-
-			obj = mFnc.$order(var(subL.toArray()));
-			if (String.valueOf(obj).isEmpty()) {
-				break;
-			}
-			ArrayList<Object> subDest = new ArrayList<Object>(
-					Arrays.asList(dest.getSubs()));
-			subDest.add(obj);
-
-			ArrayList<Object> subOrig = new ArrayList<Object>(
-					Arrays.asList(orig.getSubs()));
-			subOrig.add(obj);
-			merge(var(subDest.toArray()), var(subOrig.toArray()));
-		}
+		dest.merge(orig);
 	}
 
 	@TODO
@@ -570,10 +547,9 @@ public class mContext {
 	}
 
 	private mDataAccess getMDataAccess(Object[] subs) {
-		final int type = mFncUtil.getVariableType(subs);
-		if (type == 1) {
+		if (DataStructureUtil.isPublic(subs)) {
 			return mDataPublic;
-		} else if (type == 2) {
+		} else if (DataStructureUtil.isGlobal(subs)) {
 			return mDataGlobal;
 		} else {
 			return mDataLocal;
@@ -588,11 +564,9 @@ public class mContext {
 
 		String name = null;
 		for (mVar var : variables) {
-			name = var.getName();
-			final char type = name.length() == 0 ? ' ' : name.charAt(0);
-			if (type == '%') {
+			if (DataStructureUtil.isPublic(var.getSubs())) {
 				publics.add(name);
-			} else if (type == '^') {
+			} else if (DataStructureUtil.isGlobal(var.getSubs())) {
 				globals.add(name);
 			} else {
 				locals.add(name);
@@ -600,8 +574,6 @@ public class mContext {
 		}
 
 		map.put(this.mDataLocal, locals.toArray());
-		// map.put(this.mDataPublic, publics.toArray());
-		// map.put(this.mDataGlobal, globals.toArray());
 		return map;
 	}
 
