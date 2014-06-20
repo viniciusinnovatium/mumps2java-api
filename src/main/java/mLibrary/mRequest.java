@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class mRequest {
 
-	private mData data = new mData();
+	private mDataAccess data = new mDataAccessMemory();
 	private HttpServletRequest originalRequest;
 	private mContent content;
 

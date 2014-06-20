@@ -91,13 +91,4 @@ final class SQLResolver {
 		}
 		throw new IllegalArgumentException();
 	}
-
-	public static void main(String[] asd) {
-		long x = 343440000000L;
-		System.out.println(new Date(x));
-
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-		System.out.println(dateFormat.format(new Date(x)));
-	}
 }

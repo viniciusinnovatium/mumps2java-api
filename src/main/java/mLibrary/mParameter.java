@@ -19,7 +19,7 @@ public class mParameter {
 		} catch (IllegalAccessException e) {
 			retorno = "";;
 		}
-		return retorno;
+		return (retorno==null)?"":retorno;
 	}
 
 }

@@ -1,10 +1,14 @@
 package mLibrary;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
@@ -555,6 +559,26 @@ public final class mFncUtil {
 		return result;
 	}
 
+	public static String escapeURL(String url) {
+		try {
+			return URLEncoder.encode(String.valueOf(url), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return url;
+		}
+	}
+
+	public static String unescapeURL(String url) {
+		try {
+			return URLDecoder.decode(String.valueOf(url), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return url;
+		}
+	}
+
 	public static String escapeJS(String string) {
 		String str = String.valueOf(string);
 		StringBuffer writer = new StringBuffer(str.length() * 2);
@@ -635,4 +659,31 @@ public final class mFncUtil {
 
 		return writer.toString();
 	}
+
+	public static String matcher(String line, String pattern, Object group) {
+
+		// String to be scanned to find the pattern.
+		// String line = "This order was placed for QT3000! OK?";
+		// String pattern = "(.*)(\\d+)(.*)";
+
+		// Create a Pattern object
+		Pattern r = Pattern.compile(pattern);
+
+		// Now create matcher object.
+		Matcher m = r.matcher(line);
+		if (m.find()) {
+			if (group instanceof Integer) {
+				return m.group((Integer) group);
+			}
+			if (group instanceof String) {
+				return m.group((String) group);
+			}
+			for (int i = 1; i <= m.groupCount(); i++) {
+				line = line.replaceAll(Pattern.quote(m.group(i)), "");
+			}
+			return line;
+		}
+		return "";
+	}
+
 }

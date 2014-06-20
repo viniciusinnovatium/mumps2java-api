@@ -263,7 +263,7 @@ public final class mFnc extends mParent {
 	}
 
 	public static Object $get(Object content) {
-		return $get(content, null);
+		return $get(content, "");
 	}
 
 	public static Object $get(Object content, Object defaultValue) {
@@ -787,6 +787,8 @@ public final class mFnc extends mParent {
 				return null;
 			}
 			return mFncUtil.escapeJS(String.valueOf(string));
+		} else if (trantable.equals("URL")) {
+			return mFncUtil.escapeURL(String.valueOf(string));
 		} else if (trantable.equals("HTML")) {
 			return string;
 		} else {

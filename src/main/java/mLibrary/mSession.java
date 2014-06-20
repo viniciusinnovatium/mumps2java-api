@@ -3,14 +3,13 @@ package mLibrary;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
 public class mSession {
 	private HttpSession originalSession;
 	
-	private mData mDataSession = new mData();
+	private mDataAccess mDataSession = new mDataAccessMemory();
 	
 	public mSession(HttpSession httpSession) {
 		setSessionId(httpSession.getId());
