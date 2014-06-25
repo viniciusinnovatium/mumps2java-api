@@ -135,7 +135,7 @@ public class mDataGlobalAccess extends mDataAccess {
 			for (Entry<String, String> entry : result) {
 				// Here we have to include variable or table name into the key
 				// because this is part of the subscripts.
-				metadataCache.set(generateSubs(tableName, entry.getKey()),
+				metadataCache.setNew(generateSubs(tableName, entry.getKey()),
 						entry.getValue());
 			}
 		}
