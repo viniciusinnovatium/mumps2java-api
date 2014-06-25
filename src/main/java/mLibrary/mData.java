@@ -12,8 +12,8 @@ import java.util.Set;
 import br.com.innovatium.mumps2java.dataaccess.MetadataDAO;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
-import br.com.innovatium.mumps2java.datastructure.MetadataCache;
 import br.com.innovatium.mumps2java.datastructure.Tree;
+import br.com.innovatium.mumps2java.metadatacache.MetadataCache;
 
 public class mData {
 	Object[] currentSubs;

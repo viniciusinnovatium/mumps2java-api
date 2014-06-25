@@ -12,17 +12,21 @@ import java.util.Set;
 import br.com.innovatium.mumps2java.dataaccess.MetadataDAO;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
 import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
-import br.com.innovatium.mumps2java.datastructure.MetadataCache;
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
+import br.com.innovatium.mumps2java.metadatacache.MetadataCache;
+import br.com.innovatium.mumps2java.metadatacache.MetadataCacheChangeTrigger;
 
 public class mDataGlobalAccess extends mDataAccess {
-	private MetadataDAO dao;
-	final MetadataCache metadataCache = MetadataCache.getCache();
+	private final MetadataDAO dao;
+	private final MetadataCache metadataCache = MetadataCache.getCache();
 
+	private final MetadataCacheChangeTrigger changeTrigger;
+	
 	public mDataGlobalAccess(mVariables mVariables) {
 		super(mVariables, DataStructureUtil.GLOBAL);
 		try {
 			dao = ServiceLocator.locate(MetadataDAO.class);
+			changeTrigger = ServiceLocator.locate(MetadataCacheChangeTrigger.class);
 		} catch (ServiceLocatorException e) {
 			throw new IllegalArgumentException(
 					"Fail to create data access object", e);
@@ -62,6 +66,7 @@ public class mDataGlobalAccess extends mDataAccess {
 	public void set(Object value) {
 		if (currentSubs != null && value != null) {
 			metadataCache.set(currentSubs, value.toString());
+			//changeTrigger.insert(currentSubs, value);
 		}
 	}
 

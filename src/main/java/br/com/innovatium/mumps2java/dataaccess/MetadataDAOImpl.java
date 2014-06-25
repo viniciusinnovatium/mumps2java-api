@@ -4,17 +4,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 
+import br.com.innovatium.mumps2java.metadatacache.MetadataCache;
 import br.com.innovatium.mumps2java.todo.TODO;
 
 @Stateless
 public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
-	private Set<String> tableCache = new HashSet<String>(30);
+	private final MetadataCache metadataCache = MetadataCache.getCache();
 
 	public MetadataDAOImpl() {
 		this(ConnectionType.DATASOURCE_METADATA);
@@ -29,7 +28,7 @@ public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 					.resolve(SQLType.SELECT_TABLE_NAME));
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				tableCache.add(rs.getString(1).toLowerCase());
+				metadataCache.addTableName(rs.getString(1).toLowerCase());
 			}
 		} catch (SQLException e) {
 			throw new IllegalStateException("Table cache name was not loaded",
@@ -143,7 +142,7 @@ public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 	}
 
 	public boolean hasTable(String tableName) {
-		return tableCache.contains(tableName.toLowerCase());
+		return metadataCache.isTableNameCached(tableName.toLowerCase());
 	}
 
 	// Remove table name treatment.
