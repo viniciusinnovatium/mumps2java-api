@@ -214,6 +214,7 @@ public class mCmd extends mParent {
 					}
 					String strWr = mFncUtil.toString(str);
 					writer.write(strWr);
+					//System.out.println(strWr);	
 				} catch (IOException e) {
 					throw new IllegalArgumentException(
 							"Fail to write the string HTML " + str.toString());
@@ -246,14 +247,18 @@ public class mCmd extends mParent {
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
 		}else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){		
 			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
-			//m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
 		}else if(cmdStr.equals("SET %TXT(1)=$$CallBack^COMViewUtils(YINHALT,YVAR)")){
-			m$.var("%TXT",1).set(m$.fnc$("COMViewUtils.CallBack",m$.var("YINHALT").get(),m$.var("YVAR").get()));
-			//m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
+			m$.var("%TXT",1).set(m$.fnc$("COMViewUtils.CallBack",m$.var("YINHALT").get(),m$.var("YVAR").get()));		
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^WWW101(YFORM,YKEY,YFELD)")){
+			m$.var("strStatus").set(m$.fnc$("WWW101.OnBeforeDataAccess",m$.var("YFORM").get(),m$.var("YKEY").get(),m$.var("YFELD").get()));
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess1^VARWWW101(YFORM,YKEY,YFELD)")){
+			m$.var("strStatus").set(m$.fnc$("VARWWW101.OnBeforeDataAccess1",m$.var("YFORM").get(),m$.var("YKEY").get(),m$.var("YFELD").get()));
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^WWW100()")){
+			m$.var("strStatus").set(m$.fnc$("WWW100.OnBeforeDataAccess"));
 		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
-		
+			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
 		} else if (cmdStr.startsWith("DO ")){
 			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
 		}else if(cmdStr.startsWith("D ")) {
@@ -265,7 +270,7 @@ public class mCmd extends mParent {
 		} else if (cmdStr.startsWith("U ")
 				|| cmdStr.startsWith("USER ")) {
 		} else {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
 		}
 
 	}
