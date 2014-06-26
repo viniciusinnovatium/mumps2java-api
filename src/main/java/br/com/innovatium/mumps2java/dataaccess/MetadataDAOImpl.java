@@ -195,7 +195,7 @@ public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 
 			ps = con.prepareStatement(selectOne.toString());
 			ps.execute();
-			tableCache.add(tableName.toLowerCase());
+			metadataCache.addTableName(tableName.toLowerCase());
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to create table " + tableName, e);
