@@ -1,11 +1,16 @@
-package br.com.innovatium.mumps2java.datastructure;
+package br.com.innovatium.mumps2java.metadatacache;
 
+import java.util.HashSet;
+import java.util.Set;
 
+import br.com.innovatium.mumps2java.datastructure.Tree;
 
 public final class MetadataCache {
 	private static final MetadataCache metadataCache;
 	private final Tree tree;
-	private QueryCache queryCache = new QueryCache();
+	private final QueryCache queryCache = new QueryCache();
+	private final Set<String> tableNameCache = new HashSet<String>(50);
+
 	static {
 		metadataCache = new MetadataCache();
 	}
@@ -30,13 +35,13 @@ public final class MetadataCache {
 	public boolean isQueried(Object[] subs) {
 		return this.queryCache.isCached(subs);
 	}
-	
+
 	public void addQueried(Object[] subs) {
-		this.addQueried(subs,false);
+		this.addQueried(subs, false);
 	}
 
 	public void addQueried(Object[] subs, boolean isOrder) {
-		this.queryCache.add(subs,isOrder);
+		this.queryCache.add(subs, isOrder);
 	}
 
 	public void kill(Object[] subs) {
@@ -54,10 +59,18 @@ public final class MetadataCache {
 	public void merge(Object[] destSubs, Object[] origSubs) {
 		tree.merge(destSubs, origSubs);
 	}
-	
-	private void initGlobalOfTheSystem(){
-		queryCache.add(new Object[]{"^|%SYS|SYS"});
-		queryCache.add(new Object[]{"^|%SYS|SYS", "UserIdentification"});
-		
+
+	public void addTableName(String tableName) {
+		tableNameCache.add(tableName);
+	}
+
+	public boolean isTableNameCached(String tableName) {
+		return tableNameCache.contains(tableName);
+	}
+
+	private void initGlobalOfTheSystem() {
+		queryCache.add(new Object[] { "^|%SYS|SYS" });
+		queryCache.add(new Object[] { "^|%SYS|SYS", "UserIdentification" });
+
 	}
 }

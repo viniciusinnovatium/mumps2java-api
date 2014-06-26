@@ -5,7 +5,7 @@ import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
-import br.com.innovatium.mumps2java.datastructure.QueryCache;
+import br.com.innovatium.mumps2java.metadatacache.QueryCache;
 
 public class QueryCacheTest {
 
