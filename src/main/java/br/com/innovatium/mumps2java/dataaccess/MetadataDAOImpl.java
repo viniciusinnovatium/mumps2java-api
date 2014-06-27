@@ -41,6 +41,7 @@ public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 	@TODO
 	public Map<String, String> like(String tableName, String key) {
 		if (!hasTable(tableName)) {
+			insert("LOGNM", "NOHASTABLE~"+tableName, key);
 			return null;
 		}
 
@@ -149,6 +150,7 @@ public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 	@TODO
 	public Object find(String tableName, String key) {
 		if (!hasTable(tableName)) {
+			insert("LOGNM", "NOHASTABLE~"+tableName, key);
 			return null;
 		}
 		Object objResult = null;
@@ -193,7 +195,7 @@ public class MetadataDAOImpl extends AbstractDAO implements MetadataDAO {
 
 			ps = con.prepareStatement(selectOne.toString());
 			ps.execute();
-
+			metadataCache.addTableName(tableName.toLowerCase());
 		} catch (SQLException e) {
 			throw new IllegalStateException(
 					"Fail to create table " + tableName, e);

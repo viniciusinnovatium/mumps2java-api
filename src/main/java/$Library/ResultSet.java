@@ -3,39 +3,39 @@ package $Library;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.ejb.Stateless;
 
 import mLibrary.mClass;
 import mLibrary.mFncUtil;
-import mLibrary.mVar;
+import br.com.innovatium.mumps2java.dataaccess.COMViewDAO;
+import br.com.innovatium.mumps2java.dataaccess.COMViewDAOImpl;
 import br.com.innovatium.mumps2java.dataaccess.ConnectionFactory;
 import br.com.innovatium.mumps2java.dataaccess.ConnectionType;
+import br.com.innovatium.mumps2java.dataaccess.MetadataDAO;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocator;
+import br.com.innovatium.mumps2java.dataaccess.ServiceLocatorException;
 
-@Stateless
 public class ResultSet extends mClass {
-	private final Connection con;
 	private PreparedStatement prepare;
 	private java.sql.ResultSet resultSet;
+	private COMViewDAO comViewDao;
 
 	public Object $New() {
-		return new ResultSet();
-	}
-
-	public ResultSet(ConnectionType connectionType) {
 		try {
-			con = ConnectionFactory.getConnection(connectionType);
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"Fail to open connection to database access throught "
-							+ connectionType + " strategy", e);
+			comViewDao = ServiceLocator.locate(COMViewDAO.class);
+		} catch (ServiceLocatorException e) {
+			throw new IllegalArgumentException(
+					"Fail to create data access object", e);
 		}
+		return this;
+	}		
+
+	public ResultSet(COMViewDAO comViewDao) {
+		super();
+		this.comViewDao = comViewDao;
 	}
 
 	public ResultSet() {
-		this(ConnectionType.DATASOURCE_RELATIONAL);
+		super();
 	}
 
 	public void Prepare(String sqlMumps) {
@@ -43,16 +43,29 @@ public class ResultSet extends mClass {
 		this.prepare = null;
 		if(sqlMumps.equals("select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0 ")){
 			//this.prepare = "select DISTINCT upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY ID";	
-			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY ID_ROW";
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 20 ORDER BY ID_ROW";
 		}else if(sqlMumps.equals("select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")){
-			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 2001 ORDER BY DOB";
-		}else if(!mFncUtil.matcher(sqlMumps,"(\\Qselect DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"\\E{1,1}).*?(\\Q\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1))\\E{1,1})",0).isEmpty()/*prepare.matches(regex)startsWith(start = "select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"") && prepare.contains("\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")*/){
-			String param = mFncUtil.matcher(sqlMumps,"(\\Qselect DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"\\E{1,1}).*?(\\Q\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1))\\E{1,1})",null);
-			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND MEDPatient.name like '%?' and rownum <= 2001 ORDER BY DOB";
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND rownum <= 20 ORDER BY DOB";
+		}else if(mFncUtil.isMatcher(sqlMumps,"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"","\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1))")/*prepare.matches(regex)startsWith(start = "select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"") && prepare.contains("\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")*/){
+			String param = mFncUtil.matcher(sqlMumps,"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"","\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1))");
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND MEDPatient.name like ?"
+					+ " and rownum <= 20 ORDER BY DOB";
 			//"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"rena\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) "
 			 try {
-					this.prepare = con.prepareStatement(sql);
-					this.prepare.setObject(1, param);
+					this.prepare = comViewDao.createPreparedStatement(sql);
+					this.prepare.setString(1, param+"%");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
+		}else if(mFncUtil.isMatcher(sqlMumps,"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith "," ")/*prepare.matches(regex)startsWith(start = "select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"") && prepare.contains("\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")*/){
+			String param = mFncUtil.matcher(sqlMumps,"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith "," ");
+			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND MEDPatient.id like ?"
+					+ " and rownum <= 20";
+			//"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"rena\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) "
+			 try {
+					this.prepare = comViewDao.createPreparedStatement(sql);
+					this.prepare.setString(1, "0||"+param+"%");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -61,18 +74,13 @@ public class ResultSet extends mClass {
 			throw new UnsupportedOperationException();
 		}
 		if(this.prepare == null){
-		 try {
-			this.prepare = con.prepareStatement(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			this.prepare = comViewDao.createPreparedStatement(sql);
 		}
 	}
 
 	public Object Execute() {
 		try {
-			resultSet = prepare.executeQuery();
+			resultSet = prepare.executeQuery();			
 			return 1;
 
 		} catch (SQLException e) {

@@ -242,29 +242,54 @@ public class mCmd extends mParent {
 	public void Xecute(Object command) {
 		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(command.toString());
 		String cmdStr = String.valueOf(command);
-		if (cmdStr
-				.equals("do AfterDataFields^COMViewFilter(\"MEDPatient,,\",1)")) {
-			Do("COMViewFilter.AfterDataFields", "MEDPatient,,", 1);
-		} else if (cmdStr
-				.equals("do ##class(SourceControl.Exporter).TagNMArtifactByNameKey(YDATEI,YKEY)")) {
-			// Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
-		} else if (cmdStr
-				.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")) {
-			m$.var("%TXT", 1).set(
-					m$.fnc$("WWWFORMValidation.BeforeSave", m$.var("YINHALT")
-							.get(), m$.var("YVAR").get()));
-			// m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
-		} else if (cmdStr
-				.equals("SET %TXT(1)=$$CallBack^COMViewUtils(YINHALT,YVAR)")) {
-			m$.var("%TXT", 1).set(
-					m$.fnc$("COMViewUtils.CallBack", m$.var("YINHALT").get(),
-							m$.var("YVAR").get()));
-			// m$.var("%TXT",1).set("#FUNCTION~DefaultSubmit(0)");
-		} else if (cmdStr.startsWith("SET %TXT(1)=$$")) {
-			throw new UnsupportedOperationException();
-		} else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
 
-		} else if (cmdStr.startsWith("DO ")) {
+		if(cmdStr.equals("do AfterDataFields^COMViewFilter(\"MEDPatient,,\",1)")){
+			Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);
+		}else if(cmdStr.equals("do ##class(SourceControl.Exporter).TagNMArtifactByNameKey(YDATEI,YKEY)")){
+			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
+		}else if(cmdStr.equals("set strResult=##class(alSOH.iStockHistory).ItemHasTransactions(YKEY)")){
+			//set strResult=##class(alSOH.iStockHistory).ItemHasTransactions(YKEY) TODO REVISAR IMPLEMENTAÇÃO
+		}else if(cmdStr.equals("W:$P($G(YFELD),Y,40)=6 \"²\"  W:$P($G(YFELD),Y,40)=12 \"³\" ")){
+			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
+		}else if(cmdStr.equals(";I YINHALT=\"\" S YINHALT=\"nopicture.gif\"  ;Customizing !")){
+			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
+		}else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){		
+			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
+		}else if(cmdStr.equals("SET %TXT(1)=$$CallBack^COMViewUtils(YINHALT,YVAR)")){
+			m$.var("%TXT",1).set(m$.fnc$("COMViewUtils.CallBack",m$.var("YINHALT").get(),m$.var("YVAR").get()));		
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^WWW101(YFORM,YKEY,YFELD)")){
+			m$.var("strStatus").set(m$.fnc$("WWW101.OnBeforeDataAccess",m$.var("YFORM").get(),m$.var("YKEY").get(),m$.var("YFELD").get()));
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess1^VARWWW101(YFORM,YKEY,YFELD)")){
+			m$.var("strStatus").set(m$.fnc$("VARWWW101.OnBeforeDataAccess1",m$.var("YFORM").get(),m$.var("YKEY").get(),m$.var("YFELD").get()));
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^VARMEDPrescription(.YKEY,YFELD,YFORM)")){
+			m$.var("strStatus").set(m$.fnc$("VARMEDPrescription.OnBeforeDataAccess",m$.var("YKEY"),m$.var("YFELD").get(),m$.var("YFORM").get()));
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^WWW100()")){
+			m$.var("strStatus").set(m$.fnc$("WWW100.OnBeforeDataAccess"));
+		}else if(cmdStr.equals("set strStatus=$$IsUsable^INLIEF(YKEY,YFORM)")){
+			m$.var("strStatus").set(m$.fnc$("INLIEF.IsUsable",m$.var("YKEY").get(),m$.var("YFORM").get()));
+		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^INReqSourceSupplier(YKEY,YUSER)")){
+			m$.var("strStatus").set(m$.fnc$("INReqSourceSupplier.OnBeforeDataAccess",m$.var("YKEY").get(),m$.var("YUSER").get()));
+		}else if(cmdStr.equals("set strResult=$$HideCustoms^INVORG()")){
+			m$.var("strResult").set(m$.fnc$("INVORG.HideCustoms"));
+		}else if(cmdStr.equals("set strResult='$$ValidItem^INART(YKEY)")){
+			m$.var("strResult").set(m$.fnc$("INART.ValidItem",m$.var("YKEY").get()));
+		}else if(mFncUtil.isMatcher(cmdStr, "set objStoredData=$get(",")")){
+			String var = mFncUtil.matcher(cmdStr, "set objStoredData=$get(",")");
+			m$.var("objStoredData").set(m$.Fnc.$get(m$.indirectVar(var)));
+		}else if(mFncUtil.isMatcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")){
+			String var = mFncUtil.matcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")");
+			m$.var("strCode").set(m$.fnc$("MEDPatient.GetRemovalCode","MEDPatient",var));
+		}else if(mFncUtil.isMatcher(cmdStr, "SET YOPTION=")){
+			String var = mFncUtil.matcher(cmdStr, "SET YOPTION=");
+			m$.var("YOPTION").set(var);
+		}else if(mFncUtil.isMatcher(cmdStr, "s YQ=",  "  //SR16842")){
+			String var = mFncUtil.matcher(cmdStr, "s YQ=",  "  //SR16842");
+			m$.var("YQ").set(var);
+		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
+			throw new UnsupportedOperationException();
+		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
+			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
+		} else if (cmdStr.startsWith("DO ")){
 			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
 		} else if (cmdStr.startsWith("D ")) {
 			Do(String.valueOf(command).replaceAll(Pattern.quote("D "), ""));
@@ -274,7 +299,7 @@ public class mCmd extends mParent {
 			Do(String.valueOf(command).replaceAll(Pattern.quote("d "), ""));
 		} else if (cmdStr.startsWith("U ") || cmdStr.startsWith("USER ")) {
 		} else {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
 		}
 
 	}
@@ -319,5 +344,9 @@ public class mCmd extends mParent {
 	public void Job(String string, Object object, Object object2, Object object3) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
+	}
+
+	public void LockInc(mVar var) {
+		// TODO REVISAR IMPLEMENTAÇÃO
 	}
 }

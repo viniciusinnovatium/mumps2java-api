@@ -175,7 +175,7 @@ public class mContext {
 				result = m.invoke(obj, parameters);
 			}
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new IllegalStateException("Fail to execute method: "
 					+ methodName + " and its parameters: "
 					+ Arrays.deepToString(parameters), e);
@@ -325,11 +325,9 @@ public class mContext {
 		return var(concat);
 	}
 
+	@TODO
 	public void merge(mVar dest, mVar orig) {
-		Object valOrig = orig.get();
-		if (valOrig != null) {
-			dest.set(valOrig);
-		}
+
 		Object obj = String.valueOf("");
 		for (;;) {
 			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig
@@ -349,6 +347,10 @@ public class mContext {
 			subOrig.add(obj);
 			merge(var(subDest.toArray()), var(subOrig.toArray()));
 		}
+		Object valOrig = orig.get();
+		if (valOrig != null) {
+			dest.set(valOrig);
+		}		
 		//dest.merge(orig);
 	}
 
@@ -524,7 +526,7 @@ public class mContext {
 			}
 
 			if (_content.charAt(x) == '(') {
-				if (_level == 0) {
+				if (_level == 0 && x > y) {
 					_result.add(_content.substring(y, x));
 					y = x + 1;
 				}
@@ -534,14 +536,18 @@ public class mContext {
 			else if (_content.charAt(x) == ')') {
 				_level--;
 				if (_level == 0) {
-					_result.add(parseVarValue(_content.substring(y, x)));
+					if(x > y){
+						_result.add(parseVarValue(_content.substring(y, x)));
+					}
 					y = x + 1;
 				}
 			}
 
 			else if (_content.charAt(x) == ',') {
 				if (_level == 1) {
-					_result.add(parseVarValue(_content.substring(y, x)));
+					if(x > y){
+						_result.add(parseVarValue(_content.substring(y, x)));
+					}
 					y = x + 1;
 				}
 			}
