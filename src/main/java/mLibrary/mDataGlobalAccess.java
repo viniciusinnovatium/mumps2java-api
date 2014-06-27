@@ -21,12 +21,13 @@ public class mDataGlobalAccess extends mDataAccess {
 	private final MetadataCache metadataCache = MetadataCache.getCache();
 
 	private final MetadataCacheChangeTrigger changeTrigger;
-	
+
 	public mDataGlobalAccess(mVariables mVariables) {
 		super(mVariables, DataStructureUtil.GLOBAL);
 		try {
 			dao = ServiceLocator.locate(MetadataDAO.class);
-			changeTrigger = ServiceLocator.locate(MetadataCacheChangeTrigger.class);
+			changeTrigger = ServiceLocator
+					.locate(MetadataCacheChangeTrigger.class);
 		} catch (ServiceLocatorException e) {
 			throw new IllegalArgumentException(
 					"Fail to create data access object", e);
@@ -66,7 +67,7 @@ public class mDataGlobalAccess extends mDataAccess {
 	public void set(Object value) {
 		if (currentSubs != null && value != null) {
 			metadataCache.set(currentSubs, value.toString());
-			//changeTrigger.insert(currentSubs, value);
+			// changeTrigger.insert(currentSubs, value);
 		}
 	}
 
@@ -135,7 +136,7 @@ public class mDataGlobalAccess extends mDataAccess {
 			for (Entry<String, String> entry : result) {
 				// Here we have to include variable or table name into the key
 				// because this is part of the subscripts.
-				metadataCache.setNew(generateSubs(tableName, entry.getKey()),
+				metadataCache.set(generateSubs(tableName, entry.getKey()),
 						entry.getValue());
 			}
 		}

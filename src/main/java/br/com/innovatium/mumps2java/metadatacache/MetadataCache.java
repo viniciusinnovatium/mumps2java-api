@@ -25,6 +25,7 @@ public final class MetadataCache {
 
 	public void set(Object[] subs, Object value) {
 		String tableName = subs[0].toString();
+
 		/*
 		 * Implementamos o lock da atualizacao do cache de metadados atraves
 		 * nome da global que estamos acessando, ou seja, apenas 1 thread podera

@@ -326,7 +326,30 @@ public class mContext {
 	}
 
 	public void merge(mVar dest, mVar orig) {
-		dest.merge(orig);
+		Object valOrig = orig.get();
+		if (valOrig != null) {
+			dest.set(valOrig);
+		}
+		Object obj = String.valueOf("");
+		for (;;) {
+			ArrayList<Object> subL = new ArrayList<Object>(Arrays.asList(orig
+					.getSubs()));
+			subL.add(obj);
+
+			obj = mFnc.$order(var(subL.toArray()));
+			if (String.valueOf(obj).isEmpty()) {
+				break;
+			}
+			ArrayList<Object> subDest = new ArrayList<Object>(
+					Arrays.asList(dest.getSubs()));
+			subDest.add(obj);
+
+			ArrayList<Object> subOrig = new ArrayList<Object>(
+					Arrays.asList(orig.getSubs()));
+			subOrig.add(obj);
+			merge(var(subDest.toArray()), var(subOrig.toArray()));
+		}
+		//dest.merge(orig);
 	}
 
 	@TODO
