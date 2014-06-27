@@ -88,6 +88,10 @@ public final class mFnc extends mParent {
 			}
 			Object target = args[0];
 			for (int i = 1; i < args.length; i++) {
+				if (i == args.length - 1 && args.length % 2 == 0) {
+					returnObj =  args[args.length - 1];
+					break;
+				}			
 				if (i % 2 != 0) {
 					if (mOp.Equal(target, args[i])) {
 						found = true;
@@ -96,13 +100,9 @@ public final class mFnc extends mParent {
 					}
 				}
 			}
-			if (!found) {
-				if (args.length % 2 != 0) {
-					throw new IllegalArgumentException(
+			if (!found && returnObj==null) {
+				throw new IllegalArgumentException(
 							"This method requires at least one pair of condition and value.");
-				} else {
-					returnObj = args[args.length - 1];
-				}
 			}
 		}
 		return returnObj;
@@ -386,7 +386,7 @@ public final class mFnc extends mParent {
 
 	public static Object $length(Object expression, Object delimiter) {
 		return mFncUtil.toString(expression).split(
-				Pattern.quote(String.valueOf(delimiter))).length;
+				Pattern.quote(String.valueOf(delimiter)),-1).length;
 	}
 
 	public static ListObject $list(ListObject list, int init, int end) {
@@ -1474,4 +1474,13 @@ public final class mFnc extends mParent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+
+	public Object $ztime(Object object) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object $list(Object object, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
 }

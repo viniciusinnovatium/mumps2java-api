@@ -659,14 +659,26 @@ public final class mFncUtil {
 
 		return writer.toString();
 	}
-
-	public static String matcher(String line, String pattern, Object group) {
+	public static boolean isMatcher(String line, String... patterns) {
+		return !matcher(line, 0, patterns).isEmpty();
+	}	
+	public static String matcher(String line, String... patterns) {
+		return matcher(line, null, patterns);
+	}
+	public static String matcher(String line, Object group, String... patterns) {
 
 		// String to be scanned to find the pattern.
 		// String line = "This order was placed for QT3000! OK?";
 		// String pattern = "(.*)(\\d+)(.*)";
 
 		// Create a Pattern object
+		String pattern = "";
+		for (int i = 0; i < patterns.length; i++) {
+			if(i>0){
+				pattern = pattern.concat(".*?");
+			}
+			pattern = pattern.concat("("+Pattern.quote(patterns[i])+"{1,1})");
+		}
 		Pattern r = Pattern.compile(pattern);
 
 		// Now create matcher object.
@@ -679,7 +691,7 @@ public final class mFncUtil {
 				return m.group((String) group);
 			}
 			for (int i = 1; i <= m.groupCount(); i++) {
-				line = line.replaceAll(Pattern.quote(m.group(i)), "");
+				line = line.replaceFirst(Pattern.quote(m.group(i)), "");
 			}
 			return line;
 		}
