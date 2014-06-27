@@ -44,7 +44,8 @@ public final class Tree extends Node {
 	}
 
 	public boolean contains(Object[] subs) {
-		return findNode(subs) != null;
+		Node node = findNode(subs);
+		return node != null && node.getValue() != null;
 	}
 
 	public void unstacking() {
@@ -209,7 +210,8 @@ public final class Tree extends Node {
 	 * for instance, merge between local and public variables.
 	 * 
 	 * @param destSubs
-	 * @param origNode node from another kind of variable
+	 * @param origNode
+	 *            node from another kind of variable
 	 */
 	public void merge(final Object[] destSubs, final Node origNode) {
 		if (origNode == null) {

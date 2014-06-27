@@ -33,8 +33,11 @@ public class Node implements Comparable<Node> {
 		this.key = key;
 		final int index = subs.length == 1 ? 0 : subs.length - 1;
 		Object temp = subs[index];
-		if(temp == null){
-			throw new IllegalArgumentException("Subscript must not be empty. The subs setted is "+Arrays.deepToString(subs));
+		if (temp == null) {
+			throw new IllegalArgumentException(
+					"Subscript must not be empty. The subs setted is "
+							+ Arrays.deepToString(subs) + " and value is "
+							+ value);
 		}
 		if (temp instanceof Double && (Double) temp % 1 == 0) {
 			temp = ((Double) temp).longValue();
@@ -153,10 +156,12 @@ public class Node implements Comparable<Node> {
 			}
 			return initial;
 		} else if (initial.hasNext()) {
-			if (initial == initial.next) {
+			if (initial.equals(initial.next)) {
 				throw new IllegalArgumentException(
-						"Previous node is equal the next node");
+						"Previous node is equal the next node, so, we have inconsistente relationship. Node problem: "
+								+ initial);
 			}
+
 			return findLessThan(initial.next, reference);
 		} else {
 			return initial;

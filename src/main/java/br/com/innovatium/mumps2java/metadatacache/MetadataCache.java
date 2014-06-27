@@ -17,7 +17,6 @@ public final class MetadataCache {
 
 	private MetadataCache() {
 		tree = new Tree();
-		initGlobalOfTheSystem();
 	}
 
 	public static MetadataCache getCache() {
@@ -25,7 +24,25 @@ public final class MetadataCache {
 	}
 
 	public void set(Object[] subs, Object value) {
-		tree.set(subs, value);
+		String tableName = subs[0].toString();
+
+		/*
+		 * Implementamos o lock da atualizacao do cache de metadados atraves
+		 * nome da global que estamos acessando, ou seja, apenas 1 thread podera
+		 * atualizar uma determinada global. Para isso, implementamos um bloco
+		 * sincronizado utilizando o nome da tabela que a thread tentara
+		 * alterar, e como o nome da tabela devera ser unico no pool de Strings,
+		 * recuperamos esse valor do pool para efetuar o lock do block.
+		 */
+		synchronized (tableName.intern()) {
+			tree.set(subs, value);
+		}
+	}
+
+	public void setNew(Object[] subs, Object value) {
+		if (!tree.contains(subs)) {
+			set(subs, value);
+		}
 	}
 
 	public Object get(Object[] subs) {
@@ -45,7 +62,18 @@ public final class MetadataCache {
 	}
 
 	public void kill(Object[] subs) {
-		tree.kill(subs);
+		String tableName = subs[0].toString();
+		/*
+		 * Implementamos o lock da atualizacao do cache de metadados atraves
+		 * nome da global que estamos acessando, ou seja, apenas 1 thread podera
+		 * atualizar uma determinada global. Para isso, implementamos um bloco
+		 * sincronizado utilizando o nome da tabela que a thread tentara
+		 * alterar, e como o nome da tabela devera ser unico no pool de Strings,
+		 * recuperamos esse valor do pool para efetuar o lock do block.
+		 */
+		synchronized (tableName.intern()) {
+			tree.kill(subs);
+		}
 	}
 
 	public int data(Object[] subs) {
@@ -66,11 +94,5 @@ public final class MetadataCache {
 
 	public boolean isTableNameCached(String tableName) {
 		return tableNameCache.contains(tableName);
-	}
-
-	private void initGlobalOfTheSystem() {
-		queryCache.add(new Object[] { "^|%SYS|SYS" });
-		queryCache.add(new Object[] { "^|%SYS|SYS", "UserIdentification" });
-
 	}
 }
