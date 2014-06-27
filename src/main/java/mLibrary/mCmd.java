@@ -286,6 +286,16 @@ public class mCmd extends mParent {
 		}else if(mFncUtil.isMatcher(cmdStr, "s YQ=",  "  //SR16842")){
 			String var = mFncUtil.matcher(cmdStr, "s YQ=",  "  //SR16842");
 			m$.var("YQ").set(var);
+		}else if(mFncUtil.isMatcher(cmdStr, "IF $G(YSEITE)=0 SET YSEITE=")){
+			String var = mFncUtil.matcher(cmdStr, "IF $G(YSEITE)=0 SET YSEITE=");
+			if(mOp.Equal(m$.Fnc.$get(m$.var("YSEITE")),0)){
+				m$.var("YSEITE").set(var);
+			}
+		}else if(mFncUtil.isMatcher(cmdStr, "if $$IsInUse^INART(YKEY) set YHID = ")){
+			String var = mFncUtil.matcher(cmdStr, "if $$IsInUse^INART(YKEY) set YHID = ");
+			if(mOp.Logical(m$.fnc$("INART.IsInUse",m$.var("YKEY").get()))){
+				m$.var("YHID").set(var);
+			}
 		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
@@ -348,5 +358,9 @@ public class mCmd extends mParent {
 
 	public void LockInc(mVar var) {
 		// TODO REVISAR IMPLEMENTAÇÃO
+	}
+
+	public void Job(String string, Object object) {
+		throw new UnsupportedOperationException();		
 	}
 }
