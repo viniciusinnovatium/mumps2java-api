@@ -26,4 +26,9 @@ public class Status extends mParent{
 		throw new UnsupportedOperationException();
 	}
 
+	public Object IsOK(Object object) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
 }

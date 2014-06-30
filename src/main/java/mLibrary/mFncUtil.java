@@ -4,8 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -660,12 +662,12 @@ public final class mFncUtil {
 		return writer.toString();
 	}
 	public static boolean isMatcher(String line, String... patterns) {
-		return !matcher(line, 0, patterns).isEmpty();
+		return matcher(line, 0, patterns)!=null;
 	}	
-	public static String matcher(String line, String... patterns) {
+	public static String[] matcher(String line, String... patterns) {
 		return matcher(line, null, patterns);
 	}
-	public static String matcher(String line, Object group, String... patterns) {
+	public static String[] matcher(String line, Object group, String... patterns) {
 
 		// String to be scanned to find the pattern.
 		// String line = "This order was placed for QT3000! OK?";
@@ -685,17 +687,25 @@ public final class mFncUtil {
 		Matcher m = r.matcher(line);
 		if (m.find()) {
 			if (group instanceof Integer) {
-				return m.group((Integer) group);
+				return new String[]{m.group((Integer) group)};
 			}
 			if (group instanceof String) {
-				return m.group((String) group);
+				return new String[]{m.group((String) group)};
 			}
-			for (int i = 1; i <= m.groupCount(); i++) {
-				line = line.replaceFirst(Pattern.quote(m.group(i)), "");
+			String del = "\n\n\n";
+			for (int i = 1; i <= m.groupCount(); i++) {				
+				line = line.replaceFirst(Pattern.quote(m.group(i)), del);
 			}
-			return line;
+			String[] strArray = line.split(del);
+			List<String> lstr = new ArrayList<String>();
+			for (int i = 0; i < strArray.length; i++) {
+				if(!strArray[i].isEmpty()){
+					lstr.add(strArray[i]);
+				}
+			}
+			return lstr.toArray(new String[]{});
 		}
-		return "";
+		return null;
 	}
 
 }

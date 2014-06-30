@@ -253,6 +253,8 @@ public class mCmd extends mParent {
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
 		}else if(cmdStr.equals(";I YINHALT=\"\" S YINHALT=\"nopicture.gif\"  ;Customizing !")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
+		}else if(cmdStr.equals(";D ^INARTD72")){
+			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
 		}else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){		
 			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
 		}else if(cmdStr.equals("SET %TXT(1)=$$CallBack^COMViewUtils(YINHALT,YVAR)")){
@@ -265,6 +267,8 @@ public class mCmd extends mParent {
 			m$.var("strStatus").set(m$.fnc$("VARMEDPrescription.OnBeforeDataAccess",m$.var("YKEY"),m$.var("YFELD").get(),m$.var("YFORM").get()));
 		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^WWW100()")){
 			m$.var("strStatus").set(m$.fnc$("WWW100.OnBeforeDataAccess"));
+		}else if(cmdStr.equals("set strStatus=$$OnAfterSave^VARMEDPatient(YKEY,YFELD)")){
+			m$.var("strStatus").set(m$.fnc$("VARMEDPatient.OnAfterSave",m$.var("YKEY").get(),m$.var("YFELD").get()));
 		}else if(cmdStr.equals("set strStatus=$$IsUsable^INLIEF(YKEY,YFORM)")){
 			m$.var("strStatus").set(m$.fnc$("INLIEF.IsUsable",m$.var("YKEY").get(),m$.var("YFORM").get()));
 		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^INReqSourceSupplier(YKEY,YUSER)")){
@@ -274,31 +278,52 @@ public class mCmd extends mParent {
 		}else if(cmdStr.equals("set strResult='$$ValidItem^INART(YKEY)")){
 			m$.var("strResult").set(m$.fnc$("INART.ValidItem",m$.var("YKEY").get()));
 		}else if(mFncUtil.isMatcher(cmdStr, "set objStoredData=$get(",")")){
-			String var = mFncUtil.matcher(cmdStr, "set objStoredData=$get(",")");
+			String var = mFncUtil.matcher(cmdStr, "set objStoredData=$get(",")")[0];
 			m$.var("objStoredData").set(m$.Fnc.$get(m$.indirectVar(var)));
 		}else if(mFncUtil.isMatcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")){
-			String var = mFncUtil.matcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")");
+			String var = mFncUtil.matcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")[0];
 			m$.var("strCode").set(m$.fnc$("MEDPatient.GetRemovalCode","MEDPatient",var));
 		}else if(mFncUtil.isMatcher(cmdStr, "SET YOPTION=")){
-			String var = mFncUtil.matcher(cmdStr, "SET YOPTION=");
+			String var = mFncUtil.matcher(cmdStr, "SET YOPTION=")[0];
 			m$.var("YOPTION").set(var);
 		}else if(mFncUtil.isMatcher(cmdStr, "s YQ=",  "  //SR16842")){
-			String var = mFncUtil.matcher(cmdStr, "s YQ=",  "  //SR16842");
+			String var = mFncUtil.matcher(cmdStr, "s YQ=",  "  //SR16842")[0];
 			m$.var("YQ").set(var);
+		}else if(mFncUtil.isMatcher(cmdStr, "S YONCHANGE=")){
+			String var = mFncUtil.matcher(cmdStr, "S YONCHANGE=")[0];
+			m$.var("YONCHANGE").set(var);
 		}else if(mFncUtil.isMatcher(cmdStr, "IF $G(YSEITE)=0 SET YSEITE=")){
-			String var = mFncUtil.matcher(cmdStr, "IF $G(YSEITE)=0 SET YSEITE=");
+			String var = mFncUtil.matcher(cmdStr, "IF $G(YSEITE)=0 SET YSEITE=")[0];
 			if(mOp.Equal(m$.Fnc.$get(m$.var("YSEITE")),0)){
 				m$.var("YSEITE").set(var);
 			}
 		}else if(mFncUtil.isMatcher(cmdStr, "if $$IsInUse^INART(YKEY) set YHID = ")){
-			String var = mFncUtil.matcher(cmdStr, "if $$IsInUse^INART(YKEY) set YHID = ");
+			String var = mFncUtil.matcher(cmdStr, "if $$IsInUse^INART(YKEY) set YHID = ")[0];
 			if(mOp.Logical(m$.fnc$("INART.IsInUse",m$.var("YKEY").get()))){
 				m$.var("YHID").set(var);
+			}
+		}else if(mFncUtil.isMatcher(cmdStr, "IF $$^INARTVERKHID(1)=1 SET YHID=")){
+			String var = mFncUtil.matcher(cmdStr, "IF $$^INARTVERKHID(1)=1 SET YHID=")[0];
+			if(mOp.Equal(m$.fnc$("INARTVERKHID.main",1),1)){
+				m$.var("YHID").set(var);
+			}
+		}else if(mFncUtil.isMatcher(cmdStr, "IF $$^INARTVERKHID(",")=1 SET YHID=")){
+			String[] varArray = mFncUtil.matcher(cmdStr, "IF $$^INARTVERKHID(",")=1 SET YHID=");
+			if(mOp.Equal(m$.fnc$("INARTVERKHID.main",varArray[0]),1)){
+				m$.var("YHID").set(varArray[1]);
+			}
+		}else if(mFncUtil.isMatcher(cmdStr, "W $$^WWWTEXT(",")")){
+			String var = mFncUtil.matcher(cmdStr, "W $$^WWWTEXT(",")")[0];
+			m$.Cmd.Write(m$.fnc$("WWWTEXT.main",var));
+		}else if(mFncUtil.isMatcher(cmdStr, "I $P(YFELD,Y,138)>1 W $$^INARTPE(YKEY)")){
+			String var = mFncUtil.matcher(cmdStr, "I $P(YFELD,Y,138)>1 W $$^INARTPE(YKEY)")[0];
+			if(mOp.Greater(m$.Fnc.$piece(m$.var("YFELD").get(), m$.var("Y").get(),138),1)){
+				m$.Cmd.Write(m$.fnc$("INARTPE.main",m$.var("YKEY").get()));
 			}
 		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
-			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
+			throw new UnsupportedOperationException("Implementation required for Xecute with command: '"+cmdStr+"'");
 		} else if (cmdStr.startsWith("DO ")){
 			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
 		} else if (cmdStr.startsWith("D ")) {

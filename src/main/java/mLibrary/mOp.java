@@ -191,4 +191,12 @@ public final class mOp {
 		return a & b;
 	}
 
+	public static boolean NotFollows(Object object, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean Follows(Object object, Object object2) {
+		throw new UnsupportedOperationException();
+	}
+
 }
