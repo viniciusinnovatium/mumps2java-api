@@ -239,6 +239,7 @@ public class mCmd extends mParent {
 		Write(string);
 	}
 
+	@TODO
 	public void Xecute(Object command) {
 		m$.var("^MXecute", "cmd", ++m$.xecuteCount).set(command.toString());
 		String cmdStr = String.valueOf(command);
@@ -298,7 +299,7 @@ public class mCmd extends mParent {
 		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
-			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
+			//throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
 		} else if (cmdStr.startsWith("DO ")){
 			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
 		} else if (cmdStr.startsWith("D ")) {
