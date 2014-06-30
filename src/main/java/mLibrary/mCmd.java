@@ -316,25 +316,20 @@ public class mCmd extends mParent {
 			String var = mFncUtil.matcher(cmdStr, "W $$^WWWTEXT(",")")[0];
 			m$.Cmd.Write(m$.fnc$("WWWTEXT.main",var));
 		}else if(mFncUtil.isMatcher(cmdStr, "I $P(YFELD,Y,138)>1 W $$^INARTPE(YKEY)")){
-			String var = mFncUtil.matcher(cmdStr, "I $P(YFELD,Y,138)>1 W $$^INARTPE(YKEY)")[0];
+			//String var = mFncUtil.matcher(cmdStr, "I $P(YFELD,Y,138)>1 W $$^INARTPE(YKEY)")[0];
 			if(mOp.Greater(m$.Fnc.$piece(m$.var("YFELD").get(), m$.var("Y").get(),138),1)){
 				m$.Cmd.Write(m$.fnc$("INARTPE.main",m$.var("YKEY").get()));
 			}
 		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
-		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ")) {
-			throw new UnsupportedOperationException("Implementation required for Xecute with command: '"+cmdStr+"'");
-		} else if (cmdStr.startsWith("DO ")){
-			Do(String.valueOf(command).replaceAll(Pattern.quote("DO "), ""));
-		} else if (cmdStr.startsWith("D ")) {
-			Do(String.valueOf(command).replaceAll(Pattern.quote("D "), ""));
-		} else if (cmdStr.startsWith("do ")) {
-			Do(String.valueOf(command).replaceAll(Pattern.quote("do "), ""));
-		} else if (cmdStr.startsWith("d ")) {
-			Do(String.valueOf(command).replaceAll(Pattern.quote("d "), ""));
-		} else if (cmdStr.startsWith("U ") || cmdStr.startsWith("USER ")) {
+		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ") || cmdStr.startsWith("S ") || cmdStr.startsWith("s ") ) {
+			throw new UnsupportedOperationException("Implementation required for Xecute with command SET: '"+cmdStr+"'");
+		} else if (cmdStr.startsWith("DO ") || cmdStr.startsWith("do ") || cmdStr.startsWith("D ") || cmdStr.startsWith("d ")){
+			Do(String.valueOf(command).replaceFirst("DO |do |D |d ", ""));
+		} else if (cmdStr.startsWith("USER ") || cmdStr.startsWith("user ") || cmdStr.startsWith("U ") || cmdStr.startsWith("u ")){
+			//Do(String.valueOf(command).replaceFirst("DO |do |D |d ", ""));
 		} else {
-			throw new UnsupportedOperationException("Xecute with command: "+cmdStr);
+			throw new UnsupportedOperationException("Implementation required for Xecute with command: '"+cmdStr+"'");
 		}
 
 	}
