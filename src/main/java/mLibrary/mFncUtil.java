@@ -377,7 +377,7 @@ public final class mFncUtil {
 		if (from > string.length()) {
 			return "";
 		}
-		String[] strSplit = string.split(Pattern.quote(delimiter));
+		String[] strSplit = string.split(Pattern.quote(delimiter),-1);
 		if (to > strSplit.length) {
 			to = strSplit.length;
 		}

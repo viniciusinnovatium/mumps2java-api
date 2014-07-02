@@ -641,23 +641,18 @@ public final class mFnc extends mParent {
 		return new Random().nextInt(mFncUtil.numberConverter(range).intValue());
 	}
 
-	public static Object $replace(Object object, Object oldSubstring,
+	public static String $replace(Object string, Object oldSubstring,
 			Object newSubstring) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public static String $replace(String string, String oldSubstring,
-			String newSubstring) {
 		if (string == null) {
 			return null;
 		}
+		String strParam = String.valueOf(string);
 
 		if (oldSubstring == null) {
-			return string;
+			return strParam;
 		}
 
-		return string.replace(oldSubstring, newSubstring);
+		return strParam.replace(oldSubstring.toString(), newSubstring.toString());
 	}
 
 	public static String $reverse(Object string) {

@@ -282,7 +282,7 @@ public class mCmd extends mParent {
 			m$.var("objStoredData").set(m$.Fnc.$get(m$.indirectVar(var)));
 		}else if(mFncUtil.isMatcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")){
 			String var = mFncUtil.matcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")[0];
-			m$.var("strCode").set(m$.fnc$("MEDPatient.GetRemovalCode","MEDPatient",var));
+			//m$.var("strCode").set(m$.fnc$("MEDPatient.GetRemovalCode","MEDPatient",var));//TODO REVISAR GetRemovalCode NÃO EXISTE
 		}else if(mFncUtil.isMatcher(cmdStr, "SET YOPTION=")){
 			String var = mFncUtil.matcher(cmdStr, "SET YOPTION=")[0];
 			m$.var("YOPTION").set(var);
