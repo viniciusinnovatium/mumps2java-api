@@ -57,6 +57,17 @@ public final class mOp {
 		return !Equal(x, y);
 	}
 
+	public static Object Concat(Object...strings) {
+		Object result = null;
+		for (Object var : strings) {
+			if (result==null){
+				result = var;
+			} else {
+				result = Concat(result,var);
+			}
+		}
+		return result;
+	}
 	public static Object Concat(Object string1, Object string2) {
 		if (string1 instanceof ListObject) {
 			ListObject lo1 = (ListObject) string1;
