@@ -320,7 +320,11 @@ public class mCmd extends mParent {
 			if(mOp.Greater(m$.Fnc.$piece(m$.var("YFELD").get(), m$.var("Y").get(),138),1)){
 				m$.Cmd.Write(m$.fnc$("INARTPE.main",m$.var("YKEY").get()));
 			}
-		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
+		}else if (cmdStr.equals("set ^CacheTempEvent(YUCI,\"VARAlertaLocalLinha\",\"Format\") = 1")){
+			
+			m$.var("^CacheTempEvent",m$.var("YUCI").get(),"VARAlertaLocalLinha","Format").set(1);
+		}
+		else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ") || cmdStr.startsWith("S ") || cmdStr.startsWith("s ") ) {
 			throw new UnsupportedOperationException("Implementation required for Xecute with command SET: '"+cmdStr+"'");
