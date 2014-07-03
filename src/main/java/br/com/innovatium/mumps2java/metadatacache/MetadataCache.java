@@ -84,6 +84,10 @@ public final class MetadataCache {
 		return tree.order(subs);
 	}
 
+	public Object order(Object[] subs, int dir) {
+		return tree.order(subs,dir);
+	}
+	
 	public void merge(Object[] destSubs, Object[] origSubs) {
 		tree.merge(destSubs, origSubs);
 	}

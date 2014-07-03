@@ -516,14 +516,19 @@ public final class mFncUtil {
 	}
 
 	public static String toString(Object expression) {
-		String str = String.valueOf(expression);
 		if (expression instanceof Double) {
 			Double dbl = (Double) expression;
-			str = BigDecimal.valueOf(dbl)
-					.setScale(dbl % 1 == 0 ? 0 : 2, BigDecimal.ROUND_HALF_UP)
+			long decimal = Double.valueOf((dbl % dbl.longValue())).longValue();
+			int decLen = String.valueOf(decimal>0?decimal:"").length();
+			return BigDecimal.valueOf(dbl)
+					.setScale(decLen, BigDecimal.ROUND_HALF_UP)
 					.toString();
 		}
-		return str;
+		if(expression instanceof Boolean){
+			Boolean bln = (Boolean) expression;
+			return bln?"1":"0";
+		}
+		return String.valueOf(expression);
 	}
 
 	public static String round(Double value, int scale) {

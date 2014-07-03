@@ -64,27 +64,33 @@ public class ResultSet extends mClass {
 		}else if(mFncUtil.isMatcher(sqlMumps,sqlPreffix = "select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and ")/*prepare.matches(regex)startsWith(start = "select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"") && prepare.contains("\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) ")*/){
 			String[] params = null;
 			String sqlMumpsSuffix = sqlMumps.replace(sqlPreffix, "");
-			String criteria = "MEDPatient.name like ?";
-			String value = "";			
-			if(mFncUtil.isMatcher(sqlMumpsSuffix,"$find( $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\") ,\"","\") > 1 ")){
-				params = mFncUtil.matcher(sqlMumpsSuffix,"$find( $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\") ,\"","\") > 1 ");	
-				value = "%"+params[1]+"%";
-			}else if(mFncUtil.isMatcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  %startswith \"","\" ")){
-				params = mFncUtil.matcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  %startswith \"","\" ");		
-				value = params[1]+"%";
-			}else if(mFncUtil.isMatcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  = \"","\"")){
-				params = mFncUtil.matcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  = \"","\"");		
-				value = params[1];				
-			}else if(mFncUtil.isMatcher(sqlMumpsSuffix,"( $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  <> \"","\" OR  $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  IS NULL) ")){
-				params = mFncUtil.matcher(sqlMumpsSuffix,"( $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  <> \"","\" OR  $$RemoveMark^COMViewSQL(%upper(SQLUser.MEDPatient.Name),\"0\",\"","\")  IS NULL) ");		
-				value = params[1];
-
-				criteria = "(MEDPatient.name <> ? or MEDPatient.name is null)";
+			String criteria = " like ?";
+			String value = "";
+			String field = "";		
+			if(mFncUtil.isMatcher(sqlMumpsSuffix,"$find( $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\") ,\"","\") > 1 ")){
+				params = mFncUtil.matcher(sqlMumpsSuffix,"$find( $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\") ,\"","\") > 1 ");
+				field = params[0];
+				value = "%"+params[2]+"%";
+				criteria = field+criteria;
+			}else if(mFncUtil.isMatcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  %startswith \"","\" ")){
+				params = mFncUtil.matcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  %startswith \"","\" ");		
+				field = params[0];
+				value = params[2]+"%";
+				criteria = field+criteria;
+			}else if(mFncUtil.isMatcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  = \"","\"")){
+				params = mFncUtil.matcher(sqlMumpsSuffix," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  = \"","\"");	
+				field = params[0];
+				value = params[2];	
+				criteria = field+criteria;
+			}else if(mFncUtil.isMatcher(sqlMumpsSuffix,"( $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  <> \"","\" OR  $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  IS NULL) ")){
+				params = mFncUtil.matcher(sqlMumpsSuffix,"( $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  <> \"","\" OR  $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")  IS NULL) ");		
+				field = params[0];
+				value = params[2];
+				criteria = "("+field+" <> ? or "+field+" is null)";
 			}else{
 				throw new UnsupportedOperationException("Criteria not implemented for "+sqlMumpsSuffix);
 			}
 	
-			
 			sql = "select DISTINCT upper(MEDPatient.ID) AS ID_ROW,SQLUser.MEDPatient.* from SQLUser.MEDPatient where MEDPatient.company = 0 AND "+criteria
 					+ " and rownum <= 20";
 			//"select DISTINCT top 2001 %upper(MEDPatient.ID) AS ID from SQLUser.MEDPatient where MEDPatient.company = 0  and P1 %startswith \"rena\"  order by %upper(+$piece(SQLUser.MEDPatient.DOB,\".\",1)) "
