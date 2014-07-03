@@ -2,7 +2,6 @@ package br.com.innovatium.mumps2java.dataaccess;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -11,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.dynamic.DynamicClassLoader;
 import org.eclipse.persistence.dynamic.DynamicType;
@@ -22,11 +22,12 @@ import br.com.innovatium.mumps2java.model.MedpatientPK;
 
 @Stateless
 public class MedpatientDAOImpl implements MedpatientDAO {
-	@PersistenceContext(name = "jpa-tutorial")
-	private EntityManager em;
-	
 	@PersistenceContext(name = "relational")
-	private EntityManager emrelational;
+	private EntityManager em;
+
+	public MedpatientDAOImpl() {
+		criarMedpatientDynamicType();
+	}
 
 	public Medpatient find(String patientid) {
 		return (Medpatient) em.find(Medpatient.class, new MedpatientPK(
@@ -34,22 +35,43 @@ public class MedpatientDAOImpl implements MedpatientDAO {
 
 	}
 
-	public List<Medpatient> total(String patientid) {
-		List l = null;
+	public void testarMedpatientEstatico(String patientid) {
+		System.out.println("Gerando medpatient estatico ----");
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		long timeexpended = 0;
 		for (int i = 0; i < 10; i++) {
 			Date start = new Date();
-			l = em.createQuery(
+			em.createQuery(
 					"select p.name from Medpatient p where p.id.patientid like :patientid")
 					.setParameter("patientid", patientid + "%").getResultList();
-			System.out.println("Tempo de pesquisa de pacientes "
-					+ (new Date().getTime() - start.getTime()) + "(ms)");
-
+			timeexpended = new Date().getTime() - start.getTime();
+			stats.addValue(timeexpended);
 		}
-		return l;
+
+		System.out.println("Media: " + stats.getMean());
+		System.out.println("Desvio Padrao: " + stats.getStandardDeviation());
 
 	}
 
-	public void testarMedpentient(String id) {
+	public void testarMedpatientDinamico(String id) {
+
+		System.out.println("Gerando medpatient dinamico ----");
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		long timeexpended = 0;
+		for (int i = 0; i < 10; i++) {
+			java.util.Date start = new java.util.Date();
+			em.createQuery(
+					"select p.name from MEDPatientDynamic p where p.patientid like :patientid")
+					.setParameter("patientid", id + "%").getResultList();
+			timeexpended = new java.util.Date().getTime() - start.getTime();
+			stats.addValue(timeexpended);
+		}
+
+		System.out.println("Media: " + stats.getMean());
+		System.out.println("Desvio Padrao: " + stats.getStandardDeviation());
+	}
+
+	private void criarMedpatientDynamicType() {
 		// Create a dynamic class loader and create the types.
 		DynamicClassLoader dcl = new DynamicClassLoader(Thread.currentThread()
 				.getContextClassLoader());
@@ -75,24 +97,12 @@ public class MedpatientDAOImpl implements MedpatientDAO {
 		JPADynamicHelper helper = new JPADynamicHelper(emf);
 		helper.addTypes(true, true, pacienteType);
 
-		EntityManager em = emf.createEntityManager();
-		for (int i = 0; i < 10; i++) {
-			java.util.Date start = new java.util.Date();
-			List l = em
-					.createQuery(
-							"select p.name from MEDPatientDynamic p where p.patientid like :patientid")
-					.setParameter("patientid", id+ "%").getResultList();
-			System.out.println("Tempo de pesquisa de pacientes "
-					+ (new java.util.Date().getTime() - start.getTime())
-					+ "(ms)");
-		}
-
 	}
 
 	private EntityManagerFactory createEntityManagerFactory(
 			DynamicClassLoader dcl, String persistenceUnit) {
 		Map<Object, Object> properties = new HashMap<Object, Object>();
-		//ExamplePropertiesLoader.loadProperties(properties);
+		// ExamplePropertiesLoader.loadProperties(properties);
 		properties.put(PersistenceUnitProperties.CLASSLOADER, dcl);
 		properties.put(PersistenceUnitProperties.WEAVING, "static");
 		return Persistence.createEntityManagerFactory(persistenceUnit,

@@ -1,7 +1,5 @@
 package br.com.innovatium.mumps2java.dataaccess;
 
-import java.util.List;
-
 import javax.ejb.Local;
 
 import br.com.innovatium.mumps2java.model.Medpatient;
@@ -10,8 +8,8 @@ import br.com.innovatium.mumps2java.model.Medpatient;
 public interface MedpatientDAO {
 	Medpatient find(String patientid);
 
-	List<Medpatient> total(String patientid);
+	void testarMedpatientEstatico(String patientid);
 
-	void testarMedpentient(String patientid);
+	void testarMedpatientDinamico(String patientid);
 
 }
