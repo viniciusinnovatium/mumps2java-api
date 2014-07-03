@@ -712,5 +712,20 @@ public final class mFncUtil {
 		}
 		return null;
 	}
-
+	public static String convertMumpsSqlFieldToJavaSqlField(String mumpsSql){
+		if(mFncUtil.isMatcher(mumpsSql,"$$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")){
+			return mFncUtil.matcher(mumpsSql,"$$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")[0];
+		}else{
+			return mumpsSql;
+			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
+		}	
+	}
+	public static String convertMumpsSqlValueToJavaSqlValue(String mumpsSql){
+		if(mFncUtil.isMatcher(mumpsSql,"\"","\"")){
+			return mFncUtil.matcher(mumpsSql,"\"","\"")[0];
+		}else{
+			return mumpsSql;
+			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
+		}	
+	}	
 }
