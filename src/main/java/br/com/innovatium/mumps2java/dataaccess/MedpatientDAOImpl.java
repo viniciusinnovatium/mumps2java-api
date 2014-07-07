@@ -35,8 +35,34 @@ public class MedpatientDAOImpl implements MedpatientDAO {
 
 	}
 
-	public void testarMedpatientEstatico(String patientid) {
-		System.out.println("Gerando medpatient estatico ----");
+	public void testarInclusaoMedpatientEstatico() {
+		System.out.println("Incluindo medpatient estatico ----");
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		Medpatient medpatient = null;
+
+		long timeexpended = 0;
+		Date start = null;
+		
+		
+		
+		for (int j = 0; j < 1000; j++) {
+			start = new Date();
+			medpatient = new Medpatient();
+			medpatient.setId(new MedpatientPK(String.valueOf(j)));
+			medpatient.setName("paciente de numero " + j);
+			em.getTransaction().begin();
+			em.persist(medpatient);
+			em.flush();
+			em.getTransaction().commit();
+			timeexpended = new Date().getTime() - start.getTime();
+			stats.addValue(timeexpended);
+		}
+		System.out.println("Media: " + stats.getMean());
+		System.out.println("Desvio Padrao: " + stats.getStandardDeviation());
+	}
+
+	public void testarPesquisaMedpatientEstatico(String patientid) {
+		System.out.println("Pesquisando medpatient estatico ----");
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		long timeexpended = 0;
 		for (int i = 0; i < 10; i++) {
@@ -53,9 +79,9 @@ public class MedpatientDAOImpl implements MedpatientDAO {
 
 	}
 
-	public void testarMedpatientDinamico(String id) {
+	public void testarPesquisaMedpatientDinamico(String id) {
 
-		System.out.println("Gerando medpatient dinamico ----");
+		System.out.println("Pesquisando medpatient dinamico ----");
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		long timeexpended = 0;
 		for (int i = 0; i < 10; i++) {
@@ -107,6 +133,13 @@ public class MedpatientDAOImpl implements MedpatientDAO {
 		properties.put(PersistenceUnitProperties.WEAVING, "static");
 		return Persistence.createEntityManagerFactory(persistenceUnit,
 				properties);
+	}
+
+	@Override
+	public void testarPesquisa(String patientid) {
+		testarPesquisaMedpatientEstatico(patientid);
+		testarPesquisaMedpatientDinamico(patientid);
+		
 	}
 
 }

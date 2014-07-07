@@ -8,8 +8,11 @@ import br.com.innovatium.mumps2java.model.Medpatient;
 public interface MedpatientDAO {
 	Medpatient find(String patientid);
 
-	void testarMedpatientEstatico(String patientid);
+	void testarPesquisa(String patientid);
+	
+	void testarPesquisaMedpatientEstatico(String patientid);
 
-	void testarMedpatientDinamico(String patientid);
+	void testarPesquisaMedpatientDinamico(String patientid);
 
+	void testarInclusaoMedpatientEstatico();
 }

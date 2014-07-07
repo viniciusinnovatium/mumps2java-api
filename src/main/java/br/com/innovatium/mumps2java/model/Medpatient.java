@@ -117,6 +117,7 @@ public class Medpatient implements Serializable {
 	private String zipcode;
 
 	public Medpatient() {
+
 	}
 
 	public MedpatientPK getId() {
