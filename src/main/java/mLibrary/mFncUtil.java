@@ -377,7 +377,7 @@ public final class mFncUtil {
 		if (from > string.length()) {
 			return "";
 		}
-		String[] strSplit = string.split(Pattern.quote(delimiter));
+		String[] strSplit = string.split(Pattern.quote(delimiter),-1);
 		if (to > strSplit.length) {
 			to = strSplit.length;
 		}
@@ -516,14 +516,19 @@ public final class mFncUtil {
 	}
 
 	public static String toString(Object expression) {
-		String str = String.valueOf(expression);
 		if (expression instanceof Double) {
 			Double dbl = (Double) expression;
-			str = BigDecimal.valueOf(dbl)
-					.setScale(dbl % 1 == 0 ? 0 : 2, BigDecimal.ROUND_HALF_UP)
+			long decimal = Double.valueOf((dbl % dbl.longValue())).longValue();
+			int decLen = String.valueOf(decimal>0?decimal:"").length();
+			return BigDecimal.valueOf(dbl)
+					.setScale(decLen, BigDecimal.ROUND_HALF_UP)
 					.toString();
 		}
-		return str;
+		if(expression instanceof Boolean){
+			Boolean bln = (Boolean) expression;
+			return bln?"1":"0";
+		}
+		return String.valueOf(expression);
 	}
 
 	public static String round(Double value, int scale) {
@@ -707,5 +712,20 @@ public final class mFncUtil {
 		}
 		return null;
 	}
-
+	public static String convertMumpsSqlFieldToJavaSqlField(String mumpsSql){
+		if(mFncUtil.isMatcher(mumpsSql,"$$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")){
+			return mFncUtil.matcher(mumpsSql,"$$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")[0];
+		}else{
+			return mumpsSql;
+			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
+		}	
+	}
+	public static String convertMumpsSqlValueToJavaSqlValue(String mumpsSql){
+		if(mFncUtil.isMatcher(mumpsSql,"\"","\"")){
+			return mFncUtil.matcher(mumpsSql,"\"","\"")[0];
+		}else{
+			return mumpsSql;
+			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
+		}	
+	}	
 }
