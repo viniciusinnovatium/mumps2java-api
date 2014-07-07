@@ -100,12 +100,12 @@ public class ResultSet extends mClass {
 					throw new UnsupportedOperationException("Criteria not implemented for "+sqlMumpsSuffixItem);
 				}*/
 				if(mFncUtil.isMatcher(sqlMumpsSuffixItem,"$find(",",",") > 1 ")){
-					params = mFncUtil.matcher(mFncUtil.convertMumpsSqlFieldToJavaSqlField(sqlMumpsSuffixItem),"$find(",",",") > 1 ");
-					field = mFncUtil.convertMumpsSqlFieldToJavaSqlField(sqlMumpsSuffixItem);
+					params = mFncUtil.matcherLast(sqlMumpsSuffixItem,"$find(",",",") > 1 ");
+					field = mFncUtil.convertMumpsSqlFieldToJavaSqlField(params[0]);
 					value = "%"+mFncUtil.convertMumpsSqlValueToJavaSqlValue(params[1]).toUpperCase()+"%";
 					criteriaField = field+criteriaField;
 				}else if(mFncUtil.isMatcher(sqlMumpsSuffixItem," %startswith "," ")){
-					params = mFncUtil.matcher(sqlMumpsSuffixItem," %startswith "," ");		
+					params = mFncUtil.matcherLast(sqlMumpsSuffixItem," %startswith "," ");		
 					field = mFncUtil.convertMumpsSqlFieldToJavaSqlField(params[0]);
 					value = mFncUtil.convertMumpsSqlValueToJavaSqlValue(params[1]).toUpperCase()+"%";
 					criteriaField = field+criteriaField;
@@ -114,11 +114,16 @@ public class ResultSet extends mClass {
 					field = mFncUtil.convertMumpsSqlFieldToJavaSqlField(params[0]);
 					value = mFncUtil.convertMumpsSqlValueToJavaSqlValue(params[1]).toUpperCase();	
 					criteriaField = field+criteriaField;
-				}else if(mFncUtil.isMatcher(sqlMumpsSuffixItem,"( ","  <> "," OR  ","  IS NULL) ")){
-					params = mFncUtil.matcher(sqlMumpsSuffixItem,"( ","  <> "," OR  ","  IS NULL) ");		
+				}else if(mFncUtil.isMatcher(sqlMumpsSuffixItem,"("," <> "," OR "," IS NULL) ")){
+					params = mFncUtil.matcher(sqlMumpsSuffixItem,"("," <> "," OR "," IS NULL) ");		
 					field = mFncUtil.convertMumpsSqlFieldToJavaSqlField(params[0]);
 					value = mFncUtil.convertMumpsSqlValueToJavaSqlValue(params[1]).toUpperCase();
 					criteriaField = "("+field+" <> ? or "+field+" is null)";
+				}else if(mFncUtil.isMatcher(sqlMumpsSuffixItem," is not null AND "," not in (",") ")){
+					params = mFncUtil.matcher(sqlMumpsSuffixItem," is not null AND "," not in (",") ");		
+					field = mFncUtil.convertMumpsSqlFieldToJavaSqlField(params[0]);
+					value = mFncUtil.convertMumpsSqlValueToJavaSqlValue(params[2]).toUpperCase();
+					criteriaField = field+" is not null and "+field+" not in (?)";
 				}else{
 					throw new UnsupportedOperationException("Criteria not implemented for "+sqlMumpsSuffixItem);
 				}				

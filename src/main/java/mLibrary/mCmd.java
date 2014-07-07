@@ -277,6 +277,10 @@ public class mCmd extends mParent {
 			m$.var("strResult").set(m$.fnc$("INVORG.HideCustoms"));
 		}else if(cmdStr.equals("set strResult='$$ValidItem^INART(YKEY)")){
 			m$.var("strResult").set(m$.fnc$("INART.ValidItem",m$.var("YKEY").get()));
+		}else if(cmdStr.equals("if (YPARA = \"\") set YPARA = YAUSWAHL")){
+			if(mOp.Equal(m$.var("YPARA").get(),"")){
+				m$.var("YPARA").set(m$.var("YAUSWAHL").get());
+			}
 		}else if(mFncUtil.isMatcher(cmdStr, "set objStoredData=$get(",")")){
 			String var = mFncUtil.matcher(cmdStr, "set objStoredData=$get(",")")[0];
 			m$.var("objStoredData").set(m$.Fnc.$get(m$.indirectVar(var)));

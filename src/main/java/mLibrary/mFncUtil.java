@@ -667,12 +667,15 @@ public final class mFncUtil {
 		return writer.toString();
 	}
 	public static boolean isMatcher(String line, String... patterns) {
-		return matcher(line, 0, patterns)!=null;
+		return matcher(line, false, 0, patterns)!=null;
 	}	
 	public static String[] matcher(String line, String... patterns) {
-		return matcher(line, null, patterns);
+		return matcher(line, false, null, patterns);
 	}
-	public static String[] matcher(String line, Object group, String... patterns) {
+	public static String[] matcherLast(String line, String... patterns) {
+		return matcher(line, true, null, patterns);
+	}	
+	public static String[] matcher(String line, boolean replaceLast, Object group, String... patterns) {
 
 		// String to be scanned to find the pattern.
 		// String line = "This order was placed for QT3000! OK?";
@@ -687,7 +690,7 @@ public final class mFncUtil {
 			pattern = pattern.concat("("+Pattern.quote(patterns[i])+"{1,1})");
 		}
 		Pattern r = Pattern.compile(pattern);
-
+		StringBuilder lineTemp = new StringBuilder(line);
 		// Now create matcher object.
 		Matcher m = r.matcher(line);
 		if (m.find()) {
@@ -698,10 +701,17 @@ public final class mFncUtil {
 				return new String[]{m.group((String) group)};
 			}
 			String del = "\n\n\n";
-			for (int i = 1; i <= m.groupCount(); i++) {				
-				line = line.replaceFirst(Pattern.quote(m.group(i)), del);
+			for (int i = 1; i <= m.groupCount(); i++) {	
+				String str = m.group(i);
+				int idxStart; 
+				if(replaceLast){ 
+					idxStart = lineTemp.lastIndexOf(str);
+				}else{
+					idxStart = lineTemp.indexOf(str);
+				}
+				lineTemp.replace(idxStart,idxStart+str.length(),del);
 			}
-			String[] strArray = line.split(del);
+			String[] strArray = lineTemp.toString().split(del);
 			List<String> lstr = new ArrayList<String>();
 			for (int i = 0; i < strArray.length; i++) {
 				if(!strArray[i].isEmpty()){
@@ -713,8 +723,10 @@ public final class mFncUtil {
 		return null;
 	}
 	public static String convertMumpsSqlFieldToJavaSqlField(String mumpsSql){
-		if(mFncUtil.isMatcher(mumpsSql,"$$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")){
-			return mFncUtil.matcher(mumpsSql,"$$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")[0];
+		if(mFncUtil.isMatcher(mumpsSql," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")){
+			return mFncUtil.matcher(mumpsSql," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")[0];
+		}else if(mFncUtil.isMatcher(mumpsSql,"%upper(",")")){
+			return mFncUtil.matcher(mumpsSql,"%upper(",")")[0];
 		}else{
 			return mumpsSql;
 			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);

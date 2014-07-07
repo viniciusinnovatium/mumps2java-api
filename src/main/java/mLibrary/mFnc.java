@@ -1478,4 +1478,8 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
+	public Object $listfromstring(Object object, String string) {
+		throw new UnsupportedOperationException();
+	}
+
 }
