@@ -67,7 +67,7 @@ public class mDataGlobalAccess extends mDataAccess {
 	public void set(Object value) {
 		if (currentSubs != null && value != null) {
 			metadataCache.set(currentSubs, value.toString());
-			// changeTrigger.insert(currentSubs, value);
+			changeTrigger.insert(currentSubs, value);
 		}
 	}
 

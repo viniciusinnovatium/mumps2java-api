@@ -14,10 +14,10 @@ import javax.jms.Session;
 public class MetadataCacheChangeTriggerImpl implements
 		MetadataCacheChangeTrigger {
 
-	//@Resource(mappedName = "java:/ConnectionFactory")
+	@Resource(mappedName = "java:/ConnectionFactory")
 	private ConnectionFactory connectionFactory;
 
-	//@Resource(mappedName = "java:/queue/atualizacaocache")
+	@Resource(mappedName = "java:/queue/atualizacaocache")
 	private Queue fila;
 
 	@Override
