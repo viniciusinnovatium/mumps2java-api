@@ -245,6 +245,8 @@ public class mCmd extends mParent {
 
 		if(cmdStr.equals("do AfterDataFields^COMViewFilter(\"MEDPatient,,\",1)")){
 			Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);
+		}else if(cmdStr.equals("d IsFirmable^INReq(YM,YFORM,$g(YKEY),$g(YFELD))")){
+			Do("INReq.IsFirmable",m$.var("YM"),m$.var("YFORM"),m$.Fnc.$get(m$.var("YKEY")),m$.Fnc.$get(m$.var("YFELD")));
 		}else if(cmdStr.equals("do ##class(SourceControl.Exporter).TagNMArtifactByNameKey(YDATEI,YKEY)")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
 		}else if(cmdStr.equals("set strResult=##class(alSOH.iStockHistory).ItemHasTransactions(YKEY)")){
