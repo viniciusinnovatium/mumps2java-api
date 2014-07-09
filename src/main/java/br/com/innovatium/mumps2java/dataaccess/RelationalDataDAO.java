@@ -15,6 +15,9 @@ public interface RelationalDataDAO {
 	ResultSet loadRecord(String tableName, String id, String columnString)
 			throws SQLExecutionException;
 
+	public String searchRecordPK(String tableName, int direction, String[] pk, Object[] values)
+			throws SQLExecutionException;
+	
 	String insertRecord(String tableName, String columns, Object[] values)
 			throws SQLExecutionException;
 
