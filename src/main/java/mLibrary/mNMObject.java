@@ -23,6 +23,94 @@ public class mNMObject {
 		}
 	}
 
+	public String getId(Object[] subs, int last) {
+      	String id = "";
+      	for (int i=1;i<last;i++) {
+      		id = (id.isEmpty()?"":id+"||")+mFncUtil.toString(subs[i]);
+      	}
+      	return id;
+	}
+
+	public String getId(Object[] subs) {
+		return getId(subs,subs.length);
+	}
+
+	public String searchPK(mContext m$, String className, String searchPK, int direction) {
+		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
+				.get();
+		if ((classCDef == null) || (classCDef.isEmpty())) {
+			return "";
+		}
+		String tableSQLName = mFncUtil.splitDemiliter(classCDef)[1];
+
+		String classCDefPK = (String) m$.var("^WWWCLASSCDEF", className,
+				"pkdef").get();
+		if ((classCDefPK == null) || (classCDefPK.isEmpty())) {
+			return "";
+			//throw new IllegalStateException(	"There is no primary key configuration to this class: "+ className);
+		}
+		String[] classCDefPKMap = classCDefPK.split(";",-1);
+
+		String[] searchPKMap = searchPK.split(",",-1);
+
+		String[] pkCDefMap;
+		String pkNameList = "";
+		String pkValueList = "";
+		for (int i = 0; i < classCDefPKMap.length; i++) {
+			pkCDefMap = mFncUtil.splitDemiliter(classCDefPKMap[i]);
+			pkNameList = pkNameList.concat(((i>0)?",":"")+pkCDefMap[1]);
+			if (i < searchPKMap.length) {
+				if (searchPKMap[i] == null) {
+					pkValueList = pkValueList.concat((i>0)?",":"");
+				}
+				else if (!searchPKMap[i].equals("\"\377\"")) {
+					if (searchPKMap[i].charAt(0) == '"') {
+						pkValueList = pkValueList.concat(((i>0)?",":"")+searchPKMap[i].substring(1,searchPKMap[i].length()-1));
+					}
+					else {
+						pkValueList = pkValueList.concat(((i>0)?",":"")+searchPKMap[i]);
+					}
+				}
+			}
+		}
+
+		String[] namePKMap = pkNameList.split(",",-1);
+		String[] valuePKMap = pkValueList.split(",",-1);
+
+		String resultPK;
+		try {
+			resultPK = dao.searchRecordPK(tableSQLName, direction, namePKMap, valuePKMap);
+		} catch (SQLExecutionException e1) {
+			throw new MLibraryException("Fail to search record from the table "
+					+ className + " and PK " + searchPK.toString(), e1);
+		}
+		
+		if (resultPK == null) {
+			return "";
+		}
+
+		if ((resultPK.charAt(0) < '0') || (resultPK.charAt(0) > '9')) {
+			resultPK = "\""+resultPK+"\"";
+		}
+		
+		searchPK = "";
+		for (int i = 0; i < classCDefPKMap.length; i++) {
+			if (i < classCDefPKMap.length-1) {
+				if (i < searchPKMap.length) {
+					searchPK = searchPK.concat(((i>0)?",":"")+((searchPKMap[i]==null)?"":searchPKMap[i]));
+				}
+				else {
+					searchPK = searchPK.concat((i>0)?",":"");
+				}
+			}
+			else {
+				searchPK = searchPK.concat(((i>0)?",":"")+resultPK);
+			}
+		}
+
+		return searchPK;
+	}
+	
 	public String loadRecord(mContext m$, String className, String id) {
 		String classCDef = (String) m$.var("^WWWCLASSCDEF", className, "def")
 				.get();

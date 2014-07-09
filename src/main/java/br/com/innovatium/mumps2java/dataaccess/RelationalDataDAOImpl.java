@@ -65,6 +65,58 @@ public class RelationalDataDAOImpl extends AbstractDAO implements
 		return result;
 	}
 
+	public String searchRecordPK(String tableName, int direction, String[] pk, Object[] values)
+			throws SQLExecutionException {
+		PreparedStatement cmd = null;
+		ResultSet result = null;
+		String resultPK = null;
+		StringBuilder strcmd = new StringBuilder();
+		try {
+			strcmd.append("select * from ( select ").append(pk[pk.length-1]).append(" from ")
+					.append(tableName).append(" where ");
+			for (int i = 0; i < pk.length; i++) {
+				if ((i < values.length) && (values[i] != null)) {
+					if (i>0) {
+						strcmd.append(" and ");
+					}
+					if (i >= pk.length-1) {
+						if (direction < 0) {
+							strcmd.append(pk[i]+" < '"+values[i]+"'");
+						}
+						else {
+							strcmd.append(pk[i]+" > '"+values[i]+"'");
+						}
+					}
+					else {
+						strcmd.append(pk[i]+" = '"+values[i]+"'");
+					}
+				}
+			}
+			strcmd.append(" order by ");
+			for (int i = 0; i < pk.length; i++) {
+				if (i>0) {
+					strcmd.append(", ");
+				}
+				if (direction < 0) {
+					strcmd.append(pk[i]+" desc");
+				}
+				else {
+					strcmd.append(pk[i]+" asc");
+				}
+			}
+			strcmd.append(" ) where rownum <= 1");
+			cmd = con.prepareStatement(strcmd.toString());
+			result = cmd.executeQuery();
+			if (result.next()) {
+				resultPK = result.getString(1);
+			}
+		} catch (SQLException e) {
+			throw new SQLExecutionException("Fail to select from table "
+					+ tableName + " (PK " + values.toString() + ")", e);
+		}
+		return resultPK;
+	}
+
 	public String insertRecord(String tableName, String columns, Object[] values)
 			throws SQLExecutionException {
 		PreparedStatement cmd = null;
