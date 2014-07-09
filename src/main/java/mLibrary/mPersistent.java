@@ -4,6 +4,7 @@ public class mPersistent extends mClass {
 
 	
 	public Object $OpenId(Object... args){
+		//TODO REVISAR IMPLEMENTAÇÃO 
 		String id = args[0].toString();
 		Integer concurrency = args.length>=2?Integer.valueOf(args[1].toString()):-1;
 		$Library.Status sc = new $Library.Status(args.length>=3?mFncUtil.integerConverter(args[2]):1);
@@ -11,8 +12,11 @@ public class mPersistent extends mClass {
 	}	
 	
 	public Object $ExistsId(Object... args){
+		//TODO REVISAR IMPLEMENTAÇÃO 
 		return "";
 	}
 	
-	
+	public void $Close(Object... args){
+		//TODO REVISAR IMPLEMENTAÇÃO 
+	}	
 }

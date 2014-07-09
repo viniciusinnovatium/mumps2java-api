@@ -12,8 +12,8 @@ public class Status extends mParent{
 	}
 
 	public static void DecomposeStatus(Object object, mVar arrErr) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		// TODO REVISAR IMPLEMENTAÇÃO
+		arrErr.set("Status Decompose of "+object);
 	}
 
 	public Object Error(int i, Object object, String string, String string2) {
@@ -22,6 +22,7 @@ public class Status extends mParent{
 	}
 	
 	public Object Error(Object string) {
+		// TODO REVISAR IMPLEMENTAÇÃO
 		return "Error message of "+string;
 	}
 
