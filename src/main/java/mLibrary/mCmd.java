@@ -245,6 +245,8 @@ public class mCmd extends mParent {
 
 		if(cmdStr.equals("do AfterDataFields^COMViewFilter(\"MEDPatient,,\",1)")){
 			Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);
+		}else if(cmdStr.equals("d IsFirmable^INReq(YM,YFORM,$g(YKEY),$g(YFELD))")){
+			Do("INReq.IsFirmable",m$.var("YM"),m$.var("YFORM"),m$.Fnc.$get(m$.var("YKEY")),m$.Fnc.$get(m$.var("YFELD")));
 		}else if(cmdStr.equals("do ##class(SourceControl.Exporter).TagNMArtifactByNameKey(YDATEI,YKEY)")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
 		}else if(cmdStr.equals("set strResult=##class(alSOH.iStockHistory).ItemHasTransactions(YKEY)")){
@@ -277,12 +279,16 @@ public class mCmd extends mParent {
 			m$.var("strResult").set(m$.fnc$("INVORG.HideCustoms"));
 		}else if(cmdStr.equals("set strResult='$$ValidItem^INART(YKEY)")){
 			m$.var("strResult").set(m$.fnc$("INART.ValidItem",m$.var("YKEY").get()));
+		}else if(cmdStr.equals("if (YPARA = \"\") set YPARA = YAUSWAHL")){
+			if(mOp.Equal(m$.var("YPARA").get(),"")){
+				m$.var("YPARA").set(m$.var("YAUSWAHL").get());
+			}
 		}else if(mFncUtil.isMatcher(cmdStr, "set objStoredData=$get(",")")){
 			String var = mFncUtil.matcher(cmdStr, "set objStoredData=$get(",")")[0];
 			m$.var("objStoredData").set(m$.Fnc.$get(m$.indirectVar(var)));
 		}else if(mFncUtil.isMatcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")){
 			String var = mFncUtil.matcher(cmdStr, "set strCode=$$GetRemovalCode^MEDPatient(\"MEDPatient\",",")")[0];
-			m$.var("strCode").set(m$.fnc$("MEDPatient.GetRemovalCode","MEDPatient",var));
+			//m$.var("strCode").set(m$.fnc$("MEDPatient.GetRemovalCode","MEDPatient",var));//TODO REVISAR GetRemovalCode NÃO EXISTE
 		}else if(mFncUtil.isMatcher(cmdStr, "SET YOPTION=")){
 			String var = mFncUtil.matcher(cmdStr, "SET YOPTION=")[0];
 			m$.var("YOPTION").set(var);
@@ -320,7 +326,11 @@ public class mCmd extends mParent {
 			if(mOp.Greater(m$.Fnc.$piece(m$.var("YFELD").get(), m$.var("Y").get(),138),1)){
 				m$.Cmd.Write(m$.fnc$("INARTPE.main",m$.var("YKEY").get()));
 			}
-		}else if(cmdStr.startsWith("SET %TXT(1)=$$")){
+		}else if (cmdStr.equals("set ^CacheTempEvent(YUCI,\"VARAlertaLocalLinha\",\"Format\") = 1")){
+			
+			m$.var("^CacheTempEvent",m$.var("YUCI").get(),"VARAlertaLocalLinha","Format").set(1);
+		}
+		else if(cmdStr.startsWith("SET %TXT(1)=$$")){
 			throw new UnsupportedOperationException();
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ") || cmdStr.startsWith("S ") || cmdStr.startsWith("s ") ) {
 			throw new UnsupportedOperationException("Implementation required for Xecute with command SET: '"+cmdStr+"'");

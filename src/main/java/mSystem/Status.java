@@ -22,8 +22,7 @@ public class Status extends mParent{
 	}
 	
 	public Object Error(Object string) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return "Error message of "+string;
 	}
 
 	public Object IsOK(Object object) {

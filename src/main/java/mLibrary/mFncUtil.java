@@ -377,7 +377,7 @@ public final class mFncUtil {
 		if (from > string.length()) {
 			return "";
 		}
-		String[] strSplit = string.split(Pattern.quote(delimiter));
+		String[] strSplit = string.split(Pattern.quote(delimiter),-1);
 		if (to > strSplit.length) {
 			to = strSplit.length;
 		}
@@ -516,14 +516,19 @@ public final class mFncUtil {
 	}
 
 	public static String toString(Object expression) {
-		String str = String.valueOf(expression);
 		if (expression instanceof Double) {
 			Double dbl = (Double) expression;
-			str = BigDecimal.valueOf(dbl)
-					.setScale(dbl % 1 == 0 ? 0 : 2, BigDecimal.ROUND_HALF_UP)
+			long decimal = Double.valueOf((dbl % dbl.longValue())).longValue();
+			int decLen = String.valueOf(decimal>0?decimal:"").length();
+			return BigDecimal.valueOf(dbl)
+					.setScale(decLen, BigDecimal.ROUND_HALF_UP)
 					.toString();
 		}
-		return str;
+		if(expression instanceof Boolean){
+			Boolean bln = (Boolean) expression;
+			return bln?"1":"0";
+		}
+		return String.valueOf(expression);
 	}
 
 	public static String round(Double value, int scale) {
@@ -662,12 +667,15 @@ public final class mFncUtil {
 		return writer.toString();
 	}
 	public static boolean isMatcher(String line, String... patterns) {
-		return matcher(line, 0, patterns)!=null;
+		return matcher(line, false, 0, patterns)!=null;
 	}	
 	public static String[] matcher(String line, String... patterns) {
-		return matcher(line, null, patterns);
+		return matcher(line, false, null, patterns);
 	}
-	public static String[] matcher(String line, Object group, String... patterns) {
+	public static String[] matcherLast(String line, String... patterns) {
+		return matcher(line, true, null, patterns);
+	}	
+	public static String[] matcher(String line, boolean replaceLast, Object group, String... patterns) {
 
 		// String to be scanned to find the pattern.
 		// String line = "This order was placed for QT3000! OK?";
@@ -682,7 +690,7 @@ public final class mFncUtil {
 			pattern = pattern.concat("("+Pattern.quote(patterns[i])+"{1,1})");
 		}
 		Pattern r = Pattern.compile(pattern);
-
+		StringBuilder lineTemp = new StringBuilder(line);
 		// Now create matcher object.
 		Matcher m = r.matcher(line);
 		if (m.find()) {
@@ -693,10 +701,17 @@ public final class mFncUtil {
 				return new String[]{m.group((String) group)};
 			}
 			String del = "\n\n\n";
-			for (int i = 1; i <= m.groupCount(); i++) {				
-				line = line.replaceFirst(Pattern.quote(m.group(i)), del);
+			for (int i = 1; i <= m.groupCount(); i++) {	
+				String str = m.group(i);
+				int idxStart; 
+				if(replaceLast){ 
+					idxStart = lineTemp.lastIndexOf(str);
+				}else{
+					idxStart = lineTemp.indexOf(str);
+				}
+				lineTemp.replace(idxStart,idxStart+str.length(),del);
 			}
-			String[] strArray = line.split(del);
+			String[] strArray = lineTemp.toString().split(del);
 			List<String> lstr = new ArrayList<String>();
 			for (int i = 0; i < strArray.length; i++) {
 				if(!strArray[i].isEmpty()){
@@ -707,5 +722,22 @@ public final class mFncUtil {
 		}
 		return null;
 	}
-
+	public static String convertMumpsSqlFieldToJavaSqlField(String mumpsSql){
+		if(mFncUtil.isMatcher(mumpsSql," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")){
+			return mFncUtil.matcher(mumpsSql," $$RemoveMark^COMViewSQL(%upper(","),\"0\",\"","\")")[0];
+		}else if(mFncUtil.isMatcher(mumpsSql,"%upper(",")")){
+			return mFncUtil.matcher(mumpsSql,"%upper(",")")[0];
+		}else{
+			return mumpsSql;
+			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
+		}	
+	}
+	public static String convertMumpsSqlValueToJavaSqlValue(String mumpsSql){
+		if(mFncUtil.isMatcher(mumpsSql,"\"","\"")){
+			return mFncUtil.matcher(mumpsSql,"\"","\"")[0];
+		}else{
+			return mumpsSql;
+			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
+		}	
+	}	
 }

@@ -107,7 +107,7 @@ public class mDataGlobalAccess extends mDataAccess {
 		this.currentSubs = subs;
 
 		populateCache(true);
-		return metadataCache.order(subs);
+		return metadataCache.order(subs, direction);
 	}
 
 	public Object order(Object... subs) {
