@@ -1,8 +1,10 @@
 package mLibrary;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import br.com.innovatium.mumps2java.datastructure.util.DataStructureUtil;
 
@@ -120,4 +122,14 @@ public final class ListObject {
 		}
 		return string.toString();
 	}
+	
+	static ListObject listFromString(String string, String delimiter) {
+		ListObject l = new ListObject();
+		if (string.isEmpty()) {
+			return l;
+		}
+		l.list.addAll(Arrays.asList(string.split(Pattern.quote(delimiter))));
+		return l;
+	}
+
 }

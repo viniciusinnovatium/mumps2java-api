@@ -739,5 +739,57 @@ public final class mFncUtil {
 			return mumpsSql;
 			//throw new UnsupportedOperationException("Criteria not implemented for "+mumpsSql);
 		}	
-	}	
+	}
+	public static String escapeValue(String value) {
+		if (value == null) return value;
+		return value.replace("\"", "\"\"");
+	}
+
+	// Recupera a lista de subscritos da global. utilizado em $qsubscript e $qlength
+	// já remove o escape de aspas duplas "" do mumps colocado propositalmente no $query ou $name.
+	public static List<String> getSubscriptList(String nameValue){ 
+		
+		List<String> resultList = new ArrayList<String>();
+		
+		int initialSubscriptPosition = nameValue.indexOf("(");
+		
+		if (initialSubscriptPosition != -1){
+			initialSubscriptPosition++;
+			int lastSubscriptCharacter = nameValue.length()-1;
+			
+			
+			String subscripts = nameValue.substring(initialSubscriptPosition,lastSubscriptCharacter) ;
+			char doubleQuote = '"';
+			boolean inLiteral = false;
+			char c;
+			char nextC;
+			final StringBuilder element = new StringBuilder();
+			
+			for ( int i = 0 ; i<subscripts.length();i++ ) {
+				c = subscripts.charAt(i);
+				if (c == doubleQuote){
+					if (inLiteral){
+						nextC = ( i+1 < subscripts.length() ) ? subscripts.charAt(i+1) : ',';
+						if ( nextC == doubleQuote) { //escaped
+							element.append(c);
+							i++;
+							continue;
+						}
+					}
+					inLiteral = inLiteral ? false : true;
+					continue;
+				}
+				if (c == ',' && !inLiteral){
+					resultList.add(element.toString());
+					element.delete(0, element.length()); //reinicializa element
+					continue;
+				}
+				element.append(c);
+				
+			}
+			resultList.add(element.toString());
+		}
+		return resultList;
+	}
+
 }

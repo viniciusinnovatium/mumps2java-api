@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.SimpleTimeZone;
@@ -546,15 +547,39 @@ public final class mFnc extends mParent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
-	public static Object $qlength(Object object) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	
+	public static int $qlength(Object nameValue) {
+		String name = String.valueOf(nameValue);
+		
+		if (name.isEmpty()){
+			throw new IllegalArgumentException("Missing variable name");
+		}
+		List<String> subscriptsList = mFncUtil.getSubscriptList(name);
+		return subscriptsList.size();
 	}
 
-	public static ListObject $qsubscript(Object object, Object object2) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public static Object $qsubscript(Object nameValue, Object intCode) {
+		int code = mFncUtil.integerConverter(intCode);
+		if (code < -1){
+			throw new IllegalArgumentException("These numbers are reserved for future extensions.");
+		}
+		String name = String.valueOf(nameValue);
+		boolean isGlobal = (name.indexOf("^") >= 0);
+		
+		Object result = null;
+		switch (code) {
+		case -1 : //Returns the namespace name if a global variable namevalue includes one; otherwise, returns the null string ("").
+			result = isGlobal ? $znspace() : "";
+			break;
+		case 0 :  //Returns the variable name. Returns ^NAME for a global variable.
+			result = name.substring(0, name.indexOf("("));
+			break;
+		default:
+			List<String> subscriptsList = mFncUtil.getSubscriptList(name);
+			result = (code > subscriptsList.size())? "" : subscriptsList.get(code-1);
+			break;
+		}
+		return result;
 	}
 
 	public static Object $query(mVar reference) {
@@ -614,7 +639,7 @@ public final class mFnc extends mParent {
 				if (Character.isDigit(strsub.charAt(0))) {
 					result = result + ((i > 1) ? "," : "") + strsub;
 				} else {
-					result = result + ((i > 1) ? "," : "") + "\"" + strsub
+					result = result + ((i > 1) ? "," : "") + "\"" + mFncUtil.escapeValue(strsub) 
 							+ "\"";
 				}
 			}
@@ -626,6 +651,7 @@ public final class mFnc extends mParent {
 		}
 		return result;
 	}
+
 
 	/**
 	 * Returns a pseudo-random integer value in the specified range.
@@ -1478,8 +1504,11 @@ public final class mFnc extends mParent {
 		throw new UnsupportedOperationException();
 	}
 
-	public Object $listfromstring(Object object, String string) {
-		throw new UnsupportedOperationException();
+	public Object $listfromstring(Object object) {
+		return $listfromstring(object,",");
 	}
 
+	public Object $listfromstring(Object object, String delimiter) {
+		return ListObject.listFromString(String.valueOf(object), delimiter);
+	}
 }

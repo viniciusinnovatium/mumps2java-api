@@ -38,11 +38,12 @@ public class mCmd extends mParent {
 		DoJob(false, objClass, methodName, parameters);
 	}
 
+	/*
 	public void Do(String object, String methodName, String object2) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	*/
 	public void Do(Object methodName) {
 		Do(mFncUtil.castString(methodName));
 	}
