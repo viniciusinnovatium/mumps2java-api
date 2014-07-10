@@ -246,20 +246,34 @@ public class mCmd extends mParent {
 
 		if(cmdStr.equals("do AfterDataFields^COMViewFilter(\"MEDPatient,,\",1)")){
 			Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);
+		}else if(cmdStr.equals("d IsFirmable^INReq(YM,YFORM,$g(YKEY),$g(YFELD))")){
+			Do("INReq.IsFirmable",m$.var("YM").get(),m$.var("YFORM").get(),m$.Fnc.$get(m$.var("YKEY")),m$.Fnc.$get(m$.var("YFELD")));
 		}else if(cmdStr.equals("do ##class(SourceControl.Exporter).TagNMArtifactByNameKey(YDATEI,YKEY)")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
 		}else if(cmdStr.equals("set strResult=##class(alSOH.iStockHistory).ItemHasTransactions(YKEY)")){
 			//set strResult=##class(alSOH.iStockHistory).ItemHasTransactions(YKEY) TODO REVISAR IMPLEMENTAÇÃO
 		}else if(cmdStr.equals("W:$P($G(YFELD),Y,40)=6 \"²\"  W:$P($G(YFELD),Y,40)=12 \"³\" ")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
-		}else if(cmdStr.equals(";I YINHALT=\"\" S YINHALT=\"nopicture.gif\"  ;Customizing !")){
+		}/*else if(cmdStr.equals(";I YINHALT=\"\" S YINHALT=\"nopicture.gif\"  ;Customizing !")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
 		}else if(cmdStr.equals(";D ^INARTD72")){
 			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
+		}else if(cmdStr.equals(";D ^INARTD30")){
+			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get() TODO REVISAR IMPLEMENTAÇÃO
+		}else if(cmdStr.equals(";do OnAfterButtonLine^INReq(YM,YFORM,YSEITE,YKEY,YFELD)")){
+			//Do("COMViewFilter.AfterDataFields","MEDPatient,,",1);m$.var("YVAR").get()
+		}*/else if(cmdStr.startsWith(";")){
+			//Xecute commented: No action. 
+		}else if(cmdStr.equals("S YINHALT=$$GetPackUOM^INART(YKEY)")){		
+			m$.var("YINHALT").set(m$.fnc$("INART.GetPackUOM",m$.var("YKEY").get()));
+		}else if(cmdStr.equals("S YINHALT=$$GetHomeLocation^INReq(YBED)")){		
+			m$.var("YINHALT").set(m$.fnc$("INReq.GetHomeLocation",m$.var("YBED").get()));
 		}else if(cmdStr.equals("SET %TXT(1)=$$BeforeSave^WWWFORMValidation(YINHALT,YVAR)")){		
 			m$.var("%TXT",1).set(m$.fnc$("WWWFORMValidation.BeforeSave",m$.var("YINHALT").get(),m$.var("YVAR").get()));
 		}else if(cmdStr.equals("SET %TXT(1)=$$CallBack^COMViewUtils(YINHALT,YVAR)")){
 			m$.var("%TXT",1).set(m$.fnc$("COMViewUtils.CallBack",m$.var("YINHALT").get(),m$.var("YVAR").get()));		
+		}else if(cmdStr.equals("SET %TXT(1)=$$End^WWWEND(YINHALT,YVAR)")){
+			m$.var("%TXT",1).set(m$.fnc$("WWWEND.End",m$.var("YINHALT").get(),m$.var("YVAR").get()));		
 		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess^WWW101(YFORM,YKEY,YFELD)")){
 			m$.var("strStatus").set(m$.fnc$("WWW101.OnBeforeDataAccess",m$.var("YFORM").get(),m$.var("YKEY").get(),m$.var("YFELD").get()));
 		}else if(cmdStr.equals("set strStatus=$$OnBeforeDataAccess1^VARWWW101(YFORM,YKEY,YFELD)")){
@@ -278,6 +292,10 @@ public class mCmd extends mParent {
 			m$.var("strResult").set(m$.fnc$("INVORG.HideCustoms"));
 		}else if(cmdStr.equals("set strResult='$$ValidItem^INART(YKEY)")){
 			m$.var("strResult").set(m$.fnc$("INART.ValidItem",m$.var("YKEY").get()));
+		}else if(cmdStr.equals("set strResult=$$IsProgramOutOfDateRange^INReq(YFELD)")){
+			m$.var("strResult").set(m$.fnc$("INReq.IsProgramOutOfDateRange",m$.var("YFELD").get()));
+		}else if(cmdStr.equals("set strValue=$$GetDescription^WWWStatus(\"INReq\",\"1\",$g(SPRACHE))")){
+			m$.var("strValue").set(m$.fnc$("WWWStatus.GetDescription","INReq","1",m$.Fnc.$get(m$.var("SPRACHE"))));
 		}else if(cmdStr.equals("if (YPARA = \"\") set YPARA = YAUSWAHL")){
 			if(mOp.Equal(m$.var("YPARA").get(),"")){
 				m$.var("YPARA").set(m$.var("YAUSWAHL").get());
@@ -330,7 +348,7 @@ public class mCmd extends mParent {
 			m$.var("^CacheTempEvent",m$.var("YUCI").get(),"VARAlertaLocalLinha","Format").set(1);
 		}
 		else if(cmdStr.startsWith("SET %TXT(1)=$$")){
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Implementation required for Xecute with command SET %TXT(1)=$$: '"+cmdStr+"'");
 		}else if (cmdStr.startsWith("SET ") || cmdStr.startsWith("set ") || cmdStr.startsWith("S ") || cmdStr.startsWith("s ") ) {
 			throw new UnsupportedOperationException("Implementation required for Xecute with command SET: '"+cmdStr+"'");
 		} else if (cmdStr.startsWith("DO ") || cmdStr.startsWith("do ") || cmdStr.startsWith("D ") || cmdStr.startsWith("d ")){

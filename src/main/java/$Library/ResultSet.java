@@ -6,8 +6,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.jms.IllegalStateException;
 
 import mLibrary.mClass;
 import mLibrary.mFncUtil;
@@ -24,9 +27,15 @@ public class ResultSet extends mClass {
 	private java.sql.ResultSet resultSet;
 	private COMViewDAO comViewDao;
 
-	public Object $New() {
+	public Object $New(Object... args) {
 		try {
 			comViewDao = ServiceLocator.locate(COMViewDAO.class);
+			String sql = "";
+			String initvalue = args.length>=1 && args[0]!=null?args[0].toString():"";
+			if(initvalue.equals("alREQ.dUReqIssue:ByReqNum")){
+				sql = "SELECT ID FROM INIssue WHERE (Reference = ?)";
+				this.prepare = comViewDao.createPreparedStatement(sql);
+			}
 		} catch (ServiceLocatorException e) {
 			throw new IllegalArgumentException(
 					"Fail to create data access object", e);
@@ -148,21 +157,27 @@ public class ResultSet extends mClass {
 					e.printStackTrace();
 				}			
 		}else{				
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Fail of implementation in ResultSet.Prepare("+sqlMumps+")");
 		}
 		if(this.prepare == null){
 			this.prepare = comViewDao.createPreparedStatement(sql);
 		}
 	}
 
-	public Object Execute() {
+	public Object Execute(Object... args) {
 		try {
+			String p1 = args.length>=1 && args[0]!=null?args[0].toString():"";
+			if(!p1.isEmpty()){				
+				this.prepare.setString(1, p1);		
+			}			
 			resultSet = prepare.executeQuery();			
 			return 1;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Fail in ResultSet.Execute("+Arrays.toString(args)+"): "+e.getMessage());
+			return 0;
+		}catch(NullPointerException e){
+			System.err.println("Fail in ResultSet.Execute("+Arrays.toString(args)+"): "+e.getMessage());
 			return 0;
 		}
 	}

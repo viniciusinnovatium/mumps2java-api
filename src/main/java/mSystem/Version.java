@@ -17,4 +17,9 @@ public class Version extends mParent {
 		//TODO REVISAR CONFIRMAR RETORNO DO MÉTODO
 		return 1;
 	}
+
+	public Object GetMajor() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 }

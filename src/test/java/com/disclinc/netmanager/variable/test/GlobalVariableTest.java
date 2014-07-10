@@ -1,9 +1,5 @@
 package com.disclinc.netmanager.variable.test;
 
-import static org.junit.Assert.assertEquals;
-import mLibrary.mData;
-
-import org.junit.Test;
 
 public class GlobalVariableTest {
 /*
